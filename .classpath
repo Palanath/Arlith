@@ -3,5 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="rsc"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/java-library"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/javalib"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
