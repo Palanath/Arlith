@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <VBox maxWidth="600.0" spacing="10.0" style="-fx-background-color: derive(-stuff-light,-10%); -fx-background-radius: 20px;">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="GENERAL">
+                     <font>
+                        <Font name="Segoe UI" size="16.0" />
+                     </font>
+                  </Text>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TextField fx:id="serverNamePrompt" GridPane.columnIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+            <VBox maxWidth="600.0" spacing="10.0" style="-fx-background-radius: 20px; -fx-background-color: derive(-stuff-light,-10%);">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="GRAPHICS">
+                     <font>
+                        <Font name="Segoe UI" size="16.0" />
+                     </font>
+                  </Text>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <StackPane alignment="CENTER_LEFT">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Icon" />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </StackPane>
+                        <StackPane>
+                           <children>
+                              <ImageView fx:id="serverIcon" fitHeight="192.0" fitWidth="192.0" pickOnBounds="true" preserveRatio="true">
+                                 <rotationAxis>
+                                    <Point3D x="1.0" y="1.0" />
+                                 </rotationAxis>
+                              </ImageView>
+                           </children>
+                        </StackPane>
+                        <HBox fx:id="iconEditBox" alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Button fx:id="changeIconButton" mnemonicParsing="false" onAction="#changeIcon" styleClass="pop-button" text="CHANGE" />
+                              <Button fx:id="removeIconButton" mnemonicParsing="false" onAction="#removeIcon" styleClass="pop-button" text="REMOVE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <StackPane alignment="CENTER_LEFT">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Background" />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </StackPane>
+                        <StackPane fx:id="backgroundBox" style="-fx-background-color: #00000030; -fx-background-radius: 10px;">
+                           <padding>
+                              <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                           </padding>
+                           <children>
+                              <Text fx:id="backgroundStatusText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="EMPTY">
+                                 <font>
+                                    <Font name="Segoe UI" size="16.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="25.0" right="25.0" />
+                           </VBox.margin>
+                        </StackPane>
+                        <HBox fx:id="backgroundEditBox" alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Button fx:id="changeBackgroundButton" mnemonicParsing="false" onAction="#changeBackground" styleClass="pop-button" text="CHANGE" />
+                              <Button fx:id="removeBackgroundButton" mnemonicParsing="false" onAction="#removeBackground" styleClass="pop-button" text="REMOVE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <StackPane maxWidth="600.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#complete" styleClass="pop-button" text="DONE" />
+               </children>
+               <padding>
+                  <Insets top="50.0" />
+               </padding>
+            </StackPane>
+         </children>
+      </VBox>
+      <Rectangle fx:id="backArrow1" arcHeight="10.0" arcWidth="10.0" fill="GOLD" height="5.0" strokeType="INSIDE" width="30.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0" />
+      <Rectangle fx:id="backArrow2" arcHeight="10.0" arcWidth="10.0" fill="GOLD" height="5.0" layoutX="10.0" layoutY="10.0" rotate="-45.0" strokeType="INSIDE" width="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+      <Rectangle fx:id="backArrow3" arcHeight="10.0" arcWidth="10.0" fill="GOLD" height="5.0" layoutX="10.0" layoutY="10.0" rotate="45.0" strokeType="INSIDE" width="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="25.0" />
+   </children>
+</AnchorPane>

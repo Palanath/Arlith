@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+
+
+<Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SVGPath content="M20.26,15.51l1.35-7a9.72,9.72,0,0,1,6-7.19A8.8,8.8,0,0,0,21.66.09l-14,2a8.85,8.85,0,0,0-7.54,10L1,18.21a8.85,8.85,0,0,0,10,7.53l11.81-1.66A9.69,9.69,0,0,1,20.26,15.51Z" fill="WHITE" />
+      <Rectangle arcHeight="16.7" arcWidth="16.7" fill="WHITE" height="31.87" rotate="-75.99" width="23.91" x="25.39" y="0.27" />
+      <SVGPath content="M20,28.3a1.78,1.78,0,0,1-2.39,2.32L6,25a1.77,1.77,0,0,1-.82-2.37,1.92,1.92,0,0,1,.36-.5L11.9,16a1.77,1.77,0,0,1,2.5,0,1.64,1.64,0,0,1,.35.52Z" fill="WHITE" />
+      <SVGPath content="M35.24,33.84A1.77,1.77,0,0,1,33,31.36l6-11.3a1.77,1.77,0,0,1,2.4-.73,1.61,1.61,0,0,1,.48.38l5.83,6.47a1.77,1.77,0,0,1-.13,2.51,2,2,0,0,1-.52.32Z" fill="WHITE" />
+   </children>
+</Group>

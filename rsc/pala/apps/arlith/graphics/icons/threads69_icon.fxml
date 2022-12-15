@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SVGPath content="M21,6a8.94,8.94,0,0,1,1.52-5H10A10,10,0,0,0,0,11v7A10,10,0,0,0,10,28H26A10,10,0,0,0,36,18V12.69A9,9,0,0,1,21,6Z" fill="WHITE" />
+      <SVGPath content="M19.91,34.18a2,2,0,0,1-2.77-.53A2,2,0,0,1,16.87,32l4-13.9a2,2,0,0,1,2.47-1.36A1.7,1.7,0,0,1,24,17l8,5.78a2,2,0,0,1,.45,2.8,2.28,2.28,0,0,1-.5.48Z" fill="WHITE" />
+      <Circle centerX="30.0" centerY="6.0" fill="GOLD" radius="6.0" />
+   </children>
+</Group>

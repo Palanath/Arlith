@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<SplitPane dividerPositions="0.8" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <items>
+      <VBox fx:id="friendsListBox">
+         <children>
+            <TilePane fx:id="normalFriendFilter" alignment="CENTER" minWidth="300.0">
+               <padding>
+                  <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+               </padding>
+            </TilePane>
+            <TilePane fx:id="multiFriendFilter" alignment="CENTER" minWidth="300.0">
+               <padding>
+                  <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+               </padding>
+            </TilePane>
+         </children>
+      </VBox>
+      <VBox style="-fx-background-color: derive( -stuff-dark, 10%);">
+         <children>
+            <VBox fx:id="friendRequestPromptContainer" alignment="CENTER" minWidth="400.0" spacing="15.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Send a Friend Request">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="friendRequestErrorText" fill="FIREBRICK" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Button mnemonicParsing="false" onAction="#sendFriendRequest" styleClass="pop-button" text="Send" />
+               </children>
+               <padding>
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+               </padding>
+            </VBox>
+         </children>
+      </VBox>
+   </items>
+</SplitPane>

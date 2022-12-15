@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox style="-fx-font-weight: bold; -fx-font-family: Segoe UI;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" style="-fx-background-color: -stuff-dark;">
+         <children>
+            <StackPane HBox.hgrow="NEVER">
+               <children>
+                  <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="HOME" />
+               </children>
+            </StackPane>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <children>
+            <CheckBox fx:id="doNotDisturbInput" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="DO NOT DISTURB" />
+            <CheckBox fx:id="appearOnlineInput" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="APPEAR OFFLINE" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="root" prefHeight="300.0" prefWidth="300.0" style="-fx-border-radius: 10px;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="icon" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+      <VBox alignment="BOTTOM_CENTER" fillWidth="false">
+         <children>
+            <StackPane maxHeight="100.0" minHeight="40.0" minWidth="100.0" style="-fx-border-radius: 20px; -fx-background-color: #00000066;">
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+               <children>
+                  <Text fx:id="name" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="210.0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+               </VBox.margin>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

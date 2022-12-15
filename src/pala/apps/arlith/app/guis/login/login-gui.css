@@ -1,0 +1,11 @@
+.hyperlink .text {
+	-fx-fill: steelblue;
+}
+
+.hyperlink:visited .text {
+	-fx-fill: green;
+}
+
+.hyperlink:hover .text {
+	-fx-fill: red;
+}

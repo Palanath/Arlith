@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane fx:id="centerPanel" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <StackPane fx:id="loginPanel" maxHeight="600.0" maxWidth="400.0" minHeight="400.0" minWidth="200.0" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: -stuff-light; -fx-background-color: derive(-stuff-light, -20%); -fx-background-radius: 14px;" StackPane.alignment="CENTER">
+               <children>
+                  <VBox fx:id="box" alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ARLITH">
+                           <fill>
+                              <LinearGradient endX="1.0" endY="1.0">
+                                 <stops>
+                                    <Stop color="RED" />
+                                    <Stop color="#ffcc00" offset="1.0" />
+                                 </stops>
+                              </LinearGradient>
+                           </fill>
+                           <font>
+                              <Font name="System Bold" size="25.0" />
+                           </font>
+                        </Text>
+                        <StackPane prefHeight="150.0" VBox.vgrow="NEVER">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Text fx:id="motd" strokeType="OUTSIDE" strokeWidth="0.0" text="This is the message of the day!">
+                                 <font>
+                                    <Font name="System Italic" size="16.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </StackPane>
+                        <VBox fx:id="usernamebox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username/Email/Phone:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="loginIdentifierError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Acc..." visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="logInIdentifierPrompt" maxWidth="250.0" onAction="#onLogIn">
+                                 <tooltip>
+                                    <Tooltip text="You can provide your username (followed by your discriminant, e.g. Joe#008), or your email address or phone number." />
+                                 </tooltip></TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="25.0" right="25.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox fx:id="passwordbox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="loginPasswordError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Password" visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <PasswordField fx:id="logInPasswordPrompt" maxWidth="250.0" onAction="#onLogIn" />
+                           </children>
+                        </VBox>
+                        <StackPane VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onLogIn" styleClass="pop-button" text="Log In" />
+                              <Hyperlink onAction="#showCreateAccount" text="Create Account" StackPane.alignment="BOTTOM_LEFT" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+               </padding>
+               <effect>
+                  <DropShadow height="40.0" offsetX="6.0" offsetY="6.0" radius="18.25" spread="0.1" width="35.0" />
+               </effect>
+            </StackPane>
+            <StackPane fx:id="createAccountPanel" maxHeight="700.0" maxWidth="450.0" minHeight="400.0" minWidth="200.0" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: -stuff-light; -fx-background-color: derive(-stuff-light, -20%); -fx-background-radius: 14px;" visible="false">
+               <children>
+                  <VBox fx:id="box1" alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ARLITH">
+                           <fill>
+                              <LinearGradient endX="1.0" endY="1.0">
+                                 <stops>
+                                    <Stop color="RED" />
+                                    <Stop color="#ffcc00" offset="1.0" />
+                                 </stops>
+                              </LinearGradient>
+                           </fill>
+                           <font>
+                              <Font name="System Bold" size="25.0" />
+                           </font>
+                        </Text>
+                        <StackPane prefHeight="150.0" VBox.vgrow="NEVER">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Text fx:id="motd1" strokeType="OUTSIDE" strokeWidth="0.0" text="This is the message of the day!">
+                                 <font>
+                                    <Font name="System Italic" size="16.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </StackPane>
+                        <VBox fx:id="createAccountUsernameBox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="createAccountUsernameError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Username" visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="createAccountUsernamePrompt" maxWidth="250.0" onAction="#onCreateAccount">
+                                 <tooltip>
+                                    <Tooltip text="Pick a username that is between 3 and 20 characters long. You may not use #, @, &lt;, or &gt; in your username." />
+                                 </tooltip></TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="25.0" right="25.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox fx:id="createAccountEmailBox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="createAccountEmailError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Email" visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="createAccountEmailPrompt" maxWidth="250.0" onAction="#onCreateAccount">
+                                 <tooltip>
+                                    <Tooltip text="Enter your email address. This is how we'll reach you for important information. You can also log in with this." />
+                                 </tooltip></TextField>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="createAccountPhoneBox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="createAccountPhoneError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Phone" visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="createAccountPhonePrompt" maxWidth="250.0" onAction="#onCreateAccount">
+                                 <tooltip>
+                                    <Tooltip text="Enter your phone number if you desire. This can also be used to log in, and helps verify your account." />
+                                 </tooltip></TextField>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="createAccountPasswordBox" alignment="CENTER" maxWidth="250.0" spacing="3.0">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
+                                    <StackPane alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fx:id="createAccountPasswordError" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick;" text="Invalid Username" visible="false" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                              <PasswordField fx:id="createAccountPasswordPrompt" maxWidth="250.0" onAction="#onCreateAccount">
+                                 <tooltip>
+                                    <Tooltip text="Provide the password you want to use to log in to your account. Please make sure it is secure. You can use any password you want of any length you want, (except for empty)." />
+                                 </tooltip></PasswordField>
+                           </children>
+                        </VBox>
+                        <StackPane VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onCreateAccount" styleClass="pop-button" text="Continue" />
+                              <Hyperlink onAction="#showLogIn" text="Log In" StackPane.alignment="BOTTOM_LEFT" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+               </padding>
+               <effect>
+                  <DropShadow height="40.0" offsetX="6.0" offsetY="6.0" radius="18.25" spread="0.1" width="35.0" />
+               </effect>
+            </StackPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

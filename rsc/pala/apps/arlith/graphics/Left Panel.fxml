@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Text?>
+
+<VBox fx:id="leftPanel" alignment="TOP_CENTER" spacing="5.0" style="-fx-background-color:derive(-stuff-light,5%);-fx-font-weight:bold;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TilePane alignment="TOP_CENTER" hgap="5.0" prefColumns="2" vgap="5.0">
+         <padding>
+            <Insets bottom="20.0" />
+         </padding>
+         <children>
+            <VBox fx:id="threadsButton" alignment="CENTER" prefWidth="138.0" style="-fx-background-color: derive(-stuff-dark, 5%); -fx-background-radius: 20px;" TilePane.alignment="CENTER">
+               <children>
+                  <Group>
+                     <children>
+                        <SVGPath content="M21,6a8.94,8.94,0,0,1,1.52-5H10A10,10,0,0,0,0,11v7A10,10,0,0,0,10,28H26A10,10,0,0,0,36,18V12.69A9,9,0,0,1,21,6Z" fill="WHITE" />
+                        <SVGPath content="M19.91,34.18a2,2,0,0,1-2.77-.53A2,2,0,0,1,16.87,32l4-13.9a2,2,0,0,1,2.47-1.36A1.7,1.7,0,0,1,24,17l8,5.78a2,2,0,0,1,.45,2.8,2.28,2.28,0,0,1-.5.48Z" fill="WHITE" />
+                        <Circle fx:id="threadsButtonI1" centerX="30.0" centerY="6.0" fill="GOLD" radius="6.0" />
+                     </children>
+                  </Group>
+                  <Text fx:id="threadsTitle" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16;" text="THREADS" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox fx:id="homeButton" alignment="CENTER" prefWidth="138.0" style="-fx-background-color: derive(-stuff-dark, 5%); -fx-background-radius: 20px;">
+               <children>
+                  <Group>
+                     <children>
+                        <SVGPath content="m 19.1311,34.7072 v 22.5667 h 13.1254 v -9.0702 h 6.27 v 9.0702 H 50.9461 V 34.7072 Z" fill="WHITE" />
+                        <SVGPath content="m 34.9411,14.8776 -6.1377,6.6802 V 17.341 h -3.792 v 8.3452 L 14.6973,36.9134 h 40.4875 z" fill="WHITE" />
+                     </children>
+                  </Group>
+                  <Text fx:id="homeTitle" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16;" text="HOME" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox fx:id="settingsButton" alignment="CENTER" prefWidth="138.0" style="-fx-background-color: derive(-stuff-dark, 5%); -fx-background-radius: 20px;">
+               <children>
+                  <Group>
+                     <children>
+                        <SVGPath content="m 16.4700,37.81830 c -0.03,-0.09 -0.3,-0.969 -0.576,-1.95 -0.87,-2.946 -0.702,-2.619 -1.482,-2.913 -0.369,-0.15 -1.158,-0.462 -1.746,-0.723 l -1.074,-0.468 -0.849,0.429 c -0.468,0.24 -1.443,0.747 -2.166,1.134 l -1.317,0.702 -1.743,-1.755 -1.743,-1.755 0.744,-1.359 c 0.411,-0.75 0.939,-1.722 1.173,-2.163 l 0.429,-0.804 -0.381,-0.846 c -0.21,-0.465 -0.519,-1.242 -0.684,-1.728 -0.18,-0.486 -0.309,-0.894 -0.318,-0.906 -0.007,-0.012 -0.729,-0.24 -1.602,-0.498 -0.873,-0.27 -1.935,-0.582 -2.361,-0.711 l -0.774,-0.24 v -2.463 -2.463 l 2.127,-0.63 c 2.802,-0.834 2.664,-0.765 2.88,-1.38 0.09,-0.27 0.408,-1.014 0.687,-1.629 l 0.507,-1.122 -0.18,-0.33 c -0.09,-0.18 -0.597,-1.149 -1.14,-2.151 l -0.984,-1.821 1.767,-1.755 1.767,-1.755 2.139,1.17 2.139,1.17 1.05,-0.462 c 0.576,-0.24 1.335,-0.558 1.68,-0.678 0.543,-0.18 0.642,-0.27 0.723,-0.507 0.12,-0.345 0.849,-2.829 1.128,-3.7803 l 0.18,-0.678 h 2.478 2.478 l 0.09,0.351 c 0.06,0.18 0.366,1.257 0.696,2.367 l 0.6,2.016 0.963,0.351 c 0.531,0.18 1.29,0.501 1.686,0.69 l 0.723,0.339 2.145,-1.173 2.145,-1.173 1.761,1.755 1.761,1.752 -0.81,1.497 c -0.444,0.822 -0.957,1.788 -1.134,2.145 l -0.327,0.648 0.465,1.038 c 0.27,0.57 0.561,1.308 0.681,1.638 0.27,0.72 0.09,0.63 2.925,1.479 l 2.133,0.639 v 2.46 2.46 l -0.822,0.24 c -2.082,0.624 -2.646,0.789 -3.2622,0.969 l -0.66,0.18 -0.21,0.681 c -0.12,0.375 -0.426,1.143 -0.675,1.707 -0.24,0.564 -0.459,1.062 -0.459,1.11 0,0.06 0.522,1.047 1.158,2.226 l 1.158,2.142 -1.749,1.746 -1.749,1.746 -1.77,-0.954 c -0.972,-0.522 -1.944,-1.038 -2.154,-1.14 l -0.387,-0.18 -1.311,0.561 c -0.72,0.309 -1.494,0.618 -1.716,0.684 -0.24,0.06 -0.441,0.18 -0.492,0.315 -0.06,0.09 -0.375,1.155 -0.726,2.331 -0.354,1.176 -0.672,2.166 -0.708,2.202 -0.06,0.06 -1.158,0.06 -2.487,0.09 -2.262,0.03 -2.424,0.015 -2.472,-0.15 z m 3.3627,-11.5596 c 1.014,-0.15 1.422,-0.27 2.439,-0.759 1.518,-0.735 2.652,-1.905 3.3591,-3.4719 0.51,-1.134 0.579,-1.488 0.57,-3.0348 -0.006,-1.278 -0.03,-1.482 -0.27,-2.202 -0.378,-1.152 -0.843,-1.977 -1.527,-2.715 -1.017,-1.098 -2.184,-1.806 -3.5685,-2.166 -0.924,-0.24 -2.793,-0.27 -3.6243,-0.06 -0.795,0.21 -1.722,0.618 -2.334,1.023 -0.69,0.456 -1.8,1.65 -2.25,2.409 -1.272,2.157 -1.254,5.2245 0.06,7.4442 0.564,0.966 1.806,2.157 2.745,2.64 1.014,0.516 1.47,0.678 2.349,0.825 0.93,0.18 1.233,0.18 2.058,0.06 z" fill="WHITE" />
+                     </children>
+                  </Group>
+                  <Text fx:id="settingsTitle" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16;" text="SETTINGS" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox fx:id="communitiesButton" alignment="CENTER" prefWidth="138.0" style="-fx-background-color: derive(-stuff-dark, 5%); -fx-background-radius: 20px;">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <children>
+                  <Group>
+                     <children>
+                        <SVGPath content="M20.26,15.51l1.35-7a9.72,9.72,0,0,1,6-7.19A8.8,8.8,0,0,0,21.66.09l-14,2a8.85,8.85,0,0,0-7.54,10L1,18.21a8.85,8.85,0,0,0,10,7.53l11.81-1.66A9.69,9.69,0,0,1,20.26,15.51Z" fill="WHITE" />
+                        <Rectangle arcHeight="16.7" arcWidth="16.7" fill="WHITE" height="31.87" rotate="-75.99" width="23.91" x="25.39" y="0.27" />
+                        <SVGPath content="M20,28.3a1.78,1.78,0,0,1-2.39,2.32L6,25a1.77,1.77,0,0,1-.82-2.37,1.92,1.92,0,0,1,.36-.5L11.9,16a1.77,1.77,0,0,1,2.5,0,1.64,1.64,0,0,1,.35.52Z" fill="WHITE" />
+                        <SVGPath content="M35.24,33.84A1.77,1.77,0,0,1,33,31.36l6-11.3a1.77,1.77,0,0,1,2.4-.73,1.61,1.61,0,0,1,.48.38l5.83,6.47a1.77,1.77,0,0,1-.13,2.51,2,2,0,0,1-.52.32Z" fill="WHITE" />
+                     </children>
+                  </Group>
+                  <Text fx:id="communitiesTitle" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16;" text="COMMUNITIES" />
+               </children>
+            </VBox>
+         </children>
+      </TilePane>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

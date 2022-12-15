@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Text?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+			<children>
+				<VBox spacing="25.0">
+					<children>
+						<VBox prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #00000050; -fx-background-radius: 10px; -fx-font-size: 1.3em;">
+							<padding>
+								<Insets left="10.0" right="10.0" />
+							</padding>
+							<children>
+								<HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" spacing="5.0">
+									<children>
+										<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Followers: " />
+										<StackPane minWidth="18.0" style="-fx-background-color: -stuff-text-fill; -fx-background-radius: 8px;">
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: black; -fx-font-family: consolas, monospace;" text="472" />
+											</children>
+											<HBox.margin>
+												<Insets top="4.0" />
+											</HBox.margin>
+											<padding>
+												<Insets left="3.0" right="3.0" />
+											</padding>
+										</StackPane>
+									</children>
+								</HBox>
+								<HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" spacing="5.0">
+									<children>
+										<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Following: " />
+										<StackPane minWidth="18.0" style="-fx-background-color: -stuff-text-fill; -fx-background-radius: 8px;">
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: black; -fx-font-family: consolas, monospace;" text="0" />
+											</children>
+											<HBox.margin>
+												<Insets top="4.0" />
+											</HBox.margin>
+											<padding>
+												<Insets left="3.0" right="3.0" />
+											</padding>
+										</StackPane>
+									</children>
+								</HBox>
+								<HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" spacing="5.0">
+									<children>
+										<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Posts: " />
+										<StackPane minWidth="18.0" style="-fx-background-color: -stuff-text-fill; -fx-background-radius: 8px;">
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: black; -fx-font-family: consolas, monospace;" text="12" />
+											</children>
+											<HBox.margin>
+												<Insets top="4.0" />
+											</HBox.margin>
+											<padding>
+												<Insets left="3.0" right="3.0" />
+											</padding>
+										</StackPane>
+									</children>
+								</HBox>
+								<HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" spacing="5.0" style="-stuff-text-fill: green;">
+									<children>
+										<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Messages Sent: " />
+										<StackPane minWidth="18.0" style="-fx-background-color: -stuff-text-fill; -fx-background-radius: 8px;">
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: black; -fx-font-family: consolas, monospace;" text="1.3M" />
+											</children>
+											<HBox.margin>
+												<Insets top="4.0" />
+											</HBox.margin>
+											<padding>
+												<Insets left="3.0" right="3.0" />
+											</padding>
+										</StackPane>
+									</children>
+								</HBox>
+								<HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" spacing="5.0" style="-stuff-text-fill: green;">
+									<children>
+										<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Age: " />
+										<StackPane minWidth="18.0" style="-fx-background-color: -stuff-text-fill; -fx-background-radius: 8px;">
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: black; -fx-font-family: consolas, monospace;" text="3y 4m 12d" />
+											</children>
+											<HBox.margin>
+												<Insets top="4.0" />
+											</HBox.margin>
+											<padding>
+												<Insets left="3.0" right="3.0" />
+											</padding>
+										</StackPane>
+									</children>
+								</HBox>
+							</children>
+						</VBox>
+						<TabPane side="LEFT" style="-fx-background-color: #00000050; -fx-border-width: 0;">
+							<tabs>
+								<Tab closable="false" text="Today">
+									<content>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="0.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Messages:" GridPane.rowIndex="4" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="4.8K" translateY="1.0" />
+                                          <HBox alignment="CENTER" spacing="1.0">
+                                             <children>
+                                                <Polygon rotate="180.0" scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: firebrick;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick; -fx-font-size: 0.9em;" text="2.3K%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Replies:" GridPane.rowIndex="5" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="347" translateY="1.0" />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Polygon scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: green;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green; -fx-font-size: 0.9em;" text="347%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Spent Online:" GridPane.rowIndex="2" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="2h 37m" translateY="1.0" />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Polygon scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: #3483eb;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #3483eb; -fx-font-size: 0.9em;" text="133%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Voice Chat Minutes:" GridPane.rowIndex="3" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="8m" translateY="1.0" />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Polygon scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: #3483eb;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #3483eb; -fx-font-size: 0.9em;" text="50%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Profile Views:" GridPane.rowIndex="1" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="49" translateY="1.0" />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Polygon scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: green;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green; -fx-font-size: 0.9em;" text="700%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Followers:" />
+                                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: consolas, monospace; -fx-font-weight: bold; -fx-font-size: 1.2em;" text="3" translateY="1.0" />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Polygon scaleX="1.2" scaleY="1.2" scaleZ="1.2" strokeType="INSIDE" style="-fx-fill: green;">
+                                                   <points>
+                                                      <Double fx:value="-4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="4.0" />
+                                                      <Double fx:value="1.333" />
+                                                      <Double fx:value="0.0" />
+                                                      <Double fx:value="-4.666" />
+                                                   </points>
+                                                </Polygon>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green; -fx-font-size: 0.9em;" text="200%" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="20.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </GridPane>
+									</content>
+								</Tab>
+								<Tab closable="false" disable="true" text="This Week">
+									<content>
+										<VBox prefHeight="400.0" prefWidth="300.0">
+											<padding>
+												<Insets left="10.0" right="10.0" />
+											</padding>
+										</VBox>
+									</content>
+								</Tab>
+							</tabs>
+						</TabPane>
+					</children>
+				</VBox>
+			</children>
+			<HBox.margin>
+				<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+			</HBox.margin>
+		</StackPane>
+		<TabPane maxWidth="600.0" minWidth="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+			<tabs>
+				<Tab closable="false" text="Your Posts">
+					<content>
+						<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+							<content>
+								<VBox alignment="TOP_CENTER">
+									<children>
+										<StackPane>
+											<children>
+												<TextArea maxWidth="600.0" minWidth="400.0" prefHeight="23.0" prefWidth="600.0" wrapText="true" />
+												<TextField maxWidth="600.0" minWidth="400.0" prefWidth="600.0" promptText="Type something here..." />
+											</children>
+										</StackPane>
+									</children>
+									<padding>
+										<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+									</padding>
+								</VBox>
+							</content>
+						</ScrollPane>
+					</content>
+				</Tab>
+				<Tab closable="false" text="Your Feed">
+					<content>
+						<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+							<content>
+								<VBox alignment="TOP_CENTER">
+									<padding>
+										<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+									</padding>
+								</VBox>
+							</content>
+						</ScrollPane>
+					</content>
+				</Tab>
+			</tabs>
+			<HBox.margin>
+				<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+			</HBox.margin>
+		</TabPane>
+		<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+			<children>
+				<VBox />
+			</children>
+			<HBox.margin>
+				<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+			</HBox.margin>
+		</StackPane>
+	</children>
+	<padding>
+		<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+	</padding>
+</HBox>

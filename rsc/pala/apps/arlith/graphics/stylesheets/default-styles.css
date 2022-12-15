@@ -1,0 +1,533 @@
+/* Define Button Defaults */
+.root {
+	-pop-button--text-color: white;
+	-pop-button--border-color: black;
+	-pop-button--clicked-text-color: #535353;
+	-pop-button--background-color: #00000015;
+}
+
+/* Handle Clicking */
+.pop-button:armed.button, .pop-button:showing.menu-button {
+	-fx-border-color: -pop-button--border-color -pop-button--border-color transparent transparent;
+	-fx-border-width: 2;
+}
+
+.pop-button:armed.button, .pop-button:showing.menu-button, 
+.pop-button:showing.menu-button .label {
+	-fx-text-fill: -pop-button--clicked-text-color;
+}
+
+.pop-button:showing.menu-button .arrow {
+	-fx-rotate: 180;
+}
+
+/* Basic Styling */
+.pop-button {
+	-fx-border-radius: 14px;
+	-fx-background-radius: 14px;
+	-fx-font-family: Consolas;
+	-fx-border-width: 2.0px;
+	-fx-text-fill: -pop-button--text-color;
+	-fx-font-weight: bold;
+	-fx-border-color: -pop-button--border-color;
+	-fx-background-color: -pop-button--background-color;
+	-fx-font-size: 16px;
+	-fx-border-color: transparent transparent -pop-button--border-color -pop-button--border-color;
+	-fx-cursor: hand;
+}
+
+
+/*** Specific Nodes ***/
+
+
+/* DatePickers */
+.pop-button.date-picker .date-picker-display-node {
+	-fx-border-width: 0.0;
+	-fx-text-fill: -pop-button--text-color;
+	-fx-font-weight: bold;
+	-fx-background-color: -pop-button--background-color;
+}
+
+/* MenuButtons */
+.pop-button.menu-button .label {
+	-fx-text-fill: -pop-button--text-color;
+}
+
+.pop-button.menu-button .arrow {
+	-fx-background-color: black;
+}
+
+/* Root */
+.root {
+	-stuff-light: #2B2B2B;
+	-stuff-dark: #161616;
+	-stuff-text-fill: gold;
+	-stuff-hover-fill: red;
+	-fx-background-color: -stuff-light;
+	-fx-text-fill: -stuff-text-fill;
+	-fx-focus-color: transparent;
+	
+	-fx-font-family: "Segoe UI";
+	
+	/* Override (some) Pop Button styles */
+	-pop-button--text-color: -stuff-text-fill;
+	-pop-button--clicked-text-color: -stuff-text-fill;
+}
+
+.scroll-pane:focused {
+	-fx-background-insets: 0;
+  	-fx-background-radius: 0;
+}
+
+/* Radio Buttons */
+.radio-button .radio {
+	-fx-focus-color: transparent;
+	-fx-background-color: -stuff-dark;
+}
+
+.radio-button .text {
+	-fx-fill: -stuff-text-fill;
+}
+
+.radio-button:hover .text {
+	-fx-fill: -stuff-hover-fill;
+}
+
+.radio-button:selected .text {
+	-fx-font-weight: bold;
+}
+
+.radio-button:selected .radio .dot {
+	-fx-background-color: -stuff-text-fill;
+}
+
+.radio-button:selected:hover .radio .dot {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+.pop-button:hover.button, .pop-button:hover.menu-button > .label {
+	-fx-text-fill: -stuff-hover-fill;
+}
+
+/* Buttons */
+.button {
+	-fx-cursor: hand;
+}
+
+/* Texts */
+Text {
+	-fx-fill: -stuff-text-fill;
+}
+
+/* Text Fields */
+.text-field {
+	-fx-background-color: -stuff-dark;
+	-fx-background-radius: 14px;
+	-fx-border-radius: 14px;
+	-fx-highlight-fill: -stuff-text-fill;
+	-fx-highlight-text-fill: black;
+	-fx-text-fill: -stuff-text-fill;
+}
+
+/* Text Areas */
+.text-area, .text-area .scroll-pane .viewport .content {
+	-fx-background-color: -stuff-dark;
+	-fx-border-radius: 0.0;
+	-fx-text-fill: -stuff-text-fill;
+	-fx-font-family: Consolas;
+	-fx-font-size: 12.0px;
+}
+
+/* Accordions */
+.accordion TitledPane {
+	-fx-animated: true;
+}
+
+.accordion TitledPane .title {
+	-fx-background-color: -stuff-dark;
+}
+
+.accordion TitledPane .title .text {
+	-fx-fill: -stuff-text-fill;
+}
+
+.accordion TitledPane .title:hover .text {
+	-fx-fill: -stuff-hover-fill;
+}
+
+.accordion TitledPane:expanded .title .text {
+	-fx-font-weight: bold;
+}
+
+.accordion TitledPane .content {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+/* ScrollPane background fix */
+.scroll-pane, .scroll-pane .viewport {
+	-fx-background-color: transparent;
+}
+
+/* TabPanes */
+.tab-pane {
+	-fx-border-color: -stuff-dark;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+	-fx-background-color: -stuff-dark;
+}
+
+.tab-pane .tab-header-area .headers-region .tab {
+	-fx-background-color: black;
+}
+
+.tab-pane .tab-header-area .headers-region .tab .tab-container .focus-indicator {
+	-fx-border-color: transparent;
+}
+
+.tab-pane .tab-header-area .headers-region .tab .tab-container .tab-label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+.tab-pane .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
+	-fx-font-weight: bold;
+}
+
+.tab-pane .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
+	-fx-text-fill: -stuff-hover-fill;
+}
+
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button {
+	-fx-background-color: black;
+}
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* MenuBars */
+/* These style specs aren't comprehensive of nested menus (I believe). Specifically in terms of hovering and focusing nested menus. This may need to be covered by a separate stylesheet (or by this one) when the problem shows up. */
+.combo-box, .menu-bar {
+	-fx-background-color: -stuff-dark;
+}
+
+.combo-box, .menu-bar .container .menu > .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+.menu-bar .container {
+	-fx-spacing: 0.0;
+}
+
+.menu > .label .text {
+	-fx-fill: -stuff-text-fill;
+}
+.menu:hover > .label .text,
+.menu:focused > .label .text,
+.menu:showing > .label .text {
+	-fx-fill: -stuff-hover-fill;
+}
+.menu:hover,
+.menu:focused,
+.menu:showing {
+	-fx-background-color: -stuff-light;
+}
+
+.context-menu {
+	-fx-background-color: -stuff-dark;
+}
+
+.combo-box .combo-box-popup .list-view .list-cell {
+	-fx-text-fill: -stuff-text-fill;
+	-fx-background-color: -stuff-dark;
+}
+.combo-box .combo-box-popup .list-view .list-cell:hover,
+.combo-box .combo-box-popup .list-view .list-cell:focused {
+	-fx-text-fill: -stuff-hover-fill;
+	-fx-background-color: -stuff-light;
+}
+
+.menu:hover .arrow,
+.menu:focused .arrow {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+.menu-item:showing {
+	-fx-background-color: -stuff-dark;
+}
+.menu-item:hover,
+.menu-item:focused {
+	/* :focused is needed bc if the cursor is moved outside of the menu, items which do not have submenus will have the default blue effect. The top level menu items don't suffer from this effect. /shrug */
+	-fx-background-color: -stuff-light;
+}
+
+.menu-item .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+.menu-item:hover .label,
+.menu-item:focused .label {
+	-fx-text-fill: -stuff-hover-fill;
+}
+.menu-item, .check-menu-item {
+	/* Adding '.menu-item' covers check menu items in TabPane control button dropdowns. */
+	-fx-mark-color: -stuff-text-fill;
+	-fx-focused-mark-color: -stuff-hover-fill;
+}
+
+/* SplitPanes */
+.split-pane {
+	-fx-background-color: transparent;
+}
+
+.split-pane .split-pane-divider {
+	-fx-background-color: transparent;
+}
+.split-pane .split-pane-divider:hover {
+	-fx-background-color: -stuff-text-fill;
+}
+.split-pane .split-pane-divider:pressed {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+/* TableViews and TreeTableViews */
+.table-view, .tree-table-view {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-style: solid;
+	-fx-border-width: 1;
+}
+
+.table-view .placeholder, .tree-table-view .placeholder {
+	-fx-background-color: #77000018;
+}
+.table-view .placeholder .label, .tree-table-view .placeholder .label {
+	-fx-text-fill: firebrick;
+	-fx-font-size: 1.2em;
+}
+
+.table-view .column-header-background .filler, .tree-table-view .column-header-background .filler {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 1 0 0 0;
+}
+
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column, 
+.tree-table-view .column-header-background, .tree-table-view .column-header-background .nested-column-header .table-column {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 0 0 0 1;
+}
+.table-view .column-header-background .show-hide-columns-button,
+.tree-table-view .column-header-background .show-hide-columns-button {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 0 0 0 1;
+}
+.table-view .column-header-background .show-hide-columns-button .show-hide-column-image,
+.tree-table-view .column-header-background .show-hide-columns-button .show-hide-column-image {
+	-fx-background-color: -stuff-text-fill;
+}
+.table-view .column-header-background .show-hide-columns-button:hover .show-hide-column-image,
+.tree-table-view .column-header-background .show-hide-columns-button:hover .show-hide-column-image {
+	-fx-background-color: -stuff-hover-fill;
+}
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader, /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */
+.tree-table-view .column-header-background, .tree-table-view .column-header-background .nested-column-header TableColumnHeader {
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+}
+.table-view, .table-view .column-header-background, .table-view .column-header-background .nested-column-header, .table-view .column-header-background .nested-column-header TableColumnHeader {
+	-fx-padding: none;
+}
+.table-view .column-header-background .nested-column-header NestedTableColumnHeader .table-column,
+.tree-table-view .column-header-background .nested-column-header NestedTableColumnHeader .table-column {
+	-fx-border-width: 1.0 1.0 0.0 0.0;
+}
+.table-view .column-header-background .nested-column-header .table-column .label, .tree-table-view .column-header-background .nested-column-header .table-column .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+.table-view .virtual-flow, .tree-table-view .virtual-flow {
+	-fx-background-color: -stuff-dark;
+}
+.table-view .virtual-flow .table-row-cell:odd, .tree-table-view .virtual-flow .tree-table-cell:odd {
+	-fx-background-color: -stuff-light;
+}
+.table-view .virtual-flow .table-row-cell:even, .tree-table-view .virtual-flow .tree-table-cell:even {
+	-fx-background-color: derive(-stuff-light, 20%);
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell {
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: -stuff-dark;
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell:last-visible {
+	-fx-border-color: transparent;
+}
+
+
+
+
+.tree-view, .list-view {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-style: solid;
+}
+
+.tree-view .virtual-flow .clipped-container .sheet .tree-cell:empty {
+	-fx-background-color: transparent;
+}
+
+.tree-view .placeholder, .list-view .placeholder {
+	-fx-background-color: #77000018;
+}
+.tree-view .placeholder .label, .list-view .placeholder .label {
+	-fx-text-fill: firebrick;
+	-fx-font-size: 1.2em;
+}
+
+.tree-view .virtual-flow, .list-view .virtual-flow {
+	-fx-background-color: -stuff-dark;
+}
+.tree-view .virtual-flow .table-row-cell:odd, .list-view .virtual-flow .tree-table-cell:odd {
+	-fx-background-color: -stuff-light;
+}
+.tree-view .virtual-flow .table-row-cell:even, .list-view .virtual-flow .tree-table-cell:even {
+	-fx-background-color: derive(-stuff-light, 20%);
+}
+
+.tree-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column, .list-view .virtual-flow .clipped-container .sheet .tree-table-cell {
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: -stuff-dark;
+}
+
+
+
+
+/* CheckBoxes */
+.check-box .text {
+	-fx-fill: -stuff-text-fill;
+}
+.check-box:selected .text {
+	-fx-font-weight: bold;
+}
+.check-box .box {
+	-fx-background-color: -stuff-dark;
+}
+.check-box:selected .box .mark, .check-box:indeterminate .box .mark {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* DatePickers, ColorPickers */
+.date-picker, .color-picker {
+	-fx-background-color: -stuff-dark;
+	-fx-background-radius: 0;
+}
+.date-picker .arrow-button .arrow, .color-picker .arrow-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* DatePickers */
+.date-picker .date-picker-display-node {
+	-fx-text-fill: -stuff-text-fill;
+}
+.date-picker .arrow-button {
+	-fx-background-color: black;
+	-fx-background-radius: 0;
+}
+
+/* Color Pickers */
+.color-picker .color-picker-label {
+	-fx-text-fill: gold;
+}
+
+.color-picker .color-picker-label .picker-color .picker-color-rect, .color-picker .color-picker-label .picker-color {
+	-fx-border-width: 0;
+}
+
+/* Scroll Bars */
+.scroll-bar {
+	-fx-background-color: -stuff-dark;
+	-fx-border-color: -stuff-dark;
+}
+.scroll-pane .corner {
+	-fx-background-color: -stuff-light;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+	-fx-background-color: transparent;
+}
+.scroll-bar .increment-button .increment-arrow, .scroll-bar .decrement-button .decrement-arrow {
+	-fx-background-color: -stuff-text-fill;
+	-fx-border-color: transparent;
+}
+.scroll-bar .increment-button:hover .increment-arrow, .scroll-bar .decrement-button:hover .decrement-arrow {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+.scroll-bar .thumb {
+	-fx-background-color: -stuff-light;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0em;
+}
+
+/* Separators */
+.separator .line {
+	-fx-border-color: -stuff-text-fill;
+}
+
+/* Charts */
+.chart .chart-content .chart-plot-background {
+	-fx-background-color: -stuff-dark;
+}
+.chart .chart-content .chart-vertical-grid-lines, .chart .chart-content .chart-horizontal-grid-lines {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.chart .chart-content .chart-plot-background {
+	-fx-border-width: 0;
+}
+.chart .chart-content .chart-horizontal-zero-line, .chart .chart-content .chart-vertical-zero-line {
+	-fx-background-color: derive(-stuff-light, -20%);
+}
+.axis .axis-tick-mark {
+	-fx-stroke: -stuff-text-fill;
+}
+.axis .axis-minor-tick-mark {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.axis .axis-label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+/* Pie Charts */
+.chart .chart-title .text, .chart-pie-label {
+	-fx-fill: -stuff-text-fill;
+}
+.chart-pie-label-line {
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-pie {
+	-fx-border-color: black;
+}
+
+.chart-legend {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-legend-item {
+	-fx-text-fill: -stuff-text-fill;
+}
+.chart-legend-item-symbol {
+	-fx-background-radius: 0;
+}
+
+.default-color0.chart-pie {
+	-fx-pie-color: -stuff-text-fill;
+}
+.default-color1.chart-pie { 
+	-fx-pie-color: -stuff-hover-fill;
+}

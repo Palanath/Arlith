@@ -1,0 +1,7 @@
+.split-pane .split-pane-divider {
+	-fx-background-radius: 9;
+}
+
+.text-area *.content {
+	-fx-padding: 0;
+}

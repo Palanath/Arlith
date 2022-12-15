@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tooltip?>
+
+<TabPane tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab fx:id="myCommunitiesTab" text="My Communities">
+         <tooltip>
+            <Tooltip text="Communities you are a part of." />
+         </tooltip>
+      </Tab>
+      <Tab fx:id="browseCommunitiesTab" text="Browse">
+         <tooltip>
+            <Tooltip text="Public communities that you can join." />
+         </tooltip>
+      </Tab>
+   </tabs>
+</TabPane>

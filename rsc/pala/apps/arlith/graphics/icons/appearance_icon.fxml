@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Rectangle arcHeight="4.0" arcWidth="4.0" fill="GREY" height="28.0" width="46.0" x="2.0" y="2.0" />
+      <SVGPath content="M46,0H4A4,4,0,0,0,0,4V31a4,4,0,0,0,4,4H46a4,4,0,0,0,4-4V4A4,4,0,0,0,46,0Zm2,28a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V4A2,2,0,0,1,4,2H46a2,2,0,0,1,2,2Z" fill="WHITE" />
+   </children>
+</Group>

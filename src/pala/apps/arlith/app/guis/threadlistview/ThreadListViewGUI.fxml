@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <content>
+            <VBox spacing="25.0">
+               <children>
+                  <VBox spacing="10.0" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets bottom="25.0" />
+                     </VBox.margin>
+                     <children>
+                        <VBox alignment="CENTER" maxWidth="800.0" prefWidth="600.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="THREADS">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                        <Separator id="line-sep" prefWidth="200.0" style="-fx-border-color: -stuff-light;" />
+                     </children>
+                  </VBox>
+                  <HBox maxWidth="800.0" minWidth="600.0" prefWidth="600.0" spacing="10.0">
+                     <children>
+                        <SVGPath content="m 83.775788,95.989732 a 6.9925593,6.9925593 0 0 0 -9.861247,0.710813 6.9925593,6.9925593 0 0 0 0.02621,9.184315 l -8.9255,10.30678 c -0.356946,0.41219 -0.312843,1.03134 0.09934,1.38829 0.412187,0.35695 1.031681,0.31245 1.388626,-0.0997 l 8.92956,-10.31148 a 6.9925593,6.9925593 0 0 0 9.053795,-1.31297 6.9925593,6.9925593 0 0 0 -0.708054,-9.86365 6.9925593,6.9925593 0 0 0 -0.0027,-0.0024 z m -0.840898,1.084706 a 5.5751486,5.5751486 0 0 1 0.564786,7.863782 5.5751486,5.5751486 0 0 1 -7.864114,0.56517 5.5751486,5.5751486 0 0 1 -0.564839,-7.864503 5.5751486,5.5751486 0 0 1 7.864167,-0.564449 z" fill="WHITE" />
+                        <TextField fx:id="searchField" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <VBox fx:id="threadbox" alignment="TOP_CENTER" />
+               </children>
+               <padding>
+                  <Insets bottom="25.0" left="60.0" right="25.0" top="175.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

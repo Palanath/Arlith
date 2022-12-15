@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.SVGPath?>
+
+
+<Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SVGPath content="M38.48,15.29A11.06,11.06,0,0,0,23.4,1.12a26.4,26.4,0,0,1-6.75,11A26.44,26.44,0,0,1,6,18.77a11.06,11.06,0,0,0,14.76,14.5A26.43,26.43,0,0,1,27.55,22,26.64,26.64,0,0,1,38.48,15.29Z" fill="WHITE" />
+      <SVGPath content="M0,40.15,16.26,22.47l1.42,1.41Z" fill="WHITE" />
+   </children>
+</Group>

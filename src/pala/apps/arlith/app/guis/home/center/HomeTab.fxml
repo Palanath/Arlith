@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <StackPane>
+         <children>
+            <VBox fx:id="vroot" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="800.0" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0">
+               <children>
+                  <HBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="FIREBRICK" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Direct Message" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="#9823bf" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Friend Request" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="#2c6dd7" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Feed Post" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="#db7e00" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Broadcast" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="#d9b60d" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Application Updates" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="3.0">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="TRANSPARENT" height="20.0" stroke="#23bf1d" strokeType="INSIDE" strokeWidth="2.2" width="28.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Community Message" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <AnchorPane fx:id="acp">
+                     <children>
+                        <StackPane fx:id="bigbox">
+                           <children>
+                              <TilePane fx:id="eventbox" hgap="20.0" minHeight="600.0" prefColumns="3" style="-fx-background-color: #00000060; -fx-background-radius: 20px;" vgap="20.0">
+                                 <padding>
+                                    <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+                                 </padding>
+                              </TilePane>
+                              <SVGPath fx:id="cloudbg" content="m 984.43864,420.53404 a 102.13498,117.71801 0 0 0 -97.72016,83.54578 59.257556,68.298653 0 0 0 -52.11031,-35.79229 59.257556,68.298653 0 0 0 -57.26849,50.93625 76.119469,87.73324 0 0 0 -20.29593,-3.18275 76.119469,87.73324 0 0 0 -75.2287,74.40662 h -8.5977 -0.002 a 92.499618,106.61254 0 0 0 -92.4991,106.6125 92.499618,106.61254 0 0 0 1.46104,14.94639 92.499618,106.61254 0 0 0 -89.14339,106.10307 92.499618,106.61254 0 0 0 92.49957,106.61249 92.499618,106.61254 0 0 0 4.8e-4,0 h 903.79775 a 92.499618,106.61255 0 0 0 9e-4,0 92.499618,106.61255 0 0 0 92.4987,-106.61249 92.499618,106.61255 0 0 0 -64.6059,-101.09251 62.148174,71.630303 0 0 0 3.4214,-23.2884 62.148174,71.630303 0 0 0 -62.1481,-71.63023 62.148174,71.630303 0 0 0 -27.6259,7.496 62.148179,71.630303 0 0 0 -61.5012,-61.35785 62.148179,71.630303 0 0 0 -11.6228,1.31517 79.491844,91.620149 0 0 0 1.5058,-17.41784 79.491844,91.620149 0 0 0 -79.4922,-91.6205 79.491844,91.620149 0 0 0 -56.7342,27.53082 102.13498,117.71801 0 0 0 -69.9709,-31.97292 102.13498,117.71801 0 0 0 -74.3125,37.00656 102.13498,117.71801 0 0 0 -94.30628,-72.54387 z" fill="#ffd000" fillRule="EVEN_ODD" scaleX="0.7" scaleY="0.7" strokeWidth="0.256009">
+                                 <effect>
+                                    <DropShadow height="75.0" radius="37.0" width="75.0" />
+                                 </effect></SVGPath>
+                              <SVGPath fx:id="cloudfg" content="m 985.8497,431.15921 a 91.86979,105.88664 0 0 0 -90.755,89.56491 55.631046,64.118836 0 0 0 -52.5826,-43.19142 55.631046,64.118836 0 0 0 -53.38405,46.1858 71.461026,82.364046 0 0 0 -18.76465,-2.89686 71.461026,82.364046 0 0 0 -71.46111,82.36413 71.461026,82.364046 0 0 0 0.0293,0.90779 h -13.55398 -10e-4 a 86.838723,100.08795 0 0 0 -86.83827,100.08797 86.838723,100.08795 0 0 0 1.0488,14.61925 86.838723,100.08795 0 0 0 -73.06107,98.71361 86.838723,100.08795 0 0 0 86.83874,100.0874 H 1461.851 a 86.838723,100.08796 0 0 0 86.8392,-100.0874 86.838723,100.08796 0 0 0 -48.419,-89.56702 58.344761,67.246595 0 0 0 5.0305,-27.20253 58.344761,67.246595 0 0 0 -58.3449,-67.24615 58.344761,67.246595 0 0 0 -24.8146,6.40787 58.344766,67.246595 0 0 0 -58.1888,-62.37183 58.344766,67.246595 0 0 0 -18.8731,3.66336 74.627011,86.013074 0 0 0 2.684,-22.63662 74.627011,86.013074 0 0 0 -74.6272,-86.01327 74.627011,86.013074 0 0 0 -52.5588,25.03529 95.884412,110.51378 0 0 0 -67.7301,-32.29035 95.884412,110.51378 0 0 0 -77.8647,46.13678 91.86979,105.88664 0 0 0 -89.1334,-80.27071 z" fill="#252525" fillRule="EVEN_ODD" scaleX="0.7" scaleY="0.7" />
+                              <VBox fx:id="txtbox" alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick; -fx-font-size: 2.4em;" text="Nothing to show!" />
+                                    <Text fx:id="emptytxt1" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: firebrick; -fx-font-size: 1.6em;" text="You're all caught up!" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+               <padding>
+                  <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+               </padding>
+            </VBox>
+         </children>
+      </StackPane>
+   </content>
+</ScrollPane>

@@ -1,0 +1,100 @@
+# Ideas
+- [x] User Accounts
+- [x] Friending
+- [ ] Show what friends are up to (what community or thread they're in, or what they're doing)
+- [ ] `ToDo List`s in Messages
+- [ ] Replies for Messages
+  - [ ] The ability to start a new thread off of a reply
+  - [ ] Multi-Message Replies - Replies that reply to multiple messages simultaneously.
+- [ ] Emojis
+- [ ] Built-in Community searching
+- [ ] Foldable Messages
+  - [ ] Foldable parts of Messages
+- [ ] Side-by-side layout (or more configurable layout options)
+- [ ] Password Locked Message
+- [ ] Secure Threads
+- [ ] Customizable audio notifications
+- [ ] Allow users to see devices they're logged in on
+- [ ] Community background themes
+- [ ] Mineral themes
+- [ ] Extensions
+- [ ] Native viewing for different file types
+- [ ] Investigation Toolset
+- [ ] Statistics Toolset
+- [ ] Networking Toolset
+- [ ] Public Friends List
+- [ ] Notifications
+  - [ ] Fine-grained notifications
+- [ ] Boards
+- [ ] Send image with custom size
+- [ ] Record Voice Clips
+- [ ] Total Message Counter (per account)
+- [ ] User Block Types
+  - [ ] Soft Block - blocked user can still see content/profile of blocker.
+  - [ ] Hard Block - blocked user cannot see content/profile of blocker.
+  - [ ] IP Block - all new messages or new, other, "postable" content *from* the blocked IP is hidden. Caution shall be taken to assure that it is not easy to determine IP commonality using blocking.
+- [ ] Select multiple messages
+  - [ ] Bulk Delete
+  - [ ] Bulk Copy
+- [ ] Contacts System
+  - [ ] Customizable Personal Contact
+  - [ ] Sharable Contacts
+- [ ] Proximity Sharing Features
+  - [ ] Nearby Message - Sends a message to all nearby users.
+  - [ ] Nearby File Transfer/Sharing
+  - [ ] General Proximity Transfer - Proximity sharing for other objects, like contacts.
+- [ ] Two- (or More-) Man Rule for Administrative Actions
+- [ ] Parties - When one user performs an action that modifies their own state (e.g. joins a server), the states of everyone in the party is modified in the same way. Parties can also be banned as a whole.
+- [ ] Ingress and Egress Stats for Communities.
+- [ ] Secret/Headless Threads - Threads that are not listed or tied to an object as normal threads are.
+- [ ] Nudge - A less intensive ping.
+- [ ] Subcommunities - Full Community implementations that can be contained in another Community.
+- [ ] Delay Send
+- [ ] Bulk Message Actions
+  - [ ] Storing Clusters of Messages
+  - [ ] Sending Clusters of Messages
+  - [ ] Downloading Clusters of Messages
+- [ ] Having an "Internet Presence"-like Profile - Being able to customize your profile and advertise yourself, like MySpace.
+- [ ] Speech to Text Function
+- [ ] Profile Backgrounds
+- [ ] Change DM BG
+  - [ ] Change to Desired Color
+  - [ ] Change to Desired Graphic
+- [ ] Text Formatting
+  - [ ] Font Size
+  - [ ] Font Style
+  - [ ] Font Weight
+  - [ ] Font Family
+  - [ ] Text Fill
+    - [ ] Gradient Fill
+    - [ ] Solid Fill
+    - [ ] Paint Fill
+  - [ ] Text Stroke
+    - [ ] Gradient Stroke
+    - [ ] Solid Stroke
+    - [ ] Paint Stroke
+  - [ ] Blend Mode
+  - [ ] Animations
+- [ ] Text Formatter - A tool that allows users to preview and customize text. Customized text is inserted when an "insert" button is pushed. Formatter will need to be simple until complex tools are desired.
+- [ ] Built in Text Converters
+  - [ ] ASCII <-> Binary
+  - [ ] ASCII <-> Morse Code
+  - [ ] ASCII <-> Hexadecimal
+- [ ] Age Locking for NSFW Content
+- [ ] NSFW Thread & Community Restrictions
+- [ ] Number of Views for Communities, Threads, Messages, Statuses, and Media.
+- [ ] Timed Permissions
+- [ ] Community Storage - For special types of communities, have a "Storage" tab, or something of the sort, that acts as a file hierarchy shared across the community.
+- [ ] View Permissions - Grants permissions to a user to view media in a certain thread.
+- [ ] Self-Destruct - Media, Messages, Threads, and even Communities can be set to Self-Destruct so that they automatically become destroyed and **unavailable to all parties**.
+- [ ] Feeds - Message streams, as are found in sites like Twitch, that act as a subscription system for incoming messages. Each user will have a feed by default that it can post to (Outfeed) and a feed that it receives messages in (Infeed). The messages a user posts to its Outfeed will be propagated to the Infeeds of all the users subscribed.
+  - [ ] Community Feeds
+  - [ ] Feed Binding - One feed can be bound to another causing it to receive all the posts (that it has not already received) which are posted on the other.
+- [ ] Zoom In on Video Calls/Streams
+- [ ] Community Pre-Creation - Ability to set-up and design the bulk of a community before it is created.
+- [ ] Former Names - Show users' previous usernames.
+- [ ] `Ctrl` + `Shift` + `Click` to ban users.
+- [ ] Voice Call Games - Using a data channel, like audio channels in voice calls, to transfer data, particularly, to have a network connection.
+- [ ] Plugin Download Page built into the app.
+- [ ] Plugin Encryption Mechanism - Only Verified Publishers can provide plugins.
+- [ ] Customize functionality of servers with plugins.
