@@ -1,0 +1,3 @@
+[submodule "libs/submodules/javalib"]
+	path = libs/submodules/javalib
+	url = https://github.com/Palanath/javalib
