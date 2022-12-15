@@ -1,3 +1,6 @@
 [submodule "libs/submodules/javalib"]
 	path = libs/submodules/javalib
 	url = https://github.com/Palanath/javalib
+[submodule "libs/submodules/arlith-utilities"]
+	path = libs/submodules/arlith-utilities
+	url = https://github.com/Palanath/arlith-utilities
