@@ -364,9 +364,17 @@ public interface ServerUser extends ServerObject {
 	String getUsername();
 
 	/**
+	 * <p>
 	 * Returns whether this user has an existing direct thread with the specified
-	 * {@link ServerUser}. {@link #openDirectThread(ServerUser)} allows acquiring the
-	 * thread.
+	 * {@link ServerUser}. {@link #openDirectThread(ServerUser)} allows acquiring
+	 * the thread.
+	 * </p>
+	 * <p>
+	 * <span style="color: red;">This method must check if this user owns a direct
+	 * thread between itself and the specified user OR if the specified user owns a
+	 * direct thread between itself and this user.</span> In either case, this
+	 * method should return <code>true</code>.
+	 * </p>
 	 *
 	 * @param other The other user to check for a DM with.
 	 * @return <code>true</code> if there is an existing direct-message thread with
@@ -408,12 +416,15 @@ public interface ServerUser extends ServerObject {
 	 * <p>
 	 * Creates or retrieves the direct thread between this user and the specified
 	 * user and returns it. To check if a direct-message thread already exists
-	 * between this and the specified user, use {@link #hasDirectThread(ServerUser)}.
+	 * between this and the specified user, use
+	 * {@link #hasDirectThread(ServerUser)}. This method should return the direct
+	 * thread between this and the specified user if it exists, <b>whether it is
+	 * owned by this user or the specified user</b>.
 	 * </p>
 	 * <p>
 	 * If a thread is created, this {@link ServerUser} becomes the
 	 * {@link ServerDirectThread#getStarter() starter} and the user provided as an
-	 * argument becomes the {@link ServerDirectThread#getReceiver()}.
+	 * argument becomes the {@link ServerDirectThread#getReceiver() receiver}.
 	 * </p>
 	 * <p style="color: red;">
 	 * This method does NOT check for (or behave differently based on) the friend
