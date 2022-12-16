@@ -55,6 +55,16 @@ public final class LogInWindow extends Window {
 	private @FXML Text motd, createAccountUsernameError, createAccountEmailError, createAccountPhoneError,
 			createAccountPasswordError, loginPasswordError, loginIdentifierError;
 
+	private final Stage launchSettingsStage = new Stage();
+	private final LaunchSettingsWindow launchSettingsWindow = new LaunchSettingsWindow();
+	{
+		try {
+			launchSettingsWindow.display(launchSettingsStage);
+		} catch (WindowLoadFailureException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private final Object PROMPT_COMPLETE_KEY = new Object();
 
 	private void error(TextField prompt, Text errorTxt, String error) {
@@ -455,12 +465,17 @@ public final class LogInWindow extends Window {
 	public void destroy() {
 		bg.hide();
 		stage.removeEventFilter(KeyEvent.KEY_PRESSED, globalEnterHandler);
+		launchSettingsStage.hide();
 	}
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		this.stage = stage;
 		stage.addEventFilter(KeyEvent.KEY_PRESSED, globalEnterHandler);
+		stage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.F3 && event.isControlDown() && event.isAltDown())
+				launchSettingsStage.show();
+		});
 		stage.setMaximized(true);
 		Scene scene;
 		try {

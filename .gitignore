@@ -28,3 +28,6 @@ hs_err_pid*
 /cache.data/
 *.dat
 /test/
+
+# Data directory for testing
+/arlith-data/
