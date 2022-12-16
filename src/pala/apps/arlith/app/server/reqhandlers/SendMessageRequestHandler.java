@@ -31,11 +31,10 @@ public final class SendMessageRequestHandler extends SimpleRequestHandler<SendMe
 			return;
 		}
 		ServerMessage m = thread.sendMessage(r.getContent().getValue(), client.getUser());
-		client.sendResult(RequestHandlerUtils.fromMessage(m));
+		MessageValue response = RequestHandlerUtils.fromMessage(m);
+		client.sendResult(response);
 
-		MessageCreatedEvent event = new MessageCreatedEvent(new MessageValue(new TextValue(m.getContent()),
-				new GIDValue(m.getAuthor().getGID()), new GIDValue(m.getThread().getGID()), new GIDValue(m.getGID())),
-				new GIDValue(new GID()));
+		MessageCreatedEvent event = new MessageCreatedEvent(response, new GIDValue(new GID()));
 		client.getServer().getEventSystem().fire(event, client.getUserID(),
 				JavaTools.mask(thread.getParticipants(), ServerUser::getGID));
 	}
