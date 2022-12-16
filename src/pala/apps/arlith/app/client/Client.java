@@ -297,20 +297,21 @@ public class Client {
 	 * media being uploaded. If either media is not being uploaded (i.e. the
 	 * {@link pala.apps.arlith.api.streams.InputStream} is <code>null</code>),
 	 * then it is recommended to supply <code>-1</code> for the media size.
+	 * {@link pala.apps.arlith.api.streams.InputStream} is <code>null</code>), then
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
 	 * @param icon       The icon data itself, or <code>null</code> if no icon is
 	 *                   being supplied. This will be read from once this request
 	 *                   gets processed and is actually sent over the network. The
-	 *                   {@link pala.apps.arlith.api.streams.InputStream}
-	 *                   supplied should not be used by other code.
+	 *                   {@link pala.apps.arlith.api.streams.InputStream} supplied
+	 *                   should not be used by other code.
 	 * @param background The background data itself, or <code>null</code> if no
 	 *                   background is being supplied. This will be read from once
 	 *                   this request gets processed and is actually sent over the
 	 *                   network. The
-	 *                   {@link pala.apps.arlith.api.streams.InputStream}
-	 *                   should not be used by other code.
+	 *                   {@link pala.apps.arlith.api.streams.InputStream} should not
+	 *                   be used by other code.
 	 * @return An {@link ActionInterface} wrapping the request.
 	 */
 	public ActionInterface<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
