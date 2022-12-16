@@ -13,8 +13,7 @@ import pala.apps.arlith.app.server.contracts.world.ServerDirectThread;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.app.server.contracts.world.ServerUser.FriendState;
 
-public final class OpenDirectConversationRequestHandler
-		extends SimpleRequestHandler<OpenDirectConversationRequest> {
+public final class OpenDirectConversationRequestHandler extends SimpleRequestHandler<OpenDirectConversationRequest> {
 
 	@Override
 	protected void handle(final OpenDirectConversationRequest r, final RequestConnection client)
