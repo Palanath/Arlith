@@ -75,7 +75,8 @@ public class ClientThread extends SimpleClientObject implements Named {
 //	private final Variable<String> name = new Variable<>();
 	private static final int REQUEST_BATCH_SIZE = 50;
 	private final List<ClientMessage> messages = Collections.synchronizedList(new ArrayList<>());
-	private final Cache<List<ClientUser>> members = new ClientCache<List<ClientUser>>(() -> client().getRequestSubsystem()) {
+	private final Cache<List<ClientUser>> members = new ClientCache<List<ClientUser>>(
+			() -> client().getRequestSubsystem()) {
 
 		@Override
 		protected List<ClientUser> queryFromServer(CommunicationConnection connection)
