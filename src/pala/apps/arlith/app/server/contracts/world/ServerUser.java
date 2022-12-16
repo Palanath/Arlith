@@ -152,8 +152,8 @@ public interface ServerUser extends ServerObject {
 	/**
 	 * <p>
 	 * Changes this user's username to the specified {@link String} and updates its
-	 * discriminator accordingly. This user's registration in the {@link ServerWorld}
-	 * that owns it is also accordingly updated.
+	 * discriminator accordingly. This user's registration in the
+	 * {@link ServerWorld} that owns it is also accordingly updated.
 	 * </p>
 	 * <p>
 	 * Implementations are free to leave the discriminator unchanged if it is free
@@ -174,8 +174,8 @@ public interface ServerUser extends ServerObject {
 	String changeUsername(String newUsername);
 
 	/**
-	 * Creates a {@link ServerCommunity} with the specified name that is owned by this
-	 * {@link ServerUser}.
+	 * Creates a {@link ServerCommunity} with the specified name that is owned by
+	 * this {@link ServerUser}.
 	 *
 	 * @param name The name of the {@link ServerCommunity}.
 	 * @return The created {@link ServerCommunity}.
@@ -255,8 +255,8 @@ public interface ServerUser extends ServerObject {
 	List<ServerUser> getFriendRequestedUsers();
 
 	/**
-	 * Gets a, possibly unmodifiable, list of {@link ServerUser}s that are friends with
-	 * this {@link ServerUser}.
+	 * Gets a, possibly unmodifiable, list of {@link ServerUser}s that are friends
+	 * with this {@link ServerUser}.
 	 *
 	 * @return A possibly unmodifiable list of all the {@link ServerUser}s that are
 	 *         friended with this {@link ServerUser}.
@@ -288,16 +288,17 @@ public interface ServerUser extends ServerObject {
 	 * Gets the {@link List} of {@link ServerCommunity communities} that this
 	 * {@link ServerUser} is in.
 	 *
-	 * @return The list of {@link ServerCommunity ServerCommunities} that this user is in.
+	 * @return The list of {@link ServerCommunity ServerCommunities} that this user
+	 *         is in.
 	 */
 	List<ServerCommunity> getJoinedCommunities();
 
 	/**
 	 * <p>
-	 * Returns the {@link ServerCommunity} that this {@link ServerUser} is in with the
-	 * specified {@link GID}. If this user is not in any {@link ServerCommunity} with
-	 * the specified ID, this method returns <code>null</code>. This user must be
-	 * <span style="color: hotpink;">a member of</span> the community for this
+	 * Returns the {@link ServerCommunity} that this {@link ServerUser} is in with
+	 * the specified {@link GID}. If this user is not in any {@link ServerCommunity}
+	 * with the specified ID, this method returns <code>null</code>. This user must
+	 * be <span style="color: hotpink;">a member of</span> the community for this
 	 * method to be able to return it.
 	 * </p>
 	 * <p>
@@ -334,8 +335,8 @@ public interface ServerUser extends ServerObject {
 
 	/**
 	 * <p>
-	 * Returns the profile icon of this {@link ServerUser} or <code>null</code> if this
-	 * user does not have a profile icon.
+	 * Returns the profile icon of this {@link ServerUser} or <code>null</code> if
+	 * this user does not have a profile icon.
 	 * </p>
 	 * <p>
 	 * Note that the {@link InputStream} returned <span style="color: red;">may lock
@@ -506,8 +507,8 @@ public interface ServerUser extends ServerObject {
 	 * </p>
 	 * 
 	 * @param gid The {@link GID} of the thread.
-	 * @return The {@link ServerThread} object that this user can access, that has the
-	 *         specified {@link GID}, or <code>null</code> if none is found.
+	 * @return The {@link ServerThread} object that this user can access, that has
+	 *         the specified {@link GID}, or <code>null</code> if none is found.
 	 */
 	default ServerThread getAccessibleThreadByID(GID gid) {
 		for (ServerCommunity c : getJoinedCommunities())
