@@ -159,8 +159,7 @@ public class ArlithClientBuilder {
 		this(username, password, host, port, DEFAULT_REQUEST_SYSTEM_DISTRIBUTION_COUNT, timeout);
 	}
 
-	public ArlithClientBuilder(String username, String disc, String password, InetAddress host, int port,
-			int timeout) {
+	public ArlithClientBuilder(String username, String disc, String password, InetAddress host, int port, int timeout) {
 		this(username, disc, password, host, port, DEFAULT_REQUEST_SYSTEM_DISTRIBUTION_COUNT, timeout);
 	}
 
@@ -172,8 +171,7 @@ public class ArlithClientBuilder {
 		this(username, disc, password, host, port, DEFAULT_TIMEOUT);
 	}
 
-	public ArlithClientBuilder(String username, String disc, String password, String host)
-			throws UnknownHostException {
+	public ArlithClientBuilder(String username, String disc, String password, String host) throws UnknownHostException {
 		this(username, disc, password, InetAddress.getByName(host));
 	}
 
@@ -245,6 +243,8 @@ public class ArlithClientBuilder {
 		} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
 				| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IOException
 				| MalformedResponseException e) {
+			System.out.println("Host: " + host);
+			System.out.println("Port: " + port);
 			throw new LoginFailureException(e);
 		}
 
