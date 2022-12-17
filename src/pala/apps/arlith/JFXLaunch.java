@@ -12,7 +12,7 @@ import pala.apps.arlith.app.server.Server;
 import pala.libs.generic.guis.Window;
 import pala.libs.generic.parsers.cli.CLIParams;
 
-public class Launch extends Application {
+public class JFXLaunch extends Application {
 
 	@Override
 	public void start(Stage arg0) throws Exception {
