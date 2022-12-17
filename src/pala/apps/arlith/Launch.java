@@ -8,6 +8,7 @@ import pala.apps.arlith.api.Utilities;
 import pala.apps.arlith.app.guis.GUIUtils;
 import pala.apps.arlith.app.guis.login.LogInWindow;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.app.server.Server;
 import pala.libs.generic.guis.Window;
 import pala.libs.generic.parsers.cli.CLIParams;
 
@@ -32,7 +33,14 @@ public class Launch extends Application {
 		Utilities.setPreferredPort(
 				params.readInt(Utilities.DEFAULT_PORT, "--server-port", "--servprt", "--serv-prt", "-sp"));
 
-		Application.launch(args);
+		if (params.checkFlag(false, "--launch-server", "-ls")) {
+			Server server = new Server();
+			server.setPort(Utilities.getPreferredPort());
+			server.start();
+			System.out.println("Started the server on port: " + Utilities.getPreferredPort()
+					+ ". Close the program to terminate.");
+		} else
+			Application.launch(args);
 	}
 
 }
