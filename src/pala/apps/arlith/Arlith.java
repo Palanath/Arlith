@@ -23,22 +23,37 @@ import pala.libs.generic.parsers.cli.CLIParams;
  */
 public class Arlith {
 
+	private static CLIParams CLI_PARAMETERS;
+
+	/**
+	 * Gets the CLI Parameters for the application. This object is
+	 * {@link CLIParams#isIgnoreCase() ignore-case} by default. This object should
+	 * not be modified, but can be read or checked as needed.
+	 * 
+	 * @return The {@link CLIParams} that the application was launched with.
+	 * 
+	 * @author Palanath
+	 */
+	public static CLIParams getCLIParameters() {
+		return CLI_PARAMETERS;
+	}
+
 	public static void main(String[] args) throws IOException {
-		CLIParams params = new CLIParams(args);
-		params.setIgnoreCase(true);
+		CLI_PARAMETERS = new CLIParams(args);
+		CLI_PARAMETERS.setIgnoreCase(true);
 
 		// Check for various command line options.
-		if (params.checkFlag(false, "--debug", "-dbg"))
+		if (CLI_PARAMETERS.checkFlag(false, "--debug", "-dbg"))
 			Logging.setDebuggingEnabled(true);
-		Utilities.setPreferredDestinationAddress(params.readString(Utilities.DEFAULT_DESTINATION_ADDRESS,
+		Utilities.setPreferredDestinationAddress(CLI_PARAMETERS.readString(Utilities.DEFAULT_DESTINATION_ADDRESS,
 				"--server-address", "--servaddr", "--serv-addr", "-sa"));
 		Utilities.setPreferredPort(
-				params.readInt(Utilities.DEFAULT_PORT, "--server-port", "--servprt", "--serv-prt", "-sp"));
+				CLI_PARAMETERS.readInt(Utilities.DEFAULT_PORT, "--server-port", "--servprt", "--serv-prt", "-sp"));
 
 		ApplicationLauncher launcher;
 		// Launch the app.
 		try {
-			if (params.checkFlag(false, "--launch-server", "-ls"))
+			if (CLI_PARAMETERS.checkFlag(false, "--launch-server", "-ls"))
 				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.ServerLauncher").newInstance();
 			else
 				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.JFXLauncher").newInstance();
