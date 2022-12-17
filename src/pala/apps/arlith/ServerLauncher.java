@@ -12,11 +12,7 @@ public class ServerLauncher implements ApplicationLauncher {
 		server.start();
 		System.out.println(
 				"Started the server on port: " + Utilities.getPreferredPort() + ". Close the program to terminate.");
-		
-		for (int i = 0; i < 25; i++) {
-			System.out.println("Running Threads: " + Thread.activeCount() + ", Server Port: " + server.getActualPort());
-			Thread.sleep(5000);
-		}
+
 	}
 
 }
