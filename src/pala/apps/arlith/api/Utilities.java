@@ -6,7 +6,7 @@ import javafx.application.Platform;
 import pala.libs.generic.strings.StringTools;
 
 public class Utilities {
-	public static final String DEFAULT_DESTINATION_ADDRESS = "arlith.com";
+	public static final String DEFAULT_DESTINATION_ADDRESS = "arlith.net";
 	public static final int DEFAULT_PORT = 42069;
 
 	private static int preferredPort = DEFAULT_PORT;
