@@ -98,3 +98,5 @@
 - [ ] Plugin Download Page built into the app.
 - [ ] Plugin Encryption Mechanism - Only Verified Publishers can provide plugins.
 - [ ] Customize functionality of servers with plugins.
+- [ ] Crop any uploaded picture. (Primarily for PFPs.)
+- [ ] Rotate any uploaded picture. (Primarily for PFPs.)
