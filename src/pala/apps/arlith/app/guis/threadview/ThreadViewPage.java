@@ -36,7 +36,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import pala.apps.arlith.app.application.Arlith;
+import pala.apps.arlith.app.application.ArlithRuntime;
 import pala.apps.arlith.app.client.Client;
 import pala.apps.arlith.app.client.api.ClientMessage;
 import pala.apps.arlith.app.client.api.ClientThread;
@@ -324,7 +324,7 @@ public class ThreadViewPage extends BindHandlerPage {
 
 		StylePicker sp = new StylePicker();
 		sp.getStylesheets().setAll(win.getRoot().getStylesheets());
-		sp.getColorPicker().setColor(Arlith.getBaseColor());
+		sp.getColorPicker().setColor(ArlithRuntime.getBaseColor());
 
 		Circle circle = new Circle(5);
 		circle.fillProperty().bind(sp.getColorPicker().colorProperty());
@@ -357,7 +357,7 @@ public class ThreadViewPage extends BindHandlerPage {
 
 			// If any of the following properties are different from their default value,
 			// include styling code for them.
-			if (!Arlith.getBaseColor().equals(sp.getColor())) {
+			if (!ArlithRuntime.getBaseColor().equals(sp.getColor())) {
 				prep.append("<color v=\"").append(AdvancedColorPicker.format(sp.getColorPicker().getColor()))
 						.append("\">");
 				end.append("</>");

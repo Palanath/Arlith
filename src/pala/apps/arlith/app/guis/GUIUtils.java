@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import pala.apps.arlith.app.application.Arlith;
+import pala.apps.arlith.app.application.ArlithRuntime;
 import pala.apps.arlith.app.logging.Logging;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
@@ -46,7 +46,7 @@ public final class GUIUtils {
 			.requestFocus();
 
 	public static void prepareStage(Stage stage) {
-		stage.getIcons().add(Arlith.getWindowIcon());
+		stage.getIcons().add(ArlithRuntime.getWindowIcon());
 		stage.setFullScreenExitHint("Press F11 to exit fullscreen mode.");
 		stage.setTitle("Arlith");
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -69,7 +69,7 @@ public final class GUIUtils {
 					FXTools.spawnLabelAtMousePos("Screenshot failed...", Color.RED, stage);
 				}
 			} else if (event.getCode() == KeyCode.F3 && event.isShortcutDown())
-				Arlith.displayConsole();
+				ArlithRuntime.displayConsole();
 		});
 		stage.sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
 			newValue.removeEventFilter(MouseEvent.MOUSE_PRESSED, focusHandler);

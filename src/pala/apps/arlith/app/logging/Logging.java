@@ -3,7 +3,7 @@ package pala.apps.arlith.app.logging;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.app.application.Arlith;
+import pala.apps.arlith.app.application.ArlithRuntime;
 
 public class Logging {
 
@@ -38,7 +38,7 @@ public class Logging {
 	public static void err(String text) {
 		System.out.println("[ERROR]: " + text);
 		print(text, ERROR_COLOR);
-		Arlith.displayConsole();
+		ArlithRuntime.displayConsole();
 	}
 
 	public static void err(Throwable err) {

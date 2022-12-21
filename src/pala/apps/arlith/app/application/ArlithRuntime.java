@@ -4,12 +4,58 @@ import java.util.WeakHashMap;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.items.LateLoadItem;
 
 public class ArlithRuntime {
+	public enum Instance {
+		SERVER, CLIENT
+	}
+
 	public static ArlithWindow window;
+
 	private static final WeakHashMap<Thread, Instance> threads = new WeakHashMap<>();
+
+	public static final LateLoadItem<Image> MISSING_TEXTURE_IMAGE = new LateLoadItem<>(
+			() -> new Image("/pala/apps/arlith/missing-texture.png", false));
+
+	static final Image WINDOW_ICON = new Image("pala/apps/arlith/logo.png");
+
+	public static final Color DEFAULT_BASE_COLOR = Color.GOLD, DEFAULT_ACTIVE_COLOR = Color.RED;
+
+	private static Color baseColor = DEFAULT_BASE_COLOR, activeColor = DEFAULT_ACTIVE_COLOR;
+
+	public static void displayConsole() {
+		if (!Platform.isFxApplicationThread())
+			Platform.runLater(ArlithRuntime::displayConsole);
+		else {
+			System.out.println("Console should be shown to user at this point.");
+		}
+	}
+
+	public static Color getActiveColor() {
+		return ArlithRuntime.activeColor;
+	}
+
+	public static Color getBaseColor() {
+		return baseColor;
+	}
+
+	public static Image getWindowIcon() {
+		return WINDOW_ICON;
+	}
+
+	public static Instance instance() {
+		return instance(Thread.currentThread());
+	}
+
+	public static Instance instance(Thread thread) {
+		if (Platform.isFxApplicationThread())
+			return Instance.CLIENT;
+		else
+			return threads.get(thread);
+	}
 
 	public static Thread newThread(Instance instance) {
 		Thread t = new Thread();
@@ -21,6 +67,10 @@ public class ArlithRuntime {
 		Thread t = new Thread(runnable);
 		register(instance, t);
 		return t;
+	}
+
+	public static void register(Instance instance) {
+		register(instance, Thread.currentThread());
 	}
 
 	/**
@@ -49,25 +99,11 @@ public class ArlithRuntime {
 		}
 	}
 
-	public static void register(Instance instance) {
-		register(instance, Thread.currentThread());
+	public static void setActiveColor(Color activeColor) {
+		ArlithRuntime.activeColor = activeColor;
 	}
 
-	public static Instance instance() {
-		return instance(Thread.currentThread());
+	public static void setBaseColor(Color baseColor) {
+		ArlithRuntime.baseColor = baseColor;
 	}
-
-	public static Instance instance(Thread thread) {
-		if (Platform.isFxApplicationThread())
-			return Instance.CLIENT;
-		else
-			return threads.get(thread);
-	}
-
-	public enum Instance {
-		SERVER, CLIENT
-	}
-
-	public static final LateLoadItem<Image> MISSING_TEXTURE_IMAGE = new LateLoadItem<>(
-	() -> new Image("/pala/apps/arlith/missing-texture.png", false));
 }
