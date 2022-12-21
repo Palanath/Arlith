@@ -1,11 +1,11 @@
-package pala.apps.arlith.app.client.api.lib;
+package pala.apps.arlith.app.client.api.caching;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import pala.apps.arlith.app.client.api.lib.ClientCache.Querier;
+import pala.apps.arlith.app.client.api.caching.ClientCache.Querier;
 import pala.apps.arlith.app.client.requests.v2.RequestSubsystemInterface;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;

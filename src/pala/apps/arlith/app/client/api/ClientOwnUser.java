@@ -3,7 +3,7 @@ package pala.apps.arlith.app.client.api;
 import java.util.function.Consumer;
 
 import pala.apps.arlith.app.client.Client;
-import pala.apps.arlith.app.client.api.lib.ClientCache;
+import pala.apps.arlith.app.client.api.caching.ClientCache;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;

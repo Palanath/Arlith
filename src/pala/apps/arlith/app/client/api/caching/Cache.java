@@ -1,4 +1,4 @@
-package pala.apps.arlith.app.client.api.lib;
+package pala.apps.arlith.app.client.api.caching;
 
 import java.util.function.Supplier;
 
