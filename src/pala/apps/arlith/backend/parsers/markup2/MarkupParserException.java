@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.parsers.markup;
+package pala.apps.arlith.backend.parsers.markup2;
 
 public class MarkupParserException extends RuntimeException {
 

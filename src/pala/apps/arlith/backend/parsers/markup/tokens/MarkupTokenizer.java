@@ -3,12 +3,12 @@ package pala.apps.arlith.backend.parsers.markup.tokens;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.backend.parsers.markup.MarkupParserException;
 import pala.apps.arlith.backend.parsers.markup.MarkupText;
 import pala.apps.arlith.backend.parsers.markup.tags.MarkupClosingTag;
 import pala.apps.arlith.backend.parsers.markup.tags.MarkupOpeningTag;
 import pala.apps.arlith.backend.parsers.markup.tags.MarkupSTElement;
 import pala.apps.arlith.backend.parsers.markup.tags.MarkupTag;
+import pala.apps.arlith.backend.parsers.markup2.MarkupParserException;
 import pala.libs.generic.parsing.BufferedParser;
 import pala.libs.generic.streams.CharacterStream;
 import pala.libs.generic.streams.PeekableCharacterStream;

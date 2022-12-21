@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.backend.parsers.markup.MarkupParserException;
 import pala.apps.arlith.backend.parsers.markup2.Markup2Token.Type;
 import pala.libs.generic.parsing.BufferedParser;
 import pala.libs.generic.streams.CharacterStream;

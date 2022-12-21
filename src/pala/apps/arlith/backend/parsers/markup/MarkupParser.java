@@ -8,6 +8,7 @@ import pala.apps.arlith.backend.parsers.markup.tags.MarkupOpeningTag;
 import pala.apps.arlith.backend.parsers.markup.tags.MarkupSTElement;
 import pala.apps.arlith.backend.parsers.markup.tokens.MarkupToken;
 import pala.apps.arlith.backend.parsers.markup.tokens.MarkupTokenizer;
+import pala.apps.arlith.backend.parsers.markup2.MarkupParserException;
 import pala.libs.generic.parsing.BufferedParser;
 import pala.libs.generic.streams.CharacterStream;
 
