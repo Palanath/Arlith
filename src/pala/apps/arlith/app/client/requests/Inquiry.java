@@ -1,6 +1,6 @@
 package pala.apps.arlith.app.client.requests;
 
-import pala.apps.arlith.app.application.Arlith;
+import pala.apps.arlith.app.application.ArlithRuntime;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.communication.protocol.requests.CommunicationProtocolRequest;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
@@ -8,7 +8,7 @@ import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 /**
  * <p>
  * Represents arbitrary communication to and from a Application server. Inquiries
- * are the most basic object in the {@link Arlith} Request API that represent
+ * are the most basic object in the {@link ArlithRuntime} Request API that represent
  * communication. {@link Inquiry} implementations control the entirety of what
  * is sent over the connection when the {@link Inquiry}'s send method is
  * invoked, and they also control the mechanism of how a response should be
