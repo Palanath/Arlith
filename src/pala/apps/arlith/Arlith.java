@@ -27,7 +27,7 @@ import pala.libs.generic.parsers.cli.CLIParams;
 public class Arlith {
 
 	private static CLIParams CLI_PARAMETERS;
-	private static final String LAUNCHER_PACKAGE = ApplicationLauncher.class.getPackageName();
+	private static final String LAUNCHER_PACKAGE = ApplicationLauncher.class.getPackage().getName();
 
 	/**
 	 * Gets the CLI Parameters for the application. This object is
