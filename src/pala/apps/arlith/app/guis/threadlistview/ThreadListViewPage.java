@@ -28,7 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import pala.apps.arlith.app.application.ArlithResources;
+import pala.apps.arlith.app.application.ArlithRuntime;
 import pala.apps.arlith.app.client.api.ClientUser;
 import pala.apps.arlith.app.guis.BindHandlerPage;
 import pala.apps.arlith.app.guis.GUIUtils;
@@ -167,7 +167,7 @@ public class ThreadListViewPage extends BindHandlerPage {
 			// load it here.
 			synchronized (checker) {
 				if (checker.value == null)
-					cbg.setImage(ArlithResources.MISSING_TEXTURE_IMAGE.get());
+					cbg.setImage(ArlithRuntime.MISSING_TEXTURE_IMAGE.get());
 			}
 
 			bindable(cbg::setImage).bind(user.profileIconView());// Bind user's profile icon.

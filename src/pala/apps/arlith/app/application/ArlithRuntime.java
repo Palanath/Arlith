@@ -3,7 +3,9 @@ package pala.apps.arlith.app.application;
 import java.util.WeakHashMap;
 
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
+import pala.libs.generic.items.LateLoadItem;
 
 public class ArlithRuntime {
 	public static ArlithWindow window;
@@ -65,4 +67,7 @@ public class ArlithRuntime {
 	public enum Instance {
 		SERVER, CLIENT
 	}
+
+	public static final LateLoadItem<Image> MISSING_TEXTURE_IMAGE = new LateLoadItem<>(
+	() -> new Image("/pala/apps/arlith/missing-texture.png", false));
 }
