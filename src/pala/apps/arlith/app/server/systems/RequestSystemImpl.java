@@ -9,7 +9,7 @@ import java.util.Map;
 import pala.apps.arlith.app.logging.Logging;
 import pala.apps.arlith.app.server.MalformedIncomingRequestException;
 import pala.apps.arlith.app.server.RequestNotSupportedException;
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestHandler;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestSystem;
@@ -88,7 +88,7 @@ import pala.libs.generic.json.JSONString;
 
 public class RequestSystemImpl implements RequestSystem {
 
-	private final Server server;
+	private final ArlithServer server;
 	private final Map<GID, List<RequestConnection>> requestClients = new HashMap<>();
 	private final Map<String, RequestHandler> authenticatedRequestHandlers = new HashMap<>();
 	
@@ -127,12 +127,12 @@ public class RequestSystemImpl implements RequestSystem {
 		addHandler(GetBunchOUsersRequest.REQUEST_NAME, new GetBunchOUsersRequestHandler());
 	}
 
-	public RequestSystemImpl(Server server) {
+	public RequestSystemImpl(ArlithServer server) {
 		this.server = server;
 	}
 
 	@Override
-	public Server getServer() {
+	public ArlithServer getServer() {
 		return server;
 	}
 

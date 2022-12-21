@@ -1,7 +1,7 @@
 package pala.apps.arlith.launchers.terminalserver;
 
 import pala.apps.arlith.Arlith;
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.launchers.ApplicationLauncher;
 
@@ -9,7 +9,7 @@ public class ServerLauncher implements ApplicationLauncher {
 
 	@Override
 	public void launchArlith(String... args) throws Exception {
-		Server server = new Server();
+		ArlithServer server = new ArlithServer();
 		server.setPort(Utilities.getPreferredPort());
 		server.start();
 		System.out.println(

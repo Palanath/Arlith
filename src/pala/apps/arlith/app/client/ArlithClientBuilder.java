@@ -188,7 +188,7 @@ public class ArlithClientBuilder {
 		this(null, "0", (InetAddress) null);
 	}
 
-	public Client login() throws LoginFailureException, LoginError, MalformedServerResponseException {
+	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException {
 		CommunicationConnection conn = new CommunicationConnection();
 		conn.setAddress(host);
 		conn.setPort(port);
@@ -223,14 +223,14 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			return new Client(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
+			return new ArlithClient(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
 		} catch (Exception e) {
 			conn.close();
 			throw e;
 		}
 	}
 
-	public Client createAccount() throws LoginFailureException, CreateAccountError {
+	public ArlithClient createAccount() throws LoginFailureException, CreateAccountError {
 		if (getEmail() == null)
 			throw new RuntimeException("The email is required when creating an account.");
 		CommunicationConnection conn = new CommunicationConnection();
@@ -264,7 +264,7 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			return new Client(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
+			return new ArlithClient(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
 		} catch (Exception e) {
 			conn.close();
 			throw e;

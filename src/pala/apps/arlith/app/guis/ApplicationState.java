@@ -1,13 +1,13 @@
 package pala.apps.arlith.app.guis;
 
 import javafx.stage.Stage;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 
 public class ApplicationState {
 	private final Stage stage;
-	private final Client client;
+	private final ArlithClient client;
 
-	public ApplicationState(Stage stage, Client client) {
+	public ApplicationState(Stage stage, ArlithClient client) {
 		this.stage = stage;
 		this.client = client;
 	}
@@ -16,7 +16,7 @@ public class ApplicationState {
 		return stage;
 	}
 
-	public Client getClient() {
+	public ArlithClient getClient() {
 		return client;
 	}
 

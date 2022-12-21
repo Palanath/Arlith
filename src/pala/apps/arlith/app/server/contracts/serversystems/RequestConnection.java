@@ -1,6 +1,6 @@
 package pala.apps.arlith.app.server.contracts.serversystems;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.app.server.contracts.world.ServerWorld;
 import pala.apps.arlith.backend.communication.gids.GID;
@@ -173,7 +173,7 @@ public interface RequestConnection extends ClientConnection {
 	 *         whose request connection is represented by this object belongs to the
 	 *         returned server.
 	 */
-	default Server getServer() {
+	default ArlithServer getServer() {
 		return getManager().getServer();
 	}
 
@@ -185,7 +185,7 @@ public interface RequestConnection extends ClientConnection {
 	 * this {@link RequestConnection}.
 	 * </p>
 	 * <p>
-	 * This method delegates to calling {@link Server#getWorld()} on the
+	 * This method delegates to calling {@link ArlithServer#getWorld()} on the
 	 * returned value from {@link #getServer()}. This is a delegate method.
 	 * </p>
 	 * 

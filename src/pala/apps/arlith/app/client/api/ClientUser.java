@@ -6,7 +6,7 @@ import java.lang.ref.WeakReference;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.api.caching.Cache;
 import pala.apps.arlith.app.client.api.caching.ClientCache;
 import pala.apps.arlith.app.client.api.caching.WatchableCache;
@@ -181,11 +181,11 @@ public class ClientUser extends SimpleClientObject implements Named {
 		return hasProfileIcon.getView();
 	}
 
-	public ClientUser(GID gid, Client client) {
+	public ClientUser(GID gid, ArlithClient client) {
 		super(gid, client);
 	}
 
-	public ClientUser(GID gid, Client client, String username, String status, long messageCount, String discriminant) {
+	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount, String discriminant) {
 		this(gid, client);
 		this.username.populate(username);
 		this.status.populate(status);

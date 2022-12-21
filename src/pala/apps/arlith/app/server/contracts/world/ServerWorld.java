@@ -2,7 +2,7 @@ package pala.apps.arlith.app.server.contracts.world;
 
 import java.util.Collection;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
 
@@ -146,7 +146,7 @@ public interface ServerWorld {
 	 */
 	String getNextDiscriminator(String username);
 
-	Server getServer();
+	ArlithServer getServer();
 
 	/**
 	 * Obtains a user by email, if one with the specified email exists. Otherwise

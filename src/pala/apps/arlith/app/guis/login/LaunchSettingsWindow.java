@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.backend.Utilities;
 import pala.libs.generic.guis.ApplicationProperties;
 import pala.libs.generic.guis.Window;
@@ -28,7 +28,7 @@ public class LaunchSettingsWindow extends Window {
 		boolean completed = false;
 		try {
 			launchServerButton.setDisable(true);
-			Server server = new Server();
+			ArlithServer server = new ArlithServer();
 			server.setPort(Integer.parseInt(localPort.getText().trim()));
 			server.start();
 			completed = true;

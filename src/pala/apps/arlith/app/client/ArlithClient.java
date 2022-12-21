@@ -62,7 +62,7 @@ import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
 
-public class Client {
+public class ArlithClient {
 
 	private static class StandardEventSubsystem extends EventSubsystem {
 		private final AuthToken token;
@@ -127,7 +127,7 @@ public class Client {
 			// the server, process the result (convert it to a list of ClientCommunities
 			// instead
 			// of CommunicationProtcolCommunities), and then return the processed result.
-			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection), Client.this::getCommunity,
+			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection), ArlithClient.this::getCommunity,
 					new ArrayList<>());
 		}
 	};
@@ -142,7 +142,7 @@ public class Client {
 
 				@Override
 				public RequestSubsystemInterface get() {
-					return Client.this.getRequestSubsystem();
+					return ArlithClient.this.getRequestSubsystem();
 				}
 			});
 			this.request = request;
@@ -256,7 +256,7 @@ public class Client {
 				throws CommunicationProtocolError, RuntimeException {
 			UserValue t = new GetOwnUserRequest().inquire(connection);
 			// TODO Possibly synchronize and document.
-			ClientOwnUser u = new ClientOwnUser(t.id(), Client.this, t.username(), t.status(), t.messageCount(),
+			ClientOwnUser u = new ClientOwnUser(t.id(), ArlithClient.this, t.username(), t.status(), t.messageCount(),
 					t.discriminant());
 			if (!users.containsKey(t.id()))
 				users.put(t.id(), u);
@@ -269,14 +269,14 @@ public class Client {
 	private final EventSubsystem eventSubsystem;
 	private final RequestSubsystemInterface requestSubsystem;
 
-	public Client(EventSubsystem eventSubsystem, RequestSubsystemInterface requestSubsystem) {
+	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystemInterface requestSubsystem) {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
 		this.requestSubsystem = requestSubsystem;
 		startup();
 	}
 
-	Client(CommunicationConnection eventConnection, AuthToken authToken, RequestSubsystemInterface reqSubsystem) {
+	ArlithClient(CommunicationConnection eventConnection, AuthToken authToken, RequestSubsystemInterface reqSubsystem) {
 		this(new StandardEventSubsystem(eventConnection, authToken), reqSubsystem);
 	}
 

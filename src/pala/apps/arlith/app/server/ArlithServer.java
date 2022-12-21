@@ -18,7 +18,7 @@ import pala.apps.arlith.backend.connections.networking.Connection;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnectionAcceptor;
 
-public class Server extends CommunicationConnectionAcceptor {
+public class ArlithServer extends CommunicationConnectionAcceptor {
 
 	private final ServerWorld world = new ServerWorldImpl(new File("arlith-data"), this);
 	private final RequestSystemImpl requestManager = new RequestSystemImpl(this);

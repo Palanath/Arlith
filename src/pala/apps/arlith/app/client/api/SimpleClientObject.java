@@ -1,6 +1,6 @@
 package pala.apps.arlith.app.client.api;
 
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.gids.Identifiable;
 
@@ -17,9 +17,9 @@ public class SimpleClientObject implements ClientObject, Identifiable {
 	}
 
 	private final GID gid;
-	private final Client client;
+	private final ArlithClient client;
 
-	protected SimpleClientObject(GID gid, Client client) {
+	protected SimpleClientObject(GID gid, ArlithClient client) {
 		if (gid == null || client == null)
 			throw null;
 		this.gid = gid;
@@ -27,7 +27,7 @@ public class SimpleClientObject implements ClientObject, Identifiable {
 	}
 
 	@Override
-	public final Client client() {
+	public final ArlithClient client() {
 		return client;
 	}
 

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.api.caching.Cache;
 import pala.apps.arlith.app.client.api.caching.ClientCache;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
@@ -55,11 +55,11 @@ import pala.libs.generic.generators.NullstopGenerator;
  *
  */
 public class ClientThread extends SimpleClientObject implements Named {
-	public ClientThread(GID gid, Client client) {
+	public ClientThread(GID gid, ArlithClient client) {
 		super(gid, client);
 	}
 
-	public ClientThread(ThreadValue thread, Client client) {
+	public ClientThread(ThreadValue thread, ArlithClient client) {
 		this(thread.id(), client);
 		this.name.populate(thread.name());
 	}
@@ -282,7 +282,7 @@ public class ClientThread extends SimpleClientObject implements Named {
 
 	/**
 	 * <p>
-	 * Called by the {@link Client} that owns this {@link ClientThread} when notice
+	 * Called by the {@link ArlithClient} that owns this {@link ClientThread} when notice
 	 * that a new message has been made in this thread is received from the server
 	 * by the client. This method adds that message to this {@link ClientThread}.
 	 * </p>
@@ -394,7 +394,7 @@ public class ClientThread extends SimpleClientObject implements Named {
 	 * but not all of its properties (i.e., its name) were queried from the server
 	 * yet. This is actually the usual way that most threads are retrieved. However,
 	 * in some cases, these {@link ClientThread} objects may already exist in a
-	 * {@link Client} but the {@link Client} may later receive a {@link ThreadValue}
+	 * {@link ArlithClient} but the {@link ArlithClient} may later receive a {@link ThreadValue}
 	 * representing these same, loaded threads from the server. In this case, the
 	 * threads' names (and other properties, if any more), may not have been set in
 	 * the {@link ClientThread} objects but have been received from the server in

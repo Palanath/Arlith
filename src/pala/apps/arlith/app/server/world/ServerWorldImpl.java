@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.app.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.app.server.contracts.world.ServerMessage;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
@@ -31,7 +31,7 @@ import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
  * <p>
  * Storage for the world all goes under the world's {@link #getRootDirectory()
  * root directory}, which can be configured directly when the world
- * {@link #ServerWorldImpl(File, Server) is constructed}.
+ * {@link #ServerWorldImpl(File, ArlithServer) is constructed}.
  * </p>
  * <p>
  * Data is split into different folders underneath the
@@ -111,12 +111,12 @@ public class ServerWorldImpl implements ServerWorld {
 	private final File rootDirectory, directThreadPath, userPath, communityPath, communityThreadPath, messagePath;
 	private final WorldRegistry registry = new WorldRegistryImpl();
 	final GIDProvider gidProvider = new GIDProvider();
-	private final Server server;
+	private final ArlithServer server;
 	final Map<String, ServerUserImpl> usersByEmail = new HashMap<>(), usersByPhone = new HashMap<>();
 	final Map<String, Map<String, ServerUserImpl>> usersByUsername = new HashMap<>();
 	final Map<GID, ServerUserImpl> usersByID = new HashMap<>();
 
-	public ServerWorldImpl(final File directory, final Server server) {
+	public ServerWorldImpl(final File directory, final ArlithServer server) {
 		rootDirectory = directory;
 
 		// Must be added after rootDirectory is set.
@@ -217,7 +217,7 @@ public class ServerWorldImpl implements ServerWorld {
 	}
 
 	@Override
-	public Server getServer() {
+	public ArlithServer getServer() {
 		return server;
 	}
 

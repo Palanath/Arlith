@@ -1,6 +1,6 @@
 package pala.apps.arlith.app.client.api;
 
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.protocol.types.MessageValue;
 
@@ -43,7 +43,7 @@ public class ClientMessage extends SimpleClientObject {
 	// does not fill all of its properties up, there must be some way to request
 	// such properties from Application Servers.
 
-	public ClientMessage(GID gid, String content, GID author, GID thread, Client client) {
+	public ClientMessage(GID gid, String content, GID author, GID thread, ArlithClient client) {
 		super(gid, client);
 		text = content;
 		this.author = client.getUser(author);
@@ -58,7 +58,7 @@ public class ClientMessage extends SimpleClientObject {
 //
 //	}
 
-	public ClientMessage(MessageValue msg, Client client) {
+	public ClientMessage(MessageValue msg, ArlithClient client) {
 		this(msg.id(), msg.content(), msg.getSenderUser().getGid(), msg.getOwnerThread().getGid(), client);
 	}
 

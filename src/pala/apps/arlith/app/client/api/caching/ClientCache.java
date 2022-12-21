@@ -2,7 +2,7 @@ package pala.apps.arlith.app.client.api.caching;
 
 import java.util.function.Supplier;
 
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.app.client.requests.v2.RequestSubsystemInterface;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
@@ -10,7 +10,7 @@ import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 /**
  * <p>
- * Represents a cache of a value that the {@link Client} uses. This
+ * Represents a cache of a value that the {@link ArlithClient} uses. This
  * cache is designed to facilitate storing data that has already been received
  * from the server and returning it again on subsequent query attempts, even in
  * multithreaded contexts.

@@ -23,7 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.ArlithClientBuilder;
 import pala.apps.arlith.app.guis.ApplicationState;
 import pala.apps.arlith.app.guis.home.HomePage;
@@ -240,7 +240,7 @@ public final class LogInWindow extends Window {
 				em = createAccountEmailPrompt.getText(), pn = createAccountPhonePrompt.getText();
 
 		Thread connectionThread = ArlithRuntime.newThread(Instance.CLIENT, () -> {
-			Client client;
+			ArlithClient client;
 			try {
 				client = new ArlithClientBuilder(un, pw, Utilities.getPreferredDestinationAddress()).setEmail(em)
 						.setPhoneNumber(pn).createAccount();
@@ -367,7 +367,7 @@ public final class LogInWindow extends Window {
 		}
 
 		Thread connectionThread = ArlithRuntime.newThread(Instance.CLIENT, () -> {
-			Client client;
+			ArlithClient client;
 			try {
 
 				client = builder.login();

@@ -2,7 +2,7 @@ package pala.apps.arlith.app.client.api;
 
 import java.util.function.Consumer;
 
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.api.caching.ClientCache;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.communication.gids.GID;
@@ -35,7 +35,7 @@ public class ClientOwnUser extends ClientUser {
 		}
 	};
 
-	public ClientOwnUser(GID gid, Client client, String username, String status, long messageCount,
+	public ClientOwnUser(GID gid, ArlithClient client, String username, String status, long messageCount,
 			String discriminant) {
 		super(gid, client, username, status, messageCount, discriminant);
 	}

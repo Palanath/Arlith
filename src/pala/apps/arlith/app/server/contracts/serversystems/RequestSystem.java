@@ -2,7 +2,7 @@ package pala.apps.arlith.app.server.contracts.serversystems;
 
 import java.util.List;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.connections.networking.Connection;
@@ -37,7 +37,7 @@ public interface RequestSystem extends RequestMapper {
 	 * 
 	 * @return The server that owns this {@link RequestSystem}.
 	 */
-	Server getServer();
+	ArlithServer getServer();
 
 	/**
 	 * <p>

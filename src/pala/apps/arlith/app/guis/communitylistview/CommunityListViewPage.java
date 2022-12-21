@@ -12,7 +12,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.api.ClientCommunity;
 import pala.apps.arlith.app.guis.BindHandlerPage;
 import pala.apps.arlith.app.logging.Logging;
@@ -32,7 +32,7 @@ public class CommunityListViewPage extends BindHandlerPage {
 	private CommunityList myCommunities, browseCommunities;
 	private @FXML Tab myCommunitiesTab, browseCommunitiesTab;
 	private ImageView iv;
-	private Client client;
+	private ArlithClient client;
 
 	@Override
 	public void cleanup(ArlithWindow window) {

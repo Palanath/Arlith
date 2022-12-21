@@ -3,7 +3,7 @@ package pala.apps.arlith.app.server.contracts.world;
 import java.util.Collections;
 import java.util.List;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.backend.communication.gids.GID;
 
 public interface ServerObject extends Comparable<ServerObject> {
@@ -32,7 +32,7 @@ public interface ServerObject extends Comparable<ServerObject> {
 	 * @return The server that this {@link ServerObject} functions under. The server is
 	 *         accessed through {@link #getWorld()}'s {@link ServerWorld#getServer()}.
 	 */
-	default Server server() {
+	default ArlithServer server() {
 		return getWorld().getServer();
 	}
 

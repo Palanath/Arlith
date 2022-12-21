@@ -36,7 +36,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.client.api.ClientMessage;
 import pala.apps.arlith.app.client.api.ClientThread;
 import pala.apps.arlith.app.guis.BindHandlerPage;
@@ -75,7 +75,7 @@ public class ThreadViewPage extends BindHandlerPage {
 	private boolean reachedTop;
 	private volatile boolean retrieving;
 	private final Generator<ClientMessage> threadhist;
-	private final Client client;
+	private final ArlithClient client;
 	private @FXML VBox output;
 	private @FXML TextArea input;
 	private @FXML ScrollPane scrollBox;

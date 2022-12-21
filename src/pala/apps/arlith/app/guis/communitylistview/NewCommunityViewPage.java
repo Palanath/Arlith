@@ -25,7 +25,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.app.client.ArlithClient;
 import pala.apps.arlith.app.guis.GUIUtils;
 import pala.apps.arlith.app.logging.Logging;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
@@ -236,7 +236,7 @@ public class NewCommunityViewPage implements Page {
 	}
 
 	private @FXML void complete() {
-		Client cli = window.getApplication().getClient();
+		ArlithClient cli = window.getApplication().getClient();
 		try {
 			cli.createCommunity(serverNamePrompt.getText(), icon, bg);
 		} catch (CommunicationProtocolError | RuntimeException e) {

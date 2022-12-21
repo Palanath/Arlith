@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.app.server.ArlithServer;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.gids.GIDProvider;
 import pala.apps.arlith.backend.connections.networking.BlockException;
@@ -14,7 +14,7 @@ import pala.apps.arlith.backend.connections.networking.Connection;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 /**
- * Stores and tracks all of the media for a {@link Server}.
+ * Stores and tracks all of the media for a {@link ArlithServer}.
  * 
  * @author Palanath
  *
@@ -27,7 +27,7 @@ public class MediaSystem {
 	 * <p>
 	 * Creates a new {@link MediaSystem} with the specified {@link File} location as
 	 * the storage directory. This location is typically a subdirectory under the
-	 * {@link Server}'s root data directory named something such as
+	 * {@link ArlithServer}'s root data directory named something such as
 	 * <code>media</code>, but can be anywhere. It should be consistent between runs
 	 * of the same server.
 	 * </p>
