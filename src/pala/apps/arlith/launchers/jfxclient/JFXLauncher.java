@@ -1,8 +1,9 @@
-package pala.apps.arlith;
+package pala.apps.arlith.launchers.jfxclient;
 
 import java.io.IOException;
 
 import javafx.application.Application;
+import pala.apps.arlith.launchers.ApplicationLauncher;
 
 public class JFXLauncher implements ApplicationLauncher {
 

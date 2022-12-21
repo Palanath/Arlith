@@ -1,4 +1,4 @@
-package pala.apps.arlith;
+package pala.apps.arlith.launchers.jfxclient;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
