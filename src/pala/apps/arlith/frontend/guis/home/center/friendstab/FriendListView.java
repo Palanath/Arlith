@@ -22,7 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import pala.apps.arlith.application.ArlithRuntime;
+import pala.apps.arlith.application.JFXArlithRuntime;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
@@ -33,8 +33,8 @@ import pala.libs.generic.javafx.FXTools;
 public class FriendListView extends TableView<ClientUser> {
 
 	private static final Insets DEFAULT_ROW_PADDING = new Insets(1);
-	private static final Border SELECTED_ROW_BORDER = FXTools.getBorderFromColor(ArlithRuntime.DEFAULT_ACTIVE_COLOR, 1),
-			HOVER_ROW_BORDER = FXTools.getBorderFromColor(ArlithRuntime.DEFAULT_BASE_COLOR, 1);
+	private static final Border SELECTED_ROW_BORDER = FXTools.getBorderFromColor(JFXArlithRuntime.DEFAULT_ACTIVE_COLOR, 1),
+			HOVER_ROW_BORDER = FXTools.getBorderFromColor(JFXArlithRuntime.DEFAULT_BASE_COLOR, 1);
 
 	private static abstract class FriendsListCell extends TableCell<ClientUser, ClientUser> {
 		/**
@@ -108,18 +108,18 @@ public class FriendListView extends TableView<ClientUser> {
 				private void responsivelyStyle() {
 					BORDER_HANDLER: if (!isEmpty()) {
 						if (isSelected()) {
-							setTextFill(ArlithRuntime.DEFAULT_ACTIVE_COLOR);
+							setTextFill(JFXArlithRuntime.DEFAULT_ACTIVE_COLOR);
 							setPadding(Insets.EMPTY);
 							setBorder(SELECTED_ROW_BORDER);
 						} else if (isHover()) {
-							setTextFill(ArlithRuntime.DEFAULT_BASE_COLOR);
+							setTextFill(JFXArlithRuntime.DEFAULT_BASE_COLOR);
 							setPadding(Insets.EMPTY);
 							setBorder(HOVER_ROW_BORDER);
 						} else
 							break BORDER_HANDLER;
 						return;
 					}
-					setTextFill(ArlithRuntime.DEFAULT_BASE_COLOR);
+					setTextFill(JFXArlithRuntime.DEFAULT_BASE_COLOR);
 					setPadding(DEFAULT_ROW_PADDING);
 					setBorder(null);
 				}

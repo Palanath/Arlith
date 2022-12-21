@@ -20,6 +20,7 @@ import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pala.apps.arlith.application.ArlithRuntime;
+import pala.apps.arlith.application.JFXArlithRuntime;
 import pala.apps.arlith.application.Logging;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
@@ -46,7 +47,7 @@ public final class GUIUtils {
 			.requestFocus();
 
 	public static void prepareStage(Stage stage) {
-		stage.getIcons().add(ArlithRuntime.getWindowIcon());
+		stage.getIcons().add(JFXArlithRuntime.getWindowIcon());
 		stage.setFullScreenExitHint("Press F11 to exit fullscreen mode.");
 		stage.setTitle("Arlith");
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);

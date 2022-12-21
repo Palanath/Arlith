@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.application.ArlithRuntime;
+import pala.apps.arlith.application.JFXArlithRuntime;
 import pala.libs.generic.QuickList;
 import pala.libs.generic.backgrounds.Background;
 import pala.libs.generic.generators.Generator;
@@ -18,8 +18,8 @@ class LogInBackground extends Background {
 		return 1d / (1 + Math.pow(frac / (1 - frac), -2.5));
 	}
 
-	private final Generator<Color> CIRCLE_COLOR_GENERATOR = Generator.random(ArlithRuntime.DEFAULT_ACTIVE_COLOR.desaturate(),
-			ArlithRuntime.DEFAULT_BASE_COLOR.desaturate());
+	private final Generator<Color> CIRCLE_COLOR_GENERATOR = Generator.random(JFXArlithRuntime.DEFAULT_ACTIVE_COLOR.desaturate(),
+			JFXArlithRuntime.DEFAULT_BASE_COLOR.desaturate());
 	private final static double MOVE_RATE = 50;
 
 	private static final double random() {
