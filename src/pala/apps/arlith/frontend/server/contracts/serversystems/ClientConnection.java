@@ -1,7 +1,7 @@
 package pala.apps.arlith.frontend.server.contracts.serversystems;
 
 import pala.apps.arlith.backend.common.gids.GID;
-import pala.apps.arlith.backend.connections.networking.Connection;
+import pala.apps.arlith.backend.networking.Connection;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
 
 /**

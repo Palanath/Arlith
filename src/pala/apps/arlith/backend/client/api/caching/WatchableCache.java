@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import pala.apps.arlith.backend.client.api.caching.ClientCache.Querier;
 import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
 import pala.apps.arlith.backend.watchables.View;
 import pala.apps.arlith.backend.watchables.Watchable;
 import pala.apps.arlith.backend.watchables.Watcher;

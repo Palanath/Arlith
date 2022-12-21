@@ -7,8 +7,8 @@ import java.util.List;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.types.FriendStateValue;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.frontend.server.contracts.media.MediaUpload;
 

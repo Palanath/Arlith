@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.connections.networking;
+package pala.apps.arlith.backend.networking;
 
 import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.backend.streams.OutputStream;

@@ -10,7 +10,7 @@ import pala.apps.arlith.backend.common.protocol.events.ProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.ThreadAccessGainedEvent;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
-import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONString;
 import pala.libs.generic.json.JSONValue;

@@ -5,4 +5,4 @@
  * @author Palanath
  *
  */
-package pala.apps.arlith.backend.connections.networking;
+package pala.apps.arlith.backend.networking;

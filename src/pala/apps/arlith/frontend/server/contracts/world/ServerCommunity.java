@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.frontend.server.contracts.media.MediaUpload;
 

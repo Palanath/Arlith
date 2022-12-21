@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.connections.scp;
+package pala.apps.arlith.backend.networking.scp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -7,8 +7,8 @@ import java.net.Socket;
 
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
-import pala.apps.arlith.backend.connections.networking.Communicator;
-import pala.apps.arlith.backend.connections.networking.Connection;
+import pala.apps.arlith.backend.networking.Communicator;
+import pala.apps.arlith.backend.networking.Connection;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventSystem;
 

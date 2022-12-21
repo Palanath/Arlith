@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.connections.scp;
+package pala.apps.arlith.backend.networking.scp;
 
 import java.time.Instant;
 

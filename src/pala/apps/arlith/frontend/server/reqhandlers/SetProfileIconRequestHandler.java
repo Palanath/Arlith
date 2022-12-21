@@ -9,8 +9,8 @@ import pala.apps.arlith.backend.common.protocol.requests.SetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestHandler;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
@@ -25,7 +25,7 @@ import pala.libs.generic.json.JSONObject;
  * <p>
  * This handler parses the request by constructing a
  * {@link SetProfileIconRequest} object, using
- * {@link SetProfileIconRequest#SetProfileIconRequest(JSONObject, pala.apps.arlith.backend.connections.networking.Connection)}.
+ * {@link SetProfileIconRequest#SetProfileIconRequest(JSONObject, pala.apps.arlith.backend.networking.networking.Connection)}.
  * </p>
  * <ol>
  * <li>The handler checks if any media is present (by seeing if

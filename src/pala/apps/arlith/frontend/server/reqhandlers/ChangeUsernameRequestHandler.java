@@ -3,8 +3,8 @@ package pala.apps.arlith.frontend.server.reqhandlers;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeUsernameRequest;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
 
 public final class ChangeUsernameRequestHandler extends SimpleRequestHandler<ChangeUsernameRequest> {

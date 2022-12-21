@@ -8,10 +8,10 @@ import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.Connection;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.Connection;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 

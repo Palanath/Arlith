@@ -3,8 +3,8 @@ package pala.apps.arlith.frontend.server.reqhandlers;
 import java.util.function.Function;
 
 import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestHandler;
 import pala.libs.generic.json.JSONObject;

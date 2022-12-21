@@ -25,8 +25,8 @@ import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.requests.LoginRequest;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.connections.encryption.MalformedResponseException;
-import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.networking.encryption.MalformedResponseException;
+import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
 
 public class ArlithClientBuilder {
 

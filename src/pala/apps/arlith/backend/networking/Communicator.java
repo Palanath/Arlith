@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.connections.networking;
+package pala.apps.arlith.backend.networking;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -13,8 +13,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.backend.connections.encryption.EncryptedConnection;
-import pala.apps.arlith.backend.connections.encryption.MalformedResponseException;
+import pala.apps.arlith.backend.networking.encryption.EncryptedConnection;
+import pala.apps.arlith.backend.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.backend.streams.IOStream;
 import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.backend.streams.OutputStream;

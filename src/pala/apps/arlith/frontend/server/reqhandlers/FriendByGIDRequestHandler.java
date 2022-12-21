@@ -7,8 +7,8 @@ import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
 

@@ -8,9 +8,9 @@ import java.util.Set;
 
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.gids.GIDProvider;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.Connection;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.Connection;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.ArlithServer;
 
 /**

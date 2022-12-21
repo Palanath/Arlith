@@ -4,11 +4,11 @@ import java.io.File;
 import java.net.Socket;
 
 import pala.apps.arlith.backend.common.authentication.AuthToken;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.Communicator;
-import pala.apps.arlith.backend.connections.networking.Connection;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.backend.connections.scp.CommunicationConnectionAcceptor;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.Communicator;
+import pala.apps.arlith.backend.networking.Connection;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.scp.CommunicationConnectionAcceptor;
 import pala.apps.arlith.frontend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestMapper;

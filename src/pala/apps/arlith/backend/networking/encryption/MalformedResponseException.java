@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.connections.encryption;
+package pala.apps.arlith.backend.networking.encryption;
 
 public class MalformedResponseException extends Exception {
 

@@ -41,9 +41,9 @@ import pala.apps.arlith.backend.common.protocol.requests.SetCommunityImageReques
 import pala.apps.arlith.backend.common.protocol.requests.SetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.requests.SetStatusRequest;
 import pala.apps.arlith.backend.common.protocol.requests.UnfriendRequest;
-import pala.apps.arlith.backend.connections.networking.BlockException;
-import pala.apps.arlith.backend.connections.networking.Connection;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.BlockException;
+import pala.apps.arlith.backend.networking.Connection;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.ArlithServer;
 import pala.apps.arlith.frontend.server.MalformedIncomingRequestException;
 import pala.apps.arlith.frontend.server.RequestNotSupportedException;

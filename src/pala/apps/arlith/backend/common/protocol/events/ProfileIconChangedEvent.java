@@ -3,8 +3,8 @@ package pala.apps.arlith.backend.common.protocol.events;
 import java.time.Instant;
 
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
-import pala.apps.arlith.backend.connections.networking.Connection;
-import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.networking.Connection;
+import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.libs.generic.events.EventType;
 import pala.libs.generic.json.JSONObject;
 
