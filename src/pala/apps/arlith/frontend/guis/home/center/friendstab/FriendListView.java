@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.Logging;
-import pala.apps.arlith.backend.Utilities;
+import pala.apps.arlith.backend.JavaFXUtilities;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.libs.generic.javafx.FXTools;
@@ -227,7 +227,7 @@ public class FriendListView extends TableView<ClientUser> {
 							Logging.err("An error occurred while checking the friend status of another user.");
 							Logging.err(e);
 							setText("Error");
-							Utilities.runFX(() -> setGraphic(null));
+							JavaFXUtilities.runFX(() -> setGraphic(null));
 						}
 				}
 			};

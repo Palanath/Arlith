@@ -2,9 +2,15 @@ package pala.apps.arlith.backend;
 
 import java.util.Arrays;
 
-import javafx.application.Platform;
 import pala.libs.generic.strings.StringTools;
 
+/**
+ * General {@link Utilities}. This class shouldn't depend on any libraries
+ * besides the standard library.
+ * 
+ * @author Palanath
+ *
+ */
 public class Utilities {
 	public static final String DEFAULT_DESTINATION_ADDRESS = "arlith.net";
 	public static final int DEFAULT_PORT = 42069;
@@ -79,12 +85,5 @@ public class Utilities {
 
 	public static void setPreferredDestinationAddress(String preferredDestinationAddress) {
 		Utilities.preferredDestinationAddress = preferredDestinationAddress;
-	}
-
-	public static void runFX(Runnable runnable) {
-		if (!Platform.isFxApplicationThread())
-			Platform.runLater(runnable);
-		else
-			runnable.run();
 	}
 }
