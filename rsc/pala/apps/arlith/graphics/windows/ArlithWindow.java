@@ -9,7 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import pala.apps.arlith.app.guis.ApplicationState;
-import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.graphics.windows.Page;
 import pala.apps.arlith.graphics.Disposable;
 import pala.apps.arlith.graphics.LeftPanel;

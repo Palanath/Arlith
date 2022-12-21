@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.guis.communityview;
 
-import pala.apps.arlith.app.client.ArlithClient;
-import pala.apps.arlith.app.client.api.ClientCommunity;
 import pala.apps.arlith.app.guis.BindHandlerPage;
+import pala.apps.arlith.backend.client.ArlithClient;
+import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 

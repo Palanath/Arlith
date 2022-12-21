@@ -14,7 +14,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.connections.encryption.MalformedResponseException;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.Communicator;

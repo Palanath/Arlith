@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pala.apps.arlith.app.logging.Logging;
 import pala.apps.arlith.app.server.MalformedIncomingRequestException;
 import pala.apps.arlith.app.server.RequestNotSupportedException;
 import pala.apps.arlith.app.server.ArlithServer;
@@ -45,6 +44,7 @@ import pala.apps.arlith.app.server.reqhandlers.SetCommunityImageRequestHandler;
 import pala.apps.arlith.app.server.reqhandlers.SetProfileIconRequestHandler;
 import pala.apps.arlith.app.server.reqhandlers.SetStatusRequestHandler;
 import pala.apps.arlith.app.server.reqhandlers.UnfriendRequestHandler;
+import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.communication.gids.GID;
 import pala.apps.arlith.backend.communication.protocol.errors.ServerError;
 import pala.apps.arlith.backend.communication.protocol.requests.AuthRequest;

@@ -1,7 +1,7 @@
 package pala.apps.arlith.app.guis;
 
 import javafx.stage.Stage;
-import pala.apps.arlith.app.client.ArlithClient;
+import pala.apps.arlith.backend.client.ArlithClient;
 
 public class ApplicationState {
 	private final Stage stage;

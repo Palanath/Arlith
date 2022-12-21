@@ -19,8 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import pala.apps.arlith.app.logging.Logging;
 import pala.apps.arlith.application.ArlithRuntime;
+import pala.apps.arlith.application.Logging;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
 

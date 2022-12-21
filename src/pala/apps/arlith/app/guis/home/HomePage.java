@@ -14,7 +14,7 @@ import pala.apps.arlith.app.guis.home.center.FriendsTab;
 import pala.apps.arlith.app.guis.home.center.HomeTab;
 import pala.apps.arlith.app.guis.home.center.PanelTab;
 import pala.apps.arlith.app.guis.home.center.StatsTab;
-import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 

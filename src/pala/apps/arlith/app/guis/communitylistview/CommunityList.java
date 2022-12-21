@@ -17,10 +17,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import pala.apps.arlith.app.client.api.ClientCommunity;
 import pala.apps.arlith.app.guis.BindHandlerPage;
 import pala.apps.arlith.app.guis.BindHandlerPage.PageBindable;
-import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.application.Logging;
+import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 
 public class CommunityList {

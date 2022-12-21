@@ -1,6 +1,6 @@
 package pala.apps.arlith.backend.communication.protocol.requests;
 
-import pala.apps.arlith.app.client.requests.Inquiry;
+import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.communication.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolErrorDiscerner;
