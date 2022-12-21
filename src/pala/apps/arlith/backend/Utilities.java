@@ -6,7 +6,7 @@ import pala.libs.generic.strings.StringTools;
 
 /**
  * General {@link Utilities}. This class shouldn't depend on any libraries
- * besides the standard library.
+ * besides the standard library. See {@link JavaFXUtilities} for JFX utilities.
  * 
  * @author Palanath
  *
