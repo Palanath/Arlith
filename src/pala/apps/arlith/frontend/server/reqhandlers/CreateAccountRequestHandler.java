@@ -1,0 +1,42 @@
+package pala.apps.arlith.frontend.server.reqhandlers;
+
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.CreateAccountRequest;
+import pala.apps.arlith.backend.communication.protocol.types.AuthTokenValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;
+import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
+import pala.apps.arlith.frontend.server.systems.EventConnectionImpl;
+
+public final class CreateAccountRequestHandler extends SimpleRequestHandler<CreateAccountRequest> {
+
+	@Override
+	protected void handle(final CreateAccountRequest r, final RequestConnection client)
+			throws UnknownCommStateException, BlockException, ClassCastException {
+
+		if (client.isAuthorized())
+			client.sendError(new RestrictedError());
+		else {
+			AuthToken token;
+			ServerUser user;
+			user = client.getWorld().createUserWithEmailAndPhone(r.username(), r.getPassword(), r.emailAddress(),
+					r.phoneNumber());
+			token = client.getServer().getAuthSystem().login(user);
+			// Register an Event Client wrapping this same connection to the event handler.
+			client.getServer().getEventSystem()
+					.registerClient(new EventConnectionImpl(client.getConnection(), user.getGID()));
+			client.sendResult(new AuthTokenValue(token));
+			client.stopListening();
+//			BasicRequestResolver.log("The user: [" + client.getAccount().getUsername()
+//					+ "] just created an account {EVENT_HANDLER} from IP: ["
+//					+ client.getConnectionInfo().getInetAddress() + "] on remote port: ["
+//					+ client.getConnectionInfo().getPort() + "].");
+		}
+	}
+
+	public CreateAccountRequestHandler() {
+		super(CreateAccountRequest::new);
+	}
+}

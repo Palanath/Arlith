@@ -2,7 +2,7 @@ package pala.apps.arlith.graphics;
 
 import static javafx.scene.paint.Color.GOLD;
 import static javafx.scene.paint.Color.RED;
-import static pala.apps.arlith.app.guis.GUIUtils.applyClickAnimation;
+import static pala.apps.arlith.frontend.guis.GUIUtils.applyClickAnimation;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -10,14 +10,14 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
-import pala.apps.arlith.app.guis.communitylistview.CommunityListViewPage;
-import pala.apps.arlith.app.guis.home.HomePage;
-import pala.apps.arlith.app.guis.settings.SettingsPage;
-import pala.apps.arlith.app.guis.threadlistview.ThreadListViewPage;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.graphics.nodes.MemberCard;
+import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
+import pala.apps.arlith.frontend.guis.home.HomePage;
+import pala.apps.arlith.frontend.guis.settings.SettingsPage;
+import pala.apps.arlith.frontend.guis.threadlistview.ThreadListViewPage;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 

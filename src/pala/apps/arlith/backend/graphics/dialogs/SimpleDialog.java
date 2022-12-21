@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import pala.apps.arlith.app.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.GUIUtils;
 
 public class SimpleDialog extends Stage {
 
