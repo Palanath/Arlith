@@ -2,7 +2,7 @@ package pala.apps.arlith.launchers.terminalserver;
 
 import pala.apps.arlith.Arlith;
 import pala.apps.arlith.backend.Utilities;
-import pala.apps.arlith.frontend.server.ArlithServer;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.launchers.ApplicationLauncher;
 
 public class ServerLauncher implements ApplicationLauncher {

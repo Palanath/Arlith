@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pala.apps.arlith.backend.Utilities;
-import pala.apps.arlith.frontend.server.ArlithServer;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.libs.generic.guis.ApplicationProperties;
 import pala.libs.generic.guis.Window;
 
