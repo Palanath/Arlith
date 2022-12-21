@@ -2,9 +2,9 @@ package pala.apps.arlith.app.server.world;
 
 import java.io.File;
 
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.server.contracts.world.ServerDirectThread;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.gids.GID;
 import pala.libs.generic.json.JSONObject;
 
 final class ServerDirectThreadImpl extends ServerThreadImpl implements ServerDirectThread {

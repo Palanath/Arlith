@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import pala.apps.arlith.api.streams.IOStream;
-import pala.apps.arlith.api.streams.InputStream.IllegalByteException;
-import pala.apps.arlith.api.streams.InputStream.StringTooLargeException;
+import pala.apps.arlith.backend.streams.IOStream;
+import pala.apps.arlith.backend.streams.InputStream.IllegalByteException;
+import pala.apps.arlith.backend.streams.InputStream.StringTooLargeException;
 import pala.libs.generic.json.JSONValue;
 
 /**

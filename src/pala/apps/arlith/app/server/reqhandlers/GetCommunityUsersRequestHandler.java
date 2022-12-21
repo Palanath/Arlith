@@ -1,13 +1,13 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.GetCommunityUsersRequest;
-import pala.apps.arlith.api.communication.protocol.types.ListValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.world.ServerCommunity;
+import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.GetCommunityUsersRequest;
+import pala.apps.arlith.backend.communication.protocol.types.ListValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.libs.generic.JavaTools;
 
 public final class GetCommunityUsersRequestHandler extends SimpleRequestHandler<GetCommunityUsersRequest> {

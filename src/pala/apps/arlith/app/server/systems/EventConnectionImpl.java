@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.server.systems;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.connections.networking.Connection;
 import pala.apps.arlith.app.server.contracts.serversystems.EventConnection;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.connections.networking.Connection;
 
 public class EventConnectionImpl implements EventConnection {
 

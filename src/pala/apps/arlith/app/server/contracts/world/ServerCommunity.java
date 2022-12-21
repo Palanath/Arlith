@@ -6,10 +6,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.api.streams.InputStream;
 import pala.apps.arlith.app.server.contracts.media.MediaUpload;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.streams.InputStream;
 
 public interface ServerCommunity extends ServerObject {
 

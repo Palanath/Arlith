@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.gids.GIDProvider;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.Connection;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.gids.GIDProvider;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.Connection;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 /**
  * Stores and tracks all of the media for a {@link Server}.
@@ -92,7 +92,7 @@ public class MediaSystem {
 	 *                     variable in size.
 	 * @param media        A connection from which the media will be read. The media
 	 *                     is read via
-	 *                     {@link Connection#readVariableBlock(pala.apps.arlith.api.streams.OutputStream)}
+	 *                     {@link Connection#readVariableBlock(pala.apps.arlith.backend.streams.OutputStream)}
 	 *                     if <code>variableSize</code> is <code>true</code> and is
 	 *                     read via {@link Connection#readBlockLong()} if
 	 *                     <code>variableSize</code> is <code>false</code>.
@@ -113,7 +113,7 @@ public class MediaSystem {
 
 		try (FileOutputStream fos = new FileOutputStream(m)) {
 			if (variableSize)
-				media.readVariableBlock(pala.apps.arlith.api.streams.OutputStream.fromJavaOutputStream(fos));
+				media.readVariableBlock(pala.apps.arlith.backend.streams.OutputStream.fromJavaOutputStream(fos));
 			else
 				fos.write(media.readBlockLong());
 		} catch (IOException | UnknownCommStateException e) {

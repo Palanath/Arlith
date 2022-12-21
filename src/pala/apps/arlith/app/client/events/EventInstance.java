@@ -1,6 +1,6 @@
 package pala.apps.arlith.app.client.events;
 
-import pala.apps.arlith.api.communication.protocol.events.CommunicationProtocolEvent;
+import pala.apps.arlith.backend.communication.protocol.events.CommunicationProtocolEvent;
 import pala.libs.generic.events.EventType;
 
 public class EventInstance<E extends CommunicationProtocolEvent> {

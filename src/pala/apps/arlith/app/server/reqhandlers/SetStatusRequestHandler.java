@@ -1,11 +1,11 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.SetStatusRequest;
-import pala.apps.arlith.api.communication.protocol.types.CompletionValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.SetStatusRequest;
+import pala.apps.arlith.backend.communication.protocol.types.CompletionValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 public final class SetStatusRequestHandler extends SimpleRequestHandler<SetStatusRequest> {
 

@@ -4,13 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.types.FriendStateValue;
-import pala.apps.arlith.api.communication.protocol.types.HexHashValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.api.streams.InputStream;
 import pala.apps.arlith.app.server.contracts.media.MediaUpload;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.types.FriendStateValue;
+import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.streams.InputStream;
 
 public interface ServerUser extends ServerObject {
 

@@ -2,10 +2,10 @@ package pala.apps.arlith.app.client.api.lib;
 
 import java.util.function.Supplier;
 
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.app.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 public abstract class Cache<O> {
 

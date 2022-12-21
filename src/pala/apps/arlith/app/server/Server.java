@@ -3,12 +3,6 @@ package pala.apps.arlith.app.server;
 import java.io.File;
 import java.net.Socket;
 
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.Communicator;
-import pala.apps.arlith.api.connections.networking.Connection;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.api.connections.scp.CommunicationConnectionAcceptor;
 import pala.apps.arlith.app.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestMapper;
@@ -17,6 +11,12 @@ import pala.apps.arlith.app.server.systems.AuthenticationSystem;
 import pala.apps.arlith.app.server.systems.EventSystem;
 import pala.apps.arlith.app.server.systems.RequestSystemImpl;
 import pala.apps.arlith.app.server.world.ServerWorldImpl;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.Communicator;
+import pala.apps.arlith.backend.connections.networking.Connection;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnectionAcceptor;
 
 public class Server extends CommunicationConnectionAcceptor {
 

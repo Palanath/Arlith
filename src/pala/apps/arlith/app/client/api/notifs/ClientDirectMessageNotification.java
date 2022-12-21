@@ -1,7 +1,7 @@
 package pala.apps.arlith.app.client.api.notifs;
 
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.backend.communication.gids.GID;
 
 public class ClientDirectMessageNotification extends ClientNotification {
 	private final GID msg, thread;

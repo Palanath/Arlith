@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.server.world;
 
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.server.contracts.coldstorage.Snapshottable;
 import pala.apps.arlith.app.server.contracts.world.ServerObject;
+import pala.apps.arlith.backend.communication.gids.GID;
 import pala.libs.generic.json.JSONArray;
 import pala.libs.generic.json.JSONObject;
 

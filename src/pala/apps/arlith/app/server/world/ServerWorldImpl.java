@@ -6,14 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.gids.GIDProvider;
-import pala.apps.arlith.api.communication.protocol.types.HexHashValue;
 import pala.apps.arlith.app.server.Server;
 import pala.apps.arlith.app.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.app.server.contracts.world.ServerMessage;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.app.server.contracts.world.ServerWorld;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.gids.GIDProvider;
+import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
 
 /**
  * <p>

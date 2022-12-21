@@ -12,14 +12,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.api.streams.InputStream;
 import pala.apps.arlith.app.server.contracts.coldstorage.assetowner.AssetOwner;
 import pala.apps.arlith.app.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.app.server.contracts.world.ServerCommunityThread;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.streams.InputStream;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.json.JSONArray;
 import pala.libs.generic.json.JSONObject;

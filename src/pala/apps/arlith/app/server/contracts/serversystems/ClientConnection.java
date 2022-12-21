@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.server.contracts.serversystems;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.connections.networking.Connection;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.connections.networking.Connection;
 
 /**
  * Represents a {@link ClientConnection} from the perspective of the server. A

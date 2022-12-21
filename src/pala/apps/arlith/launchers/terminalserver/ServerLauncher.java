@@ -1,8 +1,8 @@
 package pala.apps.arlith.launchers.terminalserver;
 
 import pala.apps.arlith.Arlith;
-import pala.apps.arlith.api.Utilities;
 import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.launchers.ApplicationLauncher;
 
 public class ServerLauncher implements ApplicationLauncher {

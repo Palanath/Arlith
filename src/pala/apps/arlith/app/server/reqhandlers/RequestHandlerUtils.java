@@ -1,14 +1,14 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.protocol.types.GIDValue;
-import pala.apps.arlith.api.communication.protocol.types.LongValue;
-import pala.apps.arlith.api.communication.protocol.types.MessageValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.communication.protocol.types.ThreadValue;
-import pala.apps.arlith.api.communication.protocol.types.UserValue;
 import pala.apps.arlith.app.server.contracts.world.ServerMessage;
 import pala.apps.arlith.app.server.contracts.world.ServerThread;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.communication.protocol.types.LongValue;
+import pala.apps.arlith.backend.communication.protocol.types.MessageValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.communication.protocol.types.ThreadValue;
+import pala.apps.arlith.backend.communication.protocol.types.UserValue;
 
 public final class RequestHandlerUtils {
 	private RequestHandlerUtils() {

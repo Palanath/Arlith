@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
-import pala.apps.arlith.api.watchables.View;
-import pala.apps.arlith.api.watchables.Watchable;
-import pala.apps.arlith.api.watchables.Watcher;
 import pala.apps.arlith.app.client.api.lib.ClientCache.Querier;
 import pala.apps.arlith.app.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.watchables.View;
+import pala.apps.arlith.backend.watchables.Watchable;
+import pala.apps.arlith.backend.watchables.Watcher;
 
 public final class WatchableCache<O> extends Cache<O> implements Watchable<O> {
 

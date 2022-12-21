@@ -2,22 +2,22 @@ package pala.apps.arlith.app.client.api;
 
 import java.util.function.Consumer;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.requests.ChangeEmailRequest;
-import pala.apps.arlith.api.communication.protocol.requests.ChangePhoneNumberRequest;
-import pala.apps.arlith.api.communication.protocol.requests.ChangeUsernameRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetEmailRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetPhoneNumberRequest;
-import pala.apps.arlith.api.communication.protocol.requests.SetProfileIconRequest;
-import pala.apps.arlith.api.communication.protocol.requests.SetStatusRequest;
-import pala.apps.arlith.api.communication.protocol.types.CompletionValue;
-import pala.apps.arlith.api.communication.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
 import pala.apps.arlith.app.client.Client;
 import pala.apps.arlith.app.client.api.lib.ClientCache;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.requests.ChangeEmailRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.ChangePhoneNumberRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.ChangeUsernameRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetEmailRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetPhoneNumberRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.SetProfileIconRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.SetStatusRequest;
+import pala.apps.arlith.backend.communication.protocol.types.CompletionValue;
+import pala.apps.arlith.backend.communication.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 public class ClientOwnUser extends ClientUser {
 

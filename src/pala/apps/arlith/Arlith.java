@@ -2,8 +2,8 @@ package pala.apps.arlith;
 
 import java.io.IOException;
 
-import pala.apps.arlith.api.Utilities;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.launchers.ApplicationLauncher;
 import pala.apps.arlith.launchers.jfxclient.JFXLauncher;
 import pala.libs.generic.parsers.cli.CLIParams;

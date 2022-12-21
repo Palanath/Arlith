@@ -1,16 +1,16 @@
 package pala.apps.arlith.app.client.events;
 
-import pala.apps.arlith.api.communication.protocol.IllegalCommunicationProtocolException;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.events.IncomingFriendEvent;
-import pala.apps.arlith.api.communication.protocol.events.LazyCommunityImageChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.LazyProfileIconChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.MessageCreatedEvent;
-import pala.apps.arlith.api.communication.protocol.events.ProfileIconChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.ThreadAccessGainedEvent;
-import pala.apps.arlith.api.communication.protocol.meta.CommunicationProtocolConstructionError;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.communication.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.events.IncomingFriendEvent;
+import pala.apps.arlith.backend.communication.protocol.events.LazyCommunityImageChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.LazyProfileIconChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.MessageCreatedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.ProfileIconChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.ThreadAccessGainedEvent;
+import pala.apps.arlith.backend.communication.protocol.meta.CommunicationProtocolConstructionError;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONString;
 import pala.libs.generic.json.JSONValue;

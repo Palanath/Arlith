@@ -3,11 +3,11 @@ package pala.apps.arlith.app.client.requests.v2;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
 
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
-import pala.apps.arlith.api.execution.Action;
 import pala.apps.arlith.app.client.requests.Inquiry;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
+import pala.apps.arlith.backend.execution.Action;
 
 public abstract class SingleThreadRequestSubsystem implements RequestSubsystemInterface {
 

@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.server.contracts.serversystems;
 
-import pala.apps.arlith.api.communication.protocol.types.CommunicationProtocolType;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.communication.protocol.types.CommunicationProtocolType;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 
 public interface RequestHandler {

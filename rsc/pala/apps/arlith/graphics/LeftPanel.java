@@ -10,14 +10,14 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.graphics.nodes.MemberCard;
 import pala.apps.arlith.app.client.api.ClientOwnUser;
 import pala.apps.arlith.app.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.app.guis.home.HomePage;
 import pala.apps.arlith.app.guis.settings.SettingsPage;
 import pala.apps.arlith.app.guis.threadlistview.ThreadListViewPage;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.graphics.nodes.MemberCard;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 

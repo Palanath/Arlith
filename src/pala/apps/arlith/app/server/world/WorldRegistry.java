@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.server.utils.ServerUtils;
+import pala.apps.arlith.backend.communication.gids.GID;
 import pala.libs.generic.json.JSONObject;
 
 /**

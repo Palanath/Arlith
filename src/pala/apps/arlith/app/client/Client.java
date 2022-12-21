@@ -14,36 +14,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.events.CommunicationProtocolEvent;
-import pala.apps.arlith.api.communication.protocol.events.IncomingFriendEvent;
-import pala.apps.arlith.api.communication.protocol.events.LazyCommunityImageChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.LazyProfileIconChangedEvent;
-import pala.apps.arlith.api.communication.protocol.events.MessageCreatedEvent;
-import pala.apps.arlith.api.communication.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.api.communication.protocol.requests.AuthRequest;
-import pala.apps.arlith.api.communication.protocol.requests.CommunicationProtocolRequest;
-import pala.apps.arlith.api.communication.protocol.requests.CreateCommunityRequest;
-import pala.apps.arlith.api.communication.protocol.requests.FriendByGIDRequest;
-import pala.apps.arlith.api.communication.protocol.requests.FriendByNameRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetBunchOUsersRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetIncomingFriendRequestsRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetOutgoingFriendRequestsRequest;
-import pala.apps.arlith.api.communication.protocol.requests.GetOwnUserRequest;
-import pala.apps.arlith.api.communication.protocol.requests.ListFriendsRequest;
-import pala.apps.arlith.api.communication.protocol.requests.ListJoinedCommunitiesRequest;
-import pala.apps.arlith.api.communication.protocol.types.BooleanValue;
-import pala.apps.arlith.api.communication.protocol.types.CommunicationProtocolType;
-import pala.apps.arlith.api.communication.protocol.types.CommunityValue;
-import pala.apps.arlith.api.communication.protocol.types.GIDValue;
-import pala.apps.arlith.api.communication.protocol.types.ListValue;
-import pala.apps.arlith.api.communication.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.communication.protocol.types.ThreadValue;
-import pala.apps.arlith.api.communication.protocol.types.UserValue;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
 import pala.apps.arlith.app.client.api.ClientCommunity;
 import pala.apps.arlith.app.client.api.ClientOwnUser;
 import pala.apps.arlith.app.client.api.ClientThread;
@@ -57,6 +27,36 @@ import pala.apps.arlith.app.client.events.EventSubsystem;
 import pala.apps.arlith.app.client.events.StandardEventReader;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.app.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.events.CommunicationProtocolEvent;
+import pala.apps.arlith.backend.communication.protocol.events.IncomingFriendEvent;
+import pala.apps.arlith.backend.communication.protocol.events.LazyCommunityImageChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.LazyProfileIconChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.MessageCreatedEvent;
+import pala.apps.arlith.backend.communication.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.requests.AuthRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.CommunicationProtocolRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.CreateCommunityRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.FriendByGIDRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.FriendByNameRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetBunchOUsersRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetIncomingFriendRequestsRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetOutgoingFriendRequestsRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.GetOwnUserRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.ListFriendsRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.ListJoinedCommunitiesRequest;
+import pala.apps.arlith.backend.communication.protocol.types.BooleanValue;
+import pala.apps.arlith.backend.communication.protocol.types.CommunicationProtocolType;
+import pala.apps.arlith.backend.communication.protocol.types.CommunityValue;
+import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.communication.protocol.types.ListValue;
+import pala.apps.arlith.backend.communication.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.communication.protocol.types.ThreadValue;
+import pala.apps.arlith.backend.communication.protocol.types.UserValue;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
@@ -295,22 +295,22 @@ public class Client {
 	 * <b>currently does not use</b> the size field of the {@link PieceOMediaValue}.
 	 * It is recommended to just set the values to the actual size, if known, of the
 	 * media being uploaded. If either media is not being uploaded (i.e. the
-	 * {@link pala.apps.arlith.api.streams.InputStream} is <code>null</code>),
+	 * {@link pala.apps.arlith.backend.streams.InputStream} is <code>null</code>),
 	 * then it is recommended to supply <code>-1</code> for the media size.
-	 * {@link pala.apps.arlith.api.streams.InputStream} is <code>null</code>), then
+	 * {@link pala.apps.arlith.backend.streams.InputStream} is <code>null</code>), then
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
 	 * @param icon       The icon data itself, or <code>null</code> if no icon is
 	 *                   being supplied. This will be read from once this request
 	 *                   gets processed and is actually sent over the network. The
-	 *                   {@link pala.apps.arlith.api.streams.InputStream} supplied
+	 *                   {@link pala.apps.arlith.backend.streams.InputStream} supplied
 	 *                   should not be used by other code.
 	 * @param background The background data itself, or <code>null</code> if no
 	 *                   background is being supplied. This will be read from once
 	 *                   this request gets processed and is actually sent over the
 	 *                   network. The
-	 *                   {@link pala.apps.arlith.api.streams.InputStream} should not
+	 *                   {@link pala.apps.arlith.backend.streams.InputStream} should not
 	 *                   be used by other code.
 	 * @return An {@link ActionInterface} wrapping the request.
 	 */

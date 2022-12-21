@@ -2,18 +2,18 @@ package pala.apps.arlith.app.server.reqhandlers;
 
 import java.util.List;
 
-import pala.apps.arlith.api.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.RetrieveMessagesBeforeRequest;
-import pala.apps.arlith.api.communication.protocol.types.GIDValue;
-import pala.apps.arlith.api.communication.protocol.types.ListValue;
-import pala.apps.arlith.api.communication.protocol.types.MessageValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.world.ServerMessage;
 import pala.apps.arlith.app.server.contracts.world.ServerThread;
+import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.RetrieveMessagesBeforeRequest;
+import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.communication.protocol.types.ListValue;
+import pala.apps.arlith.backend.communication.protocol.types.MessageValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.libs.generic.JavaTools;
 
 public final class RetrieveMessagesBeforeRequestHandler

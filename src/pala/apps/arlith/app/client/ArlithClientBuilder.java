@@ -13,20 +13,20 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.api.Utilities;
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.errors.CreateAccountError;
-import pala.apps.arlith.api.communication.protocol.errors.LoginError;
-import pala.apps.arlith.api.communication.protocol.requests.AuthRequest;
-import pala.apps.arlith.api.communication.protocol.requests.CreateAccountRequest;
-import pala.apps.arlith.api.communication.protocol.requests.LoginRequest;
-import pala.apps.arlith.api.communication.protocol.types.HexHashValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.connections.encryption.MalformedResponseException;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
 import pala.apps.arlith.app.client.requests.v2.ConnectionStartupException;
 import pala.apps.arlith.app.client.requests.v2.SingleThreadRequestSubsystem;
+import pala.apps.arlith.backend.Utilities;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.communication.protocol.errors.LoginError;
+import pala.apps.arlith.backend.communication.protocol.requests.AuthRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.CreateAccountRequest;
+import pala.apps.arlith.backend.communication.protocol.requests.LoginRequest;
+import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.connections.encryption.MalformedResponseException;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 public class ArlithClientBuilder {
 

@@ -3,8 +3,8 @@ package pala.apps.arlith.app.server.contracts.world;
 import java.util.Collections;
 import java.util.List;
 
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.server.Server;
+import pala.apps.arlith.backend.communication.gids.GID;
 
 public interface ServerObject extends Comparable<ServerObject> {
 	/**

@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.communication.gids.GID;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.app.server.database.Writing;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.gids.GID;
 
 /**
  * This class manages authentication of the server. It stores auth tokens and

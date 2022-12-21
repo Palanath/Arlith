@@ -2,10 +2,10 @@ package pala.apps.arlith.app.server.contracts.serversystems;
 
 import java.util.Collection;
 
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.MalformedIncomingRequestException;
 import pala.apps.arlith.app.server.RequestNotSupportedException;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 
 /**

@@ -7,19 +7,19 @@ import java.util.Set;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.events.LazyCommunityImageChangedEvent;
-import pala.apps.arlith.api.communication.protocol.meta.CommunicationProtocolConstructionError;
-import pala.apps.arlith.api.communication.protocol.requests.GetCommunityImageRequest;
-import pala.apps.arlith.api.communication.protocol.types.GIDValue;
-import pala.apps.arlith.api.communication.protocol.types.TextValue;
-import pala.apps.arlith.api.communication.protocol.types.UserValue;
-import pala.apps.arlith.api.watchables.Variable;
-import pala.apps.arlith.api.watchables.View;
 import pala.apps.arlith.app.client.Client;
 import pala.apps.arlith.app.client.requests.v2.ActionInterface;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.events.LazyCommunityImageChangedEvent;
+import pala.apps.arlith.backend.communication.protocol.meta.CommunicationProtocolConstructionError;
+import pala.apps.arlith.backend.communication.protocol.requests.GetCommunityImageRequest;
+import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.communication.protocol.types.UserValue;
+import pala.apps.arlith.backend.watchables.Variable;
+import pala.apps.arlith.backend.watchables.View;
 
 public class ClientCommunity extends SimpleClientObject implements Named {
 	public ClientCommunity(GID gid, Client client, String name, List<ClientThread> threads, List<GID> members) {
@@ -174,7 +174,7 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	 * 
 	 * @return A brand new {@link Set} that was populated by converting each value
 	 *         in {@link #getMemberIDs()} to a {@link ClientUser} using
-	 *         {@link #client()}.{@link Client#getUser(pala.apps.arlith.api.communication.protocol.types.UserValue)}.
+	 *         {@link #client()}.{@link Client#getUser(pala.apps.arlith.backend.communication.protocol.types.UserValue)}.
 	 * @throws CommunicationProtocolError         If a {@link CommunicationProtocolError} occurs during the querying of
 	 *                          any {@link UserValue}s.
 	 * @throws RuntimeException If a {@link RuntimeException} occurs during the

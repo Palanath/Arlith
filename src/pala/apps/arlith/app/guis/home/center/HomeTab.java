@@ -21,9 +21,6 @@ import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.types.FriendStateValue;
 import pala.apps.arlith.app.client.api.ClientMessage;
 import pala.apps.arlith.app.client.api.ClientThread;
 import pala.apps.arlith.app.client.api.notifs.ClientDirectMessageNotification;
@@ -32,6 +29,9 @@ import pala.apps.arlith.app.client.api.notifs.ClientNotification;
 import pala.apps.arlith.app.guis.home.EventCard;
 import pala.apps.arlith.app.guis.home.HomePage;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.types.FriendStateValue;
 
 /**
  * @author Palanath

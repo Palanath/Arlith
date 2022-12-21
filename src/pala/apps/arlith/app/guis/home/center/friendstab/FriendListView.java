@@ -22,11 +22,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import pala.apps.arlith.api.Utilities;
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.app.application.Arlith;
 import pala.apps.arlith.app.client.api.ClientUser;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.Utilities;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
 import pala.libs.generic.javafx.FXTools;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })

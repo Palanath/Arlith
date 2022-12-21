@@ -3,15 +3,15 @@ package pala.apps.arlith.app.server.reqhandlers;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import pala.apps.arlith.api.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.GetProfileIconRequest;
-import pala.apps.arlith.api.communication.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
-import pala.apps.arlith.api.streams.InputStream;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.GetProfileIconRequest;
+import pala.apps.arlith.backend.communication.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
+import pala.apps.arlith.backend.streams.InputStream;
 
 public final class GetProfileIconRequestHandler extends SimpleRequestHandler<GetProfileIconRequest> {
 

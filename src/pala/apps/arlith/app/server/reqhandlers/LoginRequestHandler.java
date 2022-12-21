@@ -1,15 +1,15 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.communication.protocol.errors.LoginError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.LoginRequest;
-import pala.apps.arlith.api.communication.protocol.types.AuthTokenValue;
-import pala.apps.arlith.api.communication.protocol.types.LoginProblemValue;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
 import pala.apps.arlith.app.server.systems.EventConnectionImpl;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.protocol.errors.LoginError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.LoginRequest;
+import pala.apps.arlith.backend.communication.protocol.types.AuthTokenValue;
+import pala.apps.arlith.backend.communication.protocol.types.LoginProblemValue;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 public final class LoginRequestHandler extends SimpleRequestHandler<LoginRequest> {
 

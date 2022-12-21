@@ -1,16 +1,16 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.authentication.AuthToken;
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.AuthError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.requests.AuthRequest;
-import pala.apps.arlith.api.communication.protocol.types.AuthProblemValue;
-import pala.apps.arlith.api.communication.protocol.types.CompletionValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.systems.EventConnectionImpl;
+import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.AuthError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.requests.AuthRequest;
+import pala.apps.arlith.backend.communication.protocol.types.AuthProblemValue;
+import pala.apps.arlith.backend.communication.protocol.types.CompletionValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 /**
  * <p>

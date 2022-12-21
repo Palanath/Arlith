@@ -1,15 +1,15 @@
 package pala.apps.arlith.app.server.reqhandlers;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.api.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.api.communication.protocol.events.IncomingFriendEvent;
-import pala.apps.arlith.api.communication.protocol.requests.FriendByNameRequest;
-import pala.apps.arlith.api.communication.protocol.types.GIDValue;
-import pala.apps.arlith.api.connections.networking.BlockException;
-import pala.apps.arlith.api.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.app.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.app.server.contracts.world.ServerUser;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.communication.protocol.events.IncomingFriendEvent;
+import pala.apps.arlith.backend.communication.protocol.requests.FriendByNameRequest;
+import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.connections.networking.BlockException;
+import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 
 public final class FriendByNameRequestHandler extends SimpleRequestHandler<FriendByNameRequest> {
 

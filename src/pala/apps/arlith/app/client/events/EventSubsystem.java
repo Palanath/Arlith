@@ -12,14 +12,14 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.api.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.api.communication.protocol.errors.RateLimitError;
-import pala.apps.arlith.api.communication.protocol.events.CommunicationProtocolEvent;
-import pala.apps.arlith.api.connections.encryption.MalformedResponseException;
-import pala.apps.arlith.api.connections.scp.CommunicationConnection;
 import pala.apps.arlith.app.application.ArlithRuntime;
 import pala.apps.arlith.app.application.ArlithRuntime.Instance;
 import pala.apps.arlith.app.logging.Logging;
+import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.communication.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.communication.protocol.events.CommunicationProtocolEvent;
+import pala.apps.arlith.backend.connections.encryption.MalformedResponseException;
+import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
 

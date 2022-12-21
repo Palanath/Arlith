@@ -13,13 +13,13 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import pala.apps.arlith.api.parsers.markup.MarkupElement;
-import pala.apps.arlith.api.parsers.markup.MarkupNode;
-import pala.apps.arlith.api.parsers.markup.MarkupText;
-import pala.apps.arlith.api.parsers.markup2.Markup2Token;
-import pala.apps.arlith.api.parsers.markup2.Markup2Tokenizer;
 import pala.apps.arlith.app.client.api.ClientMessage;
 import pala.apps.arlith.app.guis.threadview.ThreadFormattingUtils.TextStyling.Change;
+import pala.apps.arlith.backend.parsers.markup.MarkupElement;
+import pala.apps.arlith.backend.parsers.markup.MarkupNode;
+import pala.apps.arlith.backend.parsers.markup.MarkupText;
+import pala.apps.arlith.backend.parsers.markup2.Markup2Token;
+import pala.apps.arlith.backend.parsers.markup2.Markup2Tokenizer;
 import pala.libs.generic.streams.CharacterStream;
 
 public final class ThreadFormattingUtils {

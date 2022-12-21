@@ -1,8 +1,8 @@
 package pala.apps.arlith.app.client.api;
 
-import pala.apps.arlith.api.communication.gids.GID;
-import pala.apps.arlith.api.communication.protocol.types.MessageValue;
 import pala.apps.arlith.app.client.Client;
+import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.communication.protocol.types.MessageValue;
 
 public class ClientMessage extends SimpleClientObject {
 	private String text;
