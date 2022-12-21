@@ -25,7 +25,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import pala.apps.arlith.backend.streams.IOStream;
+import pala.apps.arlith.libraries.streams.IOStream;
 
 /**
  * Provides encryption functionality over a connection by building a
@@ -68,8 +68,8 @@ public class EncryptedConnection {
 	public EncryptedConnection(InputStream input, OutputStream output) throws InvalidKeyException, IOException,
 			MalformedResponseException, InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-		IOStream str = IOStream.fromIOStreams(pala.apps.arlith.backend.streams.InputStream.fromJavaInputStream(input),
-				pala.apps.arlith.backend.streams.OutputStream.fromJavaOutputStream(output));// Stuff for ease of
+		IOStream str = IOStream.fromIOStreams(pala.apps.arlith.libraries.streams.InputStream.fromJavaInputStream(input),
+				pala.apps.arlith.libraries.streams.OutputStream.fromJavaOutputStream(output));// Stuff for ease of
 																						// writing.
 		//
 		// RSA

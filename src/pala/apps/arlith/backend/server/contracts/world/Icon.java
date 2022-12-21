@@ -2,7 +2,7 @@ package pala.apps.arlith.backend.server.contracts.world;
 
 import java.io.OutputStream;
 
-import pala.apps.arlith.backend.streams.InputStream;
+import pala.apps.arlith.libraries.streams.InputStream;
 
 /**
  * Represents a store of data or the capability to transfer a specific set of

@@ -295,22 +295,22 @@ public class ArlithClient {
 	 * <b>currently does not use</b> the size field of the {@link PieceOMediaValue}.
 	 * It is recommended to just set the values to the actual size, if known, of the
 	 * media being uploaded. If either media is not being uploaded (i.e. the
-	 * {@link pala.apps.arlith.backend.streams.InputStream} is <code>null</code>),
+	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
 	 * then it is recommended to supply <code>-1</code> for the media size.
-	 * {@link pala.apps.arlith.backend.streams.InputStream} is <code>null</code>), then
+	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>), then
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
 	 * @param icon       The icon data itself, or <code>null</code> if no icon is
 	 *                   being supplied. This will be read from once this request
 	 *                   gets processed and is actually sent over the network. The
-	 *                   {@link pala.apps.arlith.backend.streams.InputStream} supplied
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream} supplied
 	 *                   should not be used by other code.
 	 * @param background The background data itself, or <code>null</code> if no
 	 *                   background is being supplied. This will be read from once
 	 *                   this request gets processed and is actually sent over the
 	 *                   network. The
-	 *                   {@link pala.apps.arlith.backend.streams.InputStream} should not
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream} should not
 	 *                   be used by other code.
 	 * @return An {@link ActionInterface} wrapping the request.
 	 */

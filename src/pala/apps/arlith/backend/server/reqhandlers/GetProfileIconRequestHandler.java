@@ -9,9 +9,9 @@ import pala.apps.arlith.backend.common.protocol.requests.GetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
-import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.streams.InputStream;
 
 public final class GetProfileIconRequestHandler extends SimpleRequestHandler<GetProfileIconRequest> {
 

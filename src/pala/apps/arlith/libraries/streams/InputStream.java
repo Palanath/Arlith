@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.streams;
+package pala.apps.arlith.libraries.streams;
 
 import java.io.Closeable;
 import java.io.EOFException;

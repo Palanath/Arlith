@@ -92,7 +92,7 @@ public class MediaSystem {
 	 *                     variable in size.
 	 * @param media        A connection from which the media will be read. The media
 	 *                     is read via
-	 *                     {@link Connection#readVariableBlock(pala.apps.arlith.backend.streams.OutputStream)}
+	 *                     {@link Connection#readVariableBlock(pala.apps.arlith.libraries.streams.OutputStream)}
 	 *                     if <code>variableSize</code> is <code>true</code> and is
 	 *                     read via {@link Connection#readBlockLong()} if
 	 *                     <code>variableSize</code> is <code>false</code>.
@@ -113,7 +113,7 @@ public class MediaSystem {
 
 		try (FileOutputStream fos = new FileOutputStream(m)) {
 			if (variableSize)
-				media.readVariableBlock(pala.apps.arlith.backend.streams.OutputStream.fromJavaOutputStream(fos));
+				media.readVariableBlock(pala.apps.arlith.libraries.streams.OutputStream.fromJavaOutputStream(fos));
 			else
 				fos.write(media.readBlockLong());
 		} catch (IOException | UnknownCommStateException e) {

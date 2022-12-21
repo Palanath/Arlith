@@ -23,10 +23,10 @@ import pala.apps.arlith.backend.common.protocol.requests.OpenDirectConversationR
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.backend.watchables.Variable;
 import pala.apps.arlith.backend.watchables.View;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.streams.InputStream;
 
 public class ClientUser extends SimpleClientObject implements Named {
 

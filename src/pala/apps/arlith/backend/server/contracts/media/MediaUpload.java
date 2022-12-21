@@ -3,10 +3,10 @@ package pala.apps.arlith.backend.server.contracts.media;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import pala.apps.arlith.backend.streams.OutputStream;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.streams.OutputStream;
 
 public interface MediaUpload {
 	/**

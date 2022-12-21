@@ -13,12 +13,12 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.backend.streams.IOStream;
-import pala.apps.arlith.backend.streams.InputStream;
-import pala.apps.arlith.backend.streams.OutputStream;
-import pala.apps.arlith.backend.streams.InputStream.DatumTooLargeException;
 import pala.apps.arlith.libraries.networking.encryption.EncryptedConnection;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
+import pala.apps.arlith.libraries.streams.IOStream;
+import pala.apps.arlith.libraries.streams.InputStream;
+import pala.apps.arlith.libraries.streams.OutputStream;
+import pala.apps.arlith.libraries.streams.InputStream.DatumTooLargeException;
 import pala.libs.generic.json.JSONParser;
 import pala.libs.generic.json.JSONValue;
 import pala.libs.generic.streams.CharacterStream;

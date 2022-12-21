@@ -1,7 +1,7 @@
 package pala.apps.arlith.libraries.networking;
 
-import pala.apps.arlith.backend.streams.InputStream;
-import pala.apps.arlith.backend.streams.OutputStream;
+import pala.apps.arlith.libraries.streams.InputStream;
+import pala.apps.arlith.libraries.streams.OutputStream;
 import pala.libs.generic.json.JSONValue;
 
 public interface Connection {

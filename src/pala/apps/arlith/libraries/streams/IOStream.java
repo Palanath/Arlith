@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.streams;
+package pala.apps.arlith.libraries.streams;
 
 import java.io.IOException;
 import java.net.Socket;

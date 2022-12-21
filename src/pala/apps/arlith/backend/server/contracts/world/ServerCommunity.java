@@ -7,9 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import pala.apps.arlith.backend.server.contracts.media.MediaUpload;
-import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.streams.InputStream;
 
 public interface ServerCommunity extends ServerObject {
 
