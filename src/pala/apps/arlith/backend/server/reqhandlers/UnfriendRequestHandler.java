@@ -4,10 +4,10 @@ import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.UnfriendRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 public final class UnfriendRequestHandler extends SimpleRequestHandler<UnfriendRequest> {
 

@@ -17,7 +17,7 @@ import pala.apps.arlith.backend.common.protocol.requests.SetStatusRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 public class ClientOwnUser extends ClientUser {
 

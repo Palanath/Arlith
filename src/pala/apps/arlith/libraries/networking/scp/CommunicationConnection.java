@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.networking.scp;
+package pala.apps.arlith.libraries.networking.scp;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,13 +15,13 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.application.Logging;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.Communicator;
-import pala.apps.arlith.backend.networking.Connection;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
-import pala.apps.arlith.backend.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.backend.streams.InputStream;
 import pala.apps.arlith.backend.streams.OutputStream;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Communicator;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventSystem;
 import pala.libs.generic.json.JSONValue;

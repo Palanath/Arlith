@@ -9,4 +9,4 @@
  * @author Palanath
  *
  */
-package pala.apps.arlith.backend.networking.scp;
+package pala.apps.arlith.libraries.networking.scp;

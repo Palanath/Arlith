@@ -3,11 +3,11 @@ package pala.apps.arlith.backend.server.contracts.serversystems;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
-import pala.apps.arlith.backend.networking.Connection;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
 import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 /**
  * <h1>Overview</h1>

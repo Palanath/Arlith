@@ -4,9 +4,9 @@ import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.ListFriendsRequest;
 import pala.apps.arlith.backend.common.protocol.types.ListValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.JavaTools;
 
 public final class ListFriendsRequestHandler extends SimpleRequestHandler<ListFriendsRequest> {

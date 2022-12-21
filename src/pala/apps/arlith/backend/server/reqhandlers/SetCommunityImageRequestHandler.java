@@ -11,12 +11,12 @@ import pala.apps.arlith.backend.common.protocol.requests.SetCommunityImageReques
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestHandler;
 import pala.apps.arlith.backend.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.backend.server.contracts.world.ServerObject;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.json.JSONObject;
 

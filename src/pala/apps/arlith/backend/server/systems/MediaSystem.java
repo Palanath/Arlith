@@ -8,10 +8,10 @@ import java.util.Set;
 
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.gids.GIDProvider;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.Connection;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.ArlithServer;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 /**
  * Stores and tracks all of the media for a {@link ArlithServer}.

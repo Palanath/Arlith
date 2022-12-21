@@ -3,9 +3,9 @@ package pala.apps.arlith.backend.server.contracts.serversystems;
 import java.util.List;
 
 import pala.apps.arlith.backend.common.gids.GID;
-import pala.apps.arlith.backend.networking.Connection;
 import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.networking.Connection;
 
 /**
  * <p>

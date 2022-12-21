@@ -8,12 +8,12 @@ import pala.apps.arlith.backend.common.protocol.requests.SendMessageRequest;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.MessageValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerMessage;
 import pala.apps.arlith.backend.server.contracts.world.ServerThread;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.JavaTools;
 
 public final class SendMessageRequestHandler extends SimpleRequestHandler<SendMessageRequest> {

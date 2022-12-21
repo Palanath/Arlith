@@ -3,7 +3,7 @@ package pala.apps.arlith.backend.common.protocol.requests;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 

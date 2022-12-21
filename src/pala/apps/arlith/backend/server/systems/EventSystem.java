@@ -10,9 +10,9 @@ import java.util.Objects;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 public class EventSystem {
 

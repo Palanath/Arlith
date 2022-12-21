@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 public abstract class Cache<O> {
 

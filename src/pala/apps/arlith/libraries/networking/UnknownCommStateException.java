@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.networking;
+package pala.apps.arlith.libraries.networking;
 
 import java.io.IOException;
 

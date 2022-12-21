@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 public interface RequestSubsystemInterface {
 	/**

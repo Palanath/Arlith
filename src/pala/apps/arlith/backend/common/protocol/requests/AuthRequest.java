@@ -12,7 +12,7 @@ import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstr
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
 import pala.apps.arlith.backend.common.protocol.types.BooleanValue;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 

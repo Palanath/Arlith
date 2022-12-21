@@ -7,7 +7,7 @@ import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.requests.Action;
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 public abstract class SingleThreadRequestSubsystem implements RequestSubsystemInterface {
 

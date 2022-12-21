@@ -6,11 +6,11 @@ import pala.apps.arlith.backend.common.protocol.requests.GetThreadRequest;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
-import pala.apps.arlith.backend.networking.BlockException;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerCommunityThread;
 import pala.apps.arlith.backend.server.contracts.world.ServerThread;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 public final class GetThreadRequestHandler extends SimpleRequestHandler<GetThreadRequest> {
 

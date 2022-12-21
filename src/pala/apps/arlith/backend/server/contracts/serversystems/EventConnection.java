@@ -2,7 +2,7 @@ package pala.apps.arlith.backend.server.contracts.serversystems;
 
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
-import pala.apps.arlith.backend.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 public interface EventConnection extends ClientConnection {
 	/**

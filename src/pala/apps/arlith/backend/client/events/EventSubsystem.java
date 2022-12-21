@@ -18,8 +18,8 @@ import pala.apps.arlith.application.ArlithRuntime.Instance;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
-import pala.apps.arlith.backend.networking.encryption.MalformedResponseException;
-import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
+import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
 

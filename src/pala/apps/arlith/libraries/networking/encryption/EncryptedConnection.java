@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.networking.encryption;
+package pala.apps.arlith.libraries.networking.encryption;
 
 import java.io.IOException;
 import java.io.InputStream;
