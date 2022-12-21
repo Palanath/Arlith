@@ -27,6 +27,7 @@ import pala.libs.generic.parsers.cli.CLIParams;
 public class Arlith {
 
 	private static CLIParams CLI_PARAMETERS;
+	private static final String LAUNCHER_PACKAGE = ApplicationLauncher.class.getPackageName();
 
 	/**
 	 * Gets the CLI Parameters for the application. This object is
@@ -57,11 +58,11 @@ public class Arlith {
 		// Launch the app.
 		try {
 			if (CLI_PARAMETERS.checkFlag(false, "--launch-server", "-ls"))
-				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.ServerLauncher").getConstructor()
-						.newInstance();
+				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".terminalserver.ServerLauncher")
+						.getConstructor().newInstance();
 			else
-				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.JFXLauncher").getConstructor()
-						.newInstance();
+				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".jfxclient.JFXLauncher")
+						.getConstructor().newInstance();
 		} catch (InstantiationException e) {
 			System.err.println("An error occurred while trying to launch Arlith.");
 			e.printStackTrace();
