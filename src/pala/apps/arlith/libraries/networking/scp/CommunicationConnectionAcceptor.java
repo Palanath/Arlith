@@ -59,7 +59,7 @@ public abstract class CommunicationConnectionAcceptor implements EventSystem<Ser
 		Thread thread = new Thread() {
 
 			{
-				setDaemon(true);
+				setDaemon(daemon);
 			}
 
 			@Override
@@ -170,13 +170,20 @@ public abstract class CommunicationConnectionAcceptor implements EventSystem<Ser
 	}
 
 	private ServerSocket sock;
-	private Thread runner = getNewThread();
+	private Thread runner;
+	private boolean daemon;
 
+	/**
+	 * Sets the {@link #daemon} flag of this {@link CommunicationConnectionAcceptor}
+	 * so that all <b>new</b> threads created on this acceptor (for listening to
+	 * incoming connections) are daemon as specified by this method.
+	 * {@link CommunicationConnectionAcceptor}s create their first threads when
+	 * {@link #start()} is called for the first time.
+	 * 
+	 * @param daemon Whether new threads will be daemon threads.
+	 */
 	public void setDaemon(boolean daemon) {
-		if (runner.isAlive())
-			throw new RuntimeException("Cannot set the daemon property of a running Server.");
-		else
-			runner.setDaemon(daemon);
+		this.daemon = daemon;
 	}
 
 	public void start() throws IOException {

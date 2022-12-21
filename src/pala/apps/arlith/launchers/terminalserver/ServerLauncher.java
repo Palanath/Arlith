@@ -12,6 +12,7 @@ public class ServerLauncher implements ApplicationLauncher {
 		ArlithServer server = new ArlithServer();
 		server.setPort(Utilities.getPreferredPort());
 		server.start();
+		server.setDaemon(false);
 		System.out.println(
 				"Started the server on port: " + Utilities.getPreferredPort() + ". Close the program to terminate.");
 
