@@ -1,11 +1,11 @@
 package pala.apps.arlith.frontend.server.reqhandlers;
 
-import pala.apps.arlith.backend.communication.protocol.errors.AccessDeniedError;
-import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.backend.communication.protocol.events.ThreadAccessGainedEvent;
-import pala.apps.arlith.backend.communication.protocol.requests.OpenDirectConversationRequest;
-import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
+import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.events.ThreadAccessGainedEvent;
+import pala.apps.arlith.backend.common.protocol.requests.OpenDirectConversationRequest;
+import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;

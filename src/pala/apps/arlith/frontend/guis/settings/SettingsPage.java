@@ -34,7 +34,7 @@ import javafx.stage.Stage;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.ApplicationState;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
 import pala.apps.arlith.frontend.guis.GUIUtils;

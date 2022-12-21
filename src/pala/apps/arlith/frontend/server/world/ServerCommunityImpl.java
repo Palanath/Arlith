@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.streams.InputStream;

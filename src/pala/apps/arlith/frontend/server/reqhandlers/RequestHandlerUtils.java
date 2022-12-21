@@ -1,11 +1,11 @@
 package pala.apps.arlith.frontend.server.reqhandlers;
 
-import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
-import pala.apps.arlith.backend.communication.protocol.types.LongValue;
-import pala.apps.arlith.backend.communication.protocol.types.MessageValue;
-import pala.apps.arlith.backend.communication.protocol.types.TextValue;
-import pala.apps.arlith.backend.communication.protocol.types.ThreadValue;
-import pala.apps.arlith.backend.communication.protocol.types.UserValue;
+import pala.apps.arlith.backend.common.protocol.types.GIDValue;
+import pala.apps.arlith.backend.common.protocol.types.LongValue;
+import pala.apps.arlith.backend.common.protocol.types.MessageValue;
+import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
+import pala.apps.arlith.backend.common.protocol.types.UserValue;
 import pala.apps.arlith.frontend.server.contracts.world.ServerMessage;
 import pala.apps.arlith.frontend.server.contracts.world.ServerThread;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;

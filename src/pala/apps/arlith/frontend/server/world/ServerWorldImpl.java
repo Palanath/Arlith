@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.gids.GIDProvider;
-import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.gids.GIDProvider;
+import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.frontend.server.ArlithServer;
 import pala.apps.arlith.frontend.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.frontend.server.contracts.world.ServerMessage;

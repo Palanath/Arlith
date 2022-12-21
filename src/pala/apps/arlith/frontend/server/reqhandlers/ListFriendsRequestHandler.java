@@ -1,9 +1,9 @@
 package pala.apps.arlith.frontend.server.reqhandlers;
 
-import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.backend.communication.protocol.requests.ListFriendsRequest;
-import pala.apps.arlith.backend.communication.protocol.types.ListValue;
-import pala.apps.arlith.backend.communication.protocol.types.UserValue;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.requests.ListFriendsRequest;
+import pala.apps.arlith.backend.common.protocol.types.ListValue;
+import pala.apps.arlith.backend.common.protocol.types.UserValue;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;

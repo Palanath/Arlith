@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.backend.communication.authentication.AuthToken;
-import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.common.authentication.AuthToken;
+import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
 import pala.apps.arlith.frontend.server.database.Writing;
 

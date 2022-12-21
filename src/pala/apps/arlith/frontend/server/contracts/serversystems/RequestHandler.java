@@ -1,6 +1,6 @@
 package pala.apps.arlith.frontend.server.contracts.serversystems;
 
-import pala.apps.arlith.backend.communication.protocol.types.CommunicationProtocolType;
+import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;

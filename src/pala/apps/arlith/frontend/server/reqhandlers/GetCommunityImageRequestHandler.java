@@ -2,12 +2,12 @@ package pala.apps.arlith.frontend.server.reqhandlers;
 
 import java.io.IOException;
 
-import pala.apps.arlith.backend.communication.protocol.errors.InvalidOptionError;
-import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.backend.communication.protocol.requests.GetCommunityImageRequest;
-import pala.apps.arlith.backend.communication.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.common.protocol.errors.InvalidOptionError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.requests.GetCommunityImageRequest;
+import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.backend.streams.InputStream;

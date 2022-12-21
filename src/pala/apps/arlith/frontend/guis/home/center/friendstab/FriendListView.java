@@ -26,7 +26,7 @@ import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.backend.client.api.ClientUser;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.libs.generic.javafx.FXTools;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })

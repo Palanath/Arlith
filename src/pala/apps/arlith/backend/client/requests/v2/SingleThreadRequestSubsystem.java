@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.requests.Inquiry;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 import pala.apps.arlith.backend.execution.Action;
 

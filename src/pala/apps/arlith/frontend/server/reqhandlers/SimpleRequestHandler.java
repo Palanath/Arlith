@@ -2,7 +2,7 @@ package pala.apps.arlith.frontend.server.reqhandlers;
 
 import java.util.function.Function;
 
-import pala.apps.arlith.backend.communication.protocol.requests.CommunicationProtocolRequest;
+import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;

@@ -3,7 +3,7 @@ package pala.apps.arlith.frontend.server;
 import java.io.File;
 import java.net.Socket;
 
-import pala.apps.arlith.backend.communication.authentication.AuthToken;
+import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.Communicator;
 import pala.apps.arlith.backend.connections.networking.Connection;

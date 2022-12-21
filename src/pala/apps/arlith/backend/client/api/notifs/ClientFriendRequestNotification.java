@@ -1,8 +1,8 @@
 package pala.apps.arlith.backend.client.api.notifs;
 
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.protocol.types.FriendStateValue;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.types.FriendStateValue;
 
 public class ClientFriendRequestNotification extends ClientNotification {
 	private final GID sourceUser;

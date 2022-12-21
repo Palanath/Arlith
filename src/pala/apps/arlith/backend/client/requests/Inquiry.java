@@ -1,8 +1,8 @@
 package pala.apps.arlith.backend.client.requests;
 
 import pala.apps.arlith.application.ArlithRuntime;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.communication.protocol.requests.CommunicationProtocolRequest;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 /**

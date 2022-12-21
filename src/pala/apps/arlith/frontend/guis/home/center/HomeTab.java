@@ -27,9 +27,9 @@ import pala.apps.arlith.backend.client.api.ClientThread;
 import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.communication.protocol.types.FriendStateValue;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.types.FriendStateValue;
 import pala.apps.arlith.frontend.guis.home.EventCard;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 

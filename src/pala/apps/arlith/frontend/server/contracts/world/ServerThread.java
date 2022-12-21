@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.common.gids.GID;
 
 public interface ServerThread extends ServerObject {
 	/**

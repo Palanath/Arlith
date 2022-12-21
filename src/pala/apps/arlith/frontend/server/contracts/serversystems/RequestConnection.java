@@ -1,8 +1,8 @@
 package pala.apps.arlith.frontend.server.contracts.serversystems;
 
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.communication.protocol.types.CommunicationProtocolType;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.connections.networking.Connection;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.ArlithServer;

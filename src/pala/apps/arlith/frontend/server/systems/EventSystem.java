@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import pala.apps.arlith.application.Logging;
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.protocol.events.CommunicationProtocolEvent;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;

@@ -1,15 +1,15 @@
 package pala.apps.arlith.backend.client.events;
 
-import pala.apps.arlith.backend.communication.protocol.IllegalCommunicationProtocolException;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.communication.protocol.events.IncomingFriendEvent;
-import pala.apps.arlith.backend.communication.protocol.events.LazyCommunityImageChangedEvent;
-import pala.apps.arlith.backend.communication.protocol.events.LazyProfileIconChangedEvent;
-import pala.apps.arlith.backend.communication.protocol.events.MessageCreatedEvent;
-import pala.apps.arlith.backend.communication.protocol.events.ProfileIconChangedEvent;
-import pala.apps.arlith.backend.communication.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.backend.communication.protocol.events.ThreadAccessGainedEvent;
-import pala.apps.arlith.backend.communication.protocol.meta.CommunicationProtocolConstructionError;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
+import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
+import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
+import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
+import pala.apps.arlith.backend.common.protocol.events.ProfileIconChangedEvent;
+import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.common.protocol.events.ThreadAccessGainedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONString;

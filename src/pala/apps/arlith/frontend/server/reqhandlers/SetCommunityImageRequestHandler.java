@@ -2,15 +2,15 @@ package pala.apps.arlith.frontend.server.reqhandlers;
 
 import java.io.IOException;
 
-import pala.apps.arlith.backend.communication.protocol.errors.InvalidOptionError;
-import pala.apps.arlith.backend.communication.protocol.errors.ObjectNotFoundError;
-import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.backend.communication.protocol.errors.ServerError;
-import pala.apps.arlith.backend.communication.protocol.events.LazyCommunityImageChangedEvent;
-import pala.apps.arlith.backend.communication.protocol.requests.SetCommunityImageRequest;
-import pala.apps.arlith.backend.communication.protocol.types.CompletionValue;
-import pala.apps.arlith.backend.communication.protocol.types.GIDValue;
-import pala.apps.arlith.backend.communication.protocol.types.TextValue;
+import pala.apps.arlith.backend.common.protocol.errors.InvalidOptionError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
+import pala.apps.arlith.backend.common.protocol.requests.SetCommunityImageRequest;
+import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
+import pala.apps.arlith.backend.common.protocol.types.GIDValue;
+import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;

@@ -1,9 +1,9 @@
 package pala.apps.arlith.frontend.server.reqhandlers;
 
-import pala.apps.arlith.backend.communication.authentication.AuthToken;
-import pala.apps.arlith.backend.communication.protocol.errors.RestrictedError;
-import pala.apps.arlith.backend.communication.protocol.requests.CreateAccountRequest;
-import pala.apps.arlith.backend.communication.protocol.types.AuthTokenValue;
+import pala.apps.arlith.backend.common.authentication.AuthToken;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
+import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
 import pala.apps.arlith.backend.connections.networking.BlockException;
 import pala.apps.arlith.backend.connections.networking.UnknownCommStateException;
 import pala.apps.arlith.frontend.server.contracts.serversystems.RequestConnection;

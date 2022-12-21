@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.JavaTools;

@@ -1,8 +1,8 @@
 package pala.apps.arlith.backend.client.api;
 
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.gids.Identifiable;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.gids.Identifiable;
 
 public class SimpleClientObject implements ClientObject, Identifiable {
 

@@ -2,8 +2,8 @@ package pala.apps.arlith.frontend.server.contracts.world;
 
 import java.util.Collection;
 
-import pala.apps.arlith.backend.communication.gids.GID;
-import pala.apps.arlith.backend.communication.protocol.types.HexHashValue;
+import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.frontend.server.ArlithServer;
 
 public interface ServerWorld {

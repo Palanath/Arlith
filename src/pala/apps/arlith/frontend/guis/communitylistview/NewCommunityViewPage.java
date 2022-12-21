@@ -27,7 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.graphics.windows.Page;
 import pala.apps.arlith.frontend.guis.GUIUtils;
 import pala.apps.arlith.graphics.windows.ArlithWindow;

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.frontend.server.contracts.coldstorage.FilesystemStorageObject;
 import pala.apps.arlith.frontend.server.contracts.world.ServerMessage;
 import pala.apps.arlith.frontend.server.contracts.world.ServerThread;

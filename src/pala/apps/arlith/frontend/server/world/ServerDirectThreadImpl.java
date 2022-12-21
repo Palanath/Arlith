@@ -2,7 +2,7 @@ package pala.apps.arlith.frontend.server.world;
 
 import java.io.File;
 
-import pala.apps.arlith.backend.communication.gids.GID;
+import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.frontend.server.contracts.world.ServerDirectThread;
 import pala.apps.arlith.frontend.server.contracts.world.ServerUser;
 import pala.libs.generic.json.JSONObject;

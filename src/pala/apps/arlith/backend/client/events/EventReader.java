@@ -1,7 +1,7 @@
 package pala.apps.arlith.backend.client.events;
 
-import pala.apps.arlith.backend.communication.protocol.IllegalCommunicationProtocolException;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.connections.scp.CommunicationConnection;
 
 public interface EventReader {

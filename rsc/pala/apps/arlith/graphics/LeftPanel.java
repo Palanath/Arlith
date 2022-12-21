@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
-import pala.apps.arlith.backend.communication.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.graphics.nodes.MemberCard;
 import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.frontend.guis.home.HomePage;
