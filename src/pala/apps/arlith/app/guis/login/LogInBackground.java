@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.app.application.ArlithRuntime;
+import pala.apps.arlith.application.ArlithRuntime;
 import pala.libs.generic.QuickList;
 import pala.libs.generic.backgrounds.Background;
 import pala.libs.generic.generators.Generator;

@@ -5,8 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import pala.apps.arlith.app.application.ArlithRuntime;
-import pala.apps.arlith.app.application.ArlithRuntime.Instance;
+import pala.apps.arlith.application.ArlithRuntime;
+import pala.apps.arlith.application.ArlithRuntime.Instance;
 import pala.apps.arlith.backend.connections.networking.Communicator;
 import pala.apps.arlith.backend.connections.networking.Connection;
 import pala.libs.generic.events.EventManager;

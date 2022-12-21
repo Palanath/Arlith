@@ -1,4 +1,4 @@
-package pala.apps.arlith.app.application;
+package pala.apps.arlith.application;
 
 import java.util.WeakHashMap;
 
