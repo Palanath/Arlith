@@ -13,8 +13,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import pala.apps.arlith.backend.client.api.ClientMessage;
-import pala.apps.arlith.backend.parsers.markup2.Markup2Token;
-import pala.apps.arlith.backend.parsers.markup2.Markup2Tokenizer;
+import pala.apps.arlith.backend.client.markup.Markup2Token;
+import pala.apps.arlith.backend.client.markup.Markup2Tokenizer;
 import pala.apps.arlith.frontend.guis.threadview.ThreadFormattingUtils.TextStyling.Change;
 import pala.libs.generic.streams.CharacterStream;
 

@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.parsers.markup2;
+package pala.apps.arlith.backend.client.markup;
 
 import java.util.Map;
 

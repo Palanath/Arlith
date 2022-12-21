@@ -1,23 +1,17 @@
-package pala.apps.arlith.backend.parsers.markup2;
+package pala.apps.arlith.backend.client.markup;
 
 import java.util.Map;
 
-class ClosingTag implements Markup2Token {
-
-	private final String name;
-
-	public ClosingTag(String name) {
-		this.name = name;
-	}
+class AnonymousClosingTag implements Markup2Token {
 
 	@Override
 	public Type getType() {
-		return Type.CLOSING_TAG;
+		return Type.ANONYMOUS_CLOSING_TAG;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return null;
 	}
 
 	@Override
@@ -32,7 +26,7 @@ class ClosingTag implements Markup2Token {
 
 	@Override
 	public String print() {
-		return "</" + name + '>';
+		return "</>";
 	}
 
 }

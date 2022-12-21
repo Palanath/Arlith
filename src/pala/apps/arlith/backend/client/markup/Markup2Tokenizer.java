@@ -1,10 +1,10 @@
-package pala.apps.arlith.backend.parsers.markup2;
+package pala.apps.arlith.backend.client.markup;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pala.apps.arlith.backend.parsers.markup2.Markup2Token.Type;
+import pala.apps.arlith.backend.client.markup.Markup2Token.Type;
 import pala.libs.generic.parsing.BufferedParser;
 import pala.libs.generic.streams.CharacterStream;
 import pala.libs.generic.streams.PeekableCharacterStream;
