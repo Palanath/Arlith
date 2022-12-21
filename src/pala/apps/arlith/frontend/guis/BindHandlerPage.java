@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import pala.apps.arlith.backend.graphics.windows.Page;
 import pala.apps.arlith.backend.watchables.BindableImpl;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
+import pala.apps.arlith.libraries.graphics.windows.Page;
 
 public abstract class BindHandlerPage implements Page {
 

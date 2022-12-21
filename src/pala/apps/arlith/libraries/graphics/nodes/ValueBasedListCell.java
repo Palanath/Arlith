@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.graphics.nodes;
+package pala.apps.arlith.libraries.graphics.nodes;
 
 import javafx.scene.control.ListCell;
 

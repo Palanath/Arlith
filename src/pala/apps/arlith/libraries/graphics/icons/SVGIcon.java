@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.graphics.icons;
+package pala.apps.arlith.libraries.graphics.icons;
 
 import java.util.List;
 

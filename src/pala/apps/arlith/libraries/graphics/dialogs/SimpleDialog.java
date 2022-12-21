@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.graphics.dialogs;
+package pala.apps.arlith.libraries.graphics.dialogs;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;

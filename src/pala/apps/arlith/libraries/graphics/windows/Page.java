@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.graphics.windows;
+package pala.apps.arlith.libraries.graphics.windows;
 
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;

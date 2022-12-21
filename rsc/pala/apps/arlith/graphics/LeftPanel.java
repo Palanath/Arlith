@@ -13,12 +13,12 @@ import javafx.scene.shape.Shape;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.graphics.nodes.MemberCard;
 import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.settings.SettingsPage;
 import pala.apps.arlith.frontend.guis.threadlistview.ThreadListViewPage;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
+import pala.apps.arlith.libraries.graphics.nodes.MemberCard;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public @Disposable class LeftPanel {

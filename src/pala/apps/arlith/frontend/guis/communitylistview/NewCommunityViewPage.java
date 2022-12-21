@@ -28,9 +28,9 @@ import javafx.util.Duration;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.graphics.windows.Page;
 import pala.apps.arlith.frontend.guis.GUIUtils;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
+import pala.apps.arlith.libraries.graphics.windows.Page;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 import pala.libs.generic.javafx.FXTools;
 
