@@ -1,6 +1,7 @@
 package pala.apps.arlith;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.launchers.ApplicationLauncher;
@@ -56,9 +57,11 @@ public class Arlith {
 		// Launch the app.
 		try {
 			if (CLI_PARAMETERS.checkFlag(false, "--launch-server", "-ls"))
-				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.ServerLauncher").newInstance();
+				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.ServerLauncher").getConstructor()
+						.newInstance();
 			else
-				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.JFXLauncher").newInstance();
+				launcher = (ApplicationLauncher) Class.forName("pala.apps.arlith.JFXLauncher").getConstructor()
+						.newInstance();
 		} catch (InstantiationException e) {
 			System.err.println("An error occurred while trying to launch Arlith.");
 			e.printStackTrace();
@@ -71,6 +74,25 @@ public class Arlith {
 		} catch (ClassNotFoundException e) {
 			System.err.println(
 					"Failed to launch Arlith. An attempt was made to load a class that was not found. It could be the case that a certain library is missing from your Java installation (e.g. JavaFX) or that you downloaded an instance of Arlith that does not come with certain features (e.g. you can't run an Arlith server without a build containing server code). It *could* also be a developer error, in which case the Launcher class that is supposed to be invoked to Launch Arlith is not accessible. This normally happens when the class is moved somewhere and the code referring to it still points to the old location.");
+			e.printStackTrace();
+			return;
+		} catch (IllegalArgumentException e) {
+			System.err.println(
+					"Encountered a programmatic issue while launching Arlith. (This is VERY likely a developer bug, so please do report it if you can be bothered.)\n\tSpecifics: The launcher that was invoked as per the program arguments called an invalid constructor!!!");
+			e.printStackTrace();
+			return;
+		} catch (InvocationTargetException e) {
+			System.err.println("Trying to launch Arlith failed. The that occurred is printed below.");
+			e.printStackTrace();
+			return;
+		} catch (NoSuchMethodException e) {
+			System.err.println(
+					"Encountered a programmatic issue during launch. (This is likely a developer bug so please report it if you can be bothered!)\n\tSpecifics: There's no constructor with no arguments that can be invoked to create an instance of the launcher being invoked.");
+			e.printStackTrace();
+			return;
+		} catch (SecurityException e) {
+			System.err.println(
+					"An unexpected error occurred. SecurityExceptions were not considered during development. They really shouldn't show up. Please feel free to report this!");
 			e.printStackTrace();
 			return;
 		}
