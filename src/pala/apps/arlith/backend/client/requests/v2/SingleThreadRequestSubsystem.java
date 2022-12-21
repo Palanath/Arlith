@@ -4,9 +4,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
 
 import pala.apps.arlith.application.Logging;
+import pala.apps.arlith.backend.client.requests.Action;
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.execution.Action;
 import pala.apps.arlith.backend.networking.scp.CommunicationConnection;
 
 public abstract class SingleThreadRequestSubsystem implements RequestSubsystemInterface {
