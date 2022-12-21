@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.watchables;
+package pala.apps.arlith.libraries.watchables;
 
 public interface Watcher<V> {
 	default void watch(V previousValue, V newValue, Watchable<? extends V> watchable) {

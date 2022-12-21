@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 import pala.apps.arlith.backend.client.api.caching.ClientCache.Querier;
 import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.backend.watchables.View;
-import pala.apps.arlith.backend.watchables.Watchable;
-import pala.apps.arlith.backend.watchables.Watcher;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.watchables.View;
+import pala.apps.arlith.libraries.watchables.Watchable;
+import pala.apps.arlith.libraries.watchables.Watcher;
 
 public final class WatchableCache<O> extends Cache<O> implements Watchable<O> {
 

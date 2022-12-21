@@ -18,8 +18,8 @@ import pala.apps.arlith.backend.common.protocol.requests.GetCommunityImageReques
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.backend.watchables.Variable;
-import pala.apps.arlith.backend.watchables.View;
+import pala.apps.arlith.libraries.watchables.Variable;
+import pala.apps.arlith.libraries.watchables.View;
 
 public class ClientCommunity extends SimpleClientObject implements Named {
 	public ClientCommunity(GID gid, ArlithClient client, String name, List<ClientThread> threads, List<GID> members) {

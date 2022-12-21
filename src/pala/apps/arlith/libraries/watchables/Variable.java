@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.watchables;
+package pala.apps.arlith.libraries.watchables;
 
 public class Variable<V> extends Property<V> implements Bindable<V>, Settable<V> {
 	@Override

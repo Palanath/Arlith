@@ -1,4 +1,4 @@
-package pala.apps.arlith.backend.watchables;
+package pala.apps.arlith.libraries.watchables;
 
 public interface Bindable<V> {
 	void bind(Watchable<? extends V> watchable);
