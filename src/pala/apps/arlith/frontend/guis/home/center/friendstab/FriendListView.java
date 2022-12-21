@@ -24,9 +24,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.Logging;
-import pala.apps.arlith.backend.JavaFXUtilities;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.libraries.JavaFXUtilities;
 import pala.libs.generic.javafx.FXTools;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })

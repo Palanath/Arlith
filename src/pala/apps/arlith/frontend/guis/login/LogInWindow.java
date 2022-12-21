@@ -26,8 +26,6 @@ import javafx.stage.Stage;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
 import pala.apps.arlith.application.Logging;
-import pala.apps.arlith.backend.Utilities;
-import pala.apps.arlith.backend.Utilities.UserReference;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
@@ -35,6 +33,8 @@ import pala.apps.arlith.backend.common.protocol.errors.LoginError;
 import pala.apps.arlith.frontend.guis.ApplicationState;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
+import pala.apps.arlith.libraries.Utilities;
+import pala.apps.arlith.libraries.Utilities.UserReference;
 import pala.libs.generic.guis.ApplicationProperties;
 import pala.libs.generic.guis.Window;
 

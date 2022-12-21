@@ -13,7 +13,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.backend.Utilities;
 import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
 import pala.apps.arlith.backend.client.requests.v2.SingleThreadRequestSubsystem;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
@@ -25,6 +24,7 @@ import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.requests.LoginRequest;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
