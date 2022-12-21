@@ -3,7 +3,6 @@ package pala.apps.arlith.frontend.guis.threadview;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map.Entry;
 import java.util.Stack;
 
 import javafx.scene.Node;
@@ -14,9 +13,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import pala.apps.arlith.backend.client.api.ClientMessage;
-import pala.apps.arlith.backend.parsers.markup.MarkupElement;
-import pala.apps.arlith.backend.parsers.markup.MarkupNode;
-import pala.apps.arlith.backend.parsers.markup.MarkupText;
 import pala.apps.arlith.backend.parsers.markup2.Markup2Token;
 import pala.apps.arlith.backend.parsers.markup2.Markup2Tokenizer;
 import pala.apps.arlith.frontend.guis.threadview.ThreadFormattingUtils.TextStyling.Change;
@@ -174,12 +170,6 @@ public final class ThreadFormattingUtils {
 		}
 	}
 
-	private static Text newPreparedText(String content) {
-		Text t = new Text(content);
-		t.setFont(Font.font(ThreadViewPage.DEFAULT_FONT_SIZE));
-		return t;
-	}
-
 	public static class TextStyling {
 		private Color color;
 		private String family;
@@ -259,35 +249,4 @@ public final class ThreadFormattingUtils {
 		}
 	}
 
-	public static void populate(TextFlow tf, TextStyling styling, List<MarkupNode> nodes) {
-		OUTER: for (MarkupNode n : nodes) {
-			if (n instanceof MarkupText)
-				tf.getChildren().add(styling.styleNode(newPreparedText(((MarkupText) n).getValue())));
-			else {
-				MarkupElement e = (MarkupElement) n;
-				if (e.getName().equalsIgnoreCase("color")) {
-
-					for (Entry<String, String> s : e.getAttributes().entrySet()) {
-						if (s.getKey().equalsIgnoreCase("val") || s.getKey().equalsIgnoreCase("value")) {
-							TextStyling nst = styling.clone();
-							if (s.getValue() == null)
-								continue;
-							else if (s.getValue().equalsIgnoreCase("reset"))
-								nst.color = null;
-							else
-								try {
-									nst.color = Color.valueOf(s.getValue().trim());
-								} catch (IllegalArgumentException e1) {
-									continue;
-								}
-							populate(tf, nst, e.getChildren());
-							continue OUTER;
-						}
-					}
-					populate(tf, styling, e.getChildren());
-				} else
-					populate(tf, styling, e.getChildren());
-			}
-		}
-	}
 }
