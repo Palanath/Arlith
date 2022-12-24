@@ -35,7 +35,7 @@ public final class GUIUtils {
 	 */
 	private static final Logger GUI_LOGGER = new StandardLoggerImpl("GUI") {
 		protected String createFullPrefix() {
-			return "[FXThrd?" + Platform.isFxApplicationThread() + super.createFullPrefix();
+			return "{FXThrd?" + Platform.isFxApplicationThread() + '}' + super.createFullPrefix();
 		}
 	};
 
