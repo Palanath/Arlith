@@ -1,6 +1,7 @@
 package pala.apps.arlith.application;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -25,9 +26,11 @@ public class StandardLoggerImpl implements Logger {
 	/**
 	 * The formatter used to format timestamps for the logger. This <b>can</b> be
 	 * left <code>null</code>, in which case timestamps will not be printed. By
-	 * default, it is the {@link DateTimeFormatter#RFC_1123_DATE_TIME}.
+	 * default, it is the {@link DateTimeFormatter#RFC_1123_DATE_TIME} with the
+	 * {@link ZoneId#systemDefault() default ZoneId} timezone.
 	 */
-	private DateTimeFormatter timestampFormatter = DateTimeFormatter.RFC_1123_DATE_TIME;
+	private DateTimeFormatter timestampFormatter = DateTimeFormatter.RFC_1123_DATE_TIME
+			.withZone(ZoneId.systemDefault());
 	/**
 	 * Whether or not debug messages are logged. This is <code>false</code> by
 	 * default.
@@ -37,9 +40,10 @@ public class StandardLoggerImpl implements Logger {
 	/**
 	 * Sets the timestamp formatter used to format the timestamps printed into log
 	 * messages. By default, this is the
-	 * {@link DateTimeFormatter#RFC_1123_DATE_TIME}. Set to <code>null</code> to
-	 * disable including timestamps in log messages. The formatter should be able to
-	 * handle {@link Instant} objects.
+	 * {@link DateTimeFormatter#RFC_1123_DATE_TIME} with the
+	 * {@link ZoneId#systemDefault() default ZoneId} timezone. Set to
+	 * <code>null</code> to disable including timestamps in log messages. The
+	 * formatter should be able to handle {@link Instant} objects.
 	 * 
 	 * @param timestampFormatter The formatter used to format timestamps in log
 	 *                           messages, or <code>null</code> to disable
@@ -105,8 +109,9 @@ public class StandardLoggerImpl implements Logger {
 
 	/**
 	 * Creates a {@link StandardLoggerImpl} with
-	 * {@link DateTimeFormatter#RFC_1123_DATE_TIME} time formatting, debug logging
-	 * disabled, and the specified prefix.
+	 * {@link DateTimeFormatter#RFC_1123_DATE_TIME} with the
+	 * {@link ZoneId#systemDefault() default ZoneId} timezone time formatting, debug
+	 * logging disabled, and the specified prefix.
 	 * 
 	 * @param prefix The prefix used in front of messages. For more information, see
 	 *               {@link #prefix} or {@link #getPrefix()}. This parameter should
@@ -204,10 +209,10 @@ public class StandardLoggerImpl implements Logger {
 	 * <p>
 	 * By default, it returns a string composed of the timestamp followed by the
 	 * {@link #prefix}, both in a special format. The timestamp is obtained using
-	 * {@link Instant#now()} and is formatted using the
-	 * {@link DateTimeFormatter#RFC_1123_DATE_TIME} formatter. Textually, it's
-	 * wrapped in chevrons (<code>&lt;</code> and <code>&gt;</code>). The prefix
-	 * follows is immediately and is wrapped in brackets (<code>[</code> and
+	 * {@link Instant#now()} and is formatted using the with
+	 * {@link ZoneId#systemDefault() default ZoneId} timezone formatter. Textually,
+	 * it's wrapped in chevrons (<code>&lt;</code> and <code>&gt;</code>). The
+	 * prefix follows is immediately and is wrapped in brackets (<code>[</code> and
 	 * <code>]</code>). The string is followed by a colon and a space character.
 	 * </p>
 	 * 
