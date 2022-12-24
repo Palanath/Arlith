@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -19,13 +20,35 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.Logging;
+import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
 
 public final class GUIUtils {
+
+	/**
+	 * The GUI Logger designed to be used for logging done by the frontend GUI. This
+	 * logger prints whether or not the calling thread is the JavaFX Application
+	 * thread as a part of the log message's prefix.
+	 */
+	private static final Logger GUI_LOGGER = new StandardLoggerImpl("GUI") {
+		protected String createFullPrefix() {
+			return "[FXThrd?" + Platform.isFxApplicationThread() + super.createFullPrefix();
+		}
+	};
+
+	/**
+	 * Returns the GUI Logger designed to be used for logging done by the frontend
+	 * GUI. This logger prints whether or not the calling thread is the JavaFX
+	 * Application thread as a part of the log message's prefix.
+	 * 
+	 * @return The GUI Logger for the Arlith frontend system.
+	 */
+	public static Logger getGuiLogger() {
+		return GUI_LOGGER;
+	}
 
 	public static final Duration CLICK_AND_RELEASE_ANIMATION_TIME = Duration.seconds(0.2);
 
@@ -64,13 +87,12 @@ public final class GUIUtils {
 					Clipboard.getSystemClipboard().setContent(content);
 					FXTools.spawnLabelAtMousePos("Screenshot copied to Clipboard!", Color.GREEN, stage);
 				} catch (Exception e) {
-					Logging.err(
+					getGuiLogger().err(
 							"Failed to take a screenshot and copy it to the clipboard. The error's stacktrace has been printed.");
-					Logging.err(e);
+					getGuiLogger().err(e);
 					FXTools.spawnLabelAtMousePos("Screenshot failed...", Color.RED, stage);
 				}
-			} else if (event.getCode() == KeyCode.F3 && event.isShortcutDown())
-				ArlithRuntime.displayConsole();
+			}
 		});
 		stage.sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
 			newValue.removeEventFilter(MouseEvent.MOUSE_PRESSED, focusHandler);

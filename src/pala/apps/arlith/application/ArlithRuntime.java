@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javafx.application.Platform;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 
 public class ArlithRuntime {

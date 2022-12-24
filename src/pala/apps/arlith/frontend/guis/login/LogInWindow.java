@@ -25,12 +25,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
 import pala.apps.arlith.backend.common.protocol.errors.LoginError;
 import pala.apps.arlith.frontend.guis.ApplicationState;
+import pala.apps.arlith.frontend.guis.GUIUtils;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.apps.arlith.libraries.Utilities;
@@ -41,7 +41,7 @@ import pala.libs.generic.guis.Window;
 public final class LogInWindow extends Window {
 
 	public static void dbg(String txt) {
-		Logging.dbg("[CLIENT]: " + txt);
+		GUIUtils.getGuiLogger().dbg("[CLIENT]: " + txt);
 	}
 
 	private AnchorPane root;
@@ -246,56 +246,56 @@ public final class LogInWindow extends Window {
 						.setPhoneNumber(pn).createAccount();
 			} catch (CreateAccountError e3) {
 				Platform.runLater(() -> {
-					Logging.err("Failed to create account; server returned failure code: " + e3.getType() + '.');
+					GUIUtils.getGuiLogger().err("Failed to create account; server returned failure code: " + e3.getType() + '.');
 					switch (e3.getType()) {
 					case ILLEGAL_PW:
-						Logging.err("Illegal Password");
+						GUIUtils.getGuiLogger().err("Illegal Password");
 						break;
 					case ILLEGAL_UN:
-						Logging.err("Illegal Username");
+						GUIUtils.getGuiLogger().err("Illegal Username");
 						break;
 					case LONG_PW:
-						Logging.err("Password too long");
+						GUIUtils.getGuiLogger().err("Password too long");
 						break;
 					case LONG_UN:
-						Logging.err("Username too long");
+						GUIUtils.getGuiLogger().err("Username too long");
 						break;
 					case SHORT_PW:
-						Logging.err("Password too short");
+						GUIUtils.getGuiLogger().err("Password too short");
 						break;
 					case SHORT_UN:
-						Logging.err("Username too short");
+						GUIUtils.getGuiLogger().err("Username too short");
 						break;
 					case ILLEGAL_EM:
-						Logging.err("Illegal Email");
+						GUIUtils.getGuiLogger().err("Illegal Email");
 						break;
 					case LONG_EM:
-						Logging.err("Email too long");
+						GUIUtils.getGuiLogger().err("Email too long");
 						break;
 					case TAKEN_EM:
-						Logging.err("Email already in use");
+						GUIUtils.getGuiLogger().err("Email already in use");
 						break;
 					case TAKEN_UN:
-						Logging.err("Username taken");
+						GUIUtils.getGuiLogger().err("Username taken");
 						break;
 					case ILLEGAL_PH:
-						Logging.err("Illegal phone number");
+						GUIUtils.getGuiLogger().err("Illegal phone number");
 						break;
 					case LONG_PH:
-						Logging.err("Phone number too long");
+						GUIUtils.getGuiLogger().err("Phone number too long");
 						break;
 					case SHORT_PH:
-						Logging.err("Phone number too short");
+						GUIUtils.getGuiLogger().err("Phone number too short");
 						break;
 					case TAKEN_PH:
-						Logging.err("Phone number already in use");
+						GUIUtils.getGuiLogger().err("Phone number already in use");
 						break;
 					}
 				});
 				acting = false;
 				return;
 			} catch (Exception e4) {
-				Logging.err(e4);
+				GUIUtils.getGuiLogger().err(e4);
 				acting = false;
 				return;
 			} finally {
@@ -308,7 +308,7 @@ public final class LogInWindow extends Window {
 							.display(stage);
 				} catch (Exception e2) {
 					client.stop();
-					Logging.err(e2);
+					GUIUtils.getGuiLogger().err(e2);
 					acting = false;
 				}
 			});
@@ -360,7 +360,7 @@ public final class LogInWindow extends Window {
 				builder.setHost(InetAddress.getByName(Utilities.getPreferredDestinationAddress()));
 			}
 		} catch (Exception e) {
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err(e);
 			acting = false;
 			centerPanel.setDisable(false);
 			return;
@@ -373,62 +373,62 @@ public final class LogInWindow extends Window {
 				client = builder.login();
 			} catch (LoginError e3) {
 				Platform.runLater(() -> {
-					Logging.err("Failed to log in; server returned failure code: " + e3.getLoginError() + '.');
+					GUIUtils.getGuiLogger().err("Failed to log in; server returned failure code: " + e3.getLoginError() + '.');
 					switch (e3.getLoginError()) {
 					case ILLEGAL_PW:
-						Logging.err("Illegal Password");
+						GUIUtils.getGuiLogger().err("Illegal Password");
 						break;
 					case ILLEGAL_UN:
-						Logging.err("Illegal Username");
+						GUIUtils.getGuiLogger().err("Illegal Username");
 						break;
 					case INVALID_PW:
-						Logging.err("Invalid Password");
+						GUIUtils.getGuiLogger().err("Invalid Password");
 						break;
 					case INVALID_UN:
-						Logging.err("Invalid Username");
+						GUIUtils.getGuiLogger().err("Invalid Username");
 						break;
 					case LONG_PW:
-						Logging.err("Password too long");
+						GUIUtils.getGuiLogger().err("Password too long");
 						break;
 					case LONG_UN:
-						Logging.err("Username too long");
+						GUIUtils.getGuiLogger().err("Username too long");
 						break;
 					case SHORT_PW:
-						Logging.err("Password too short");
+						GUIUtils.getGuiLogger().err("Password too short");
 						break;
 					case SHORT_UN:
-						Logging.err("Username too short");
+						GUIUtils.getGuiLogger().err("Username too short");
 						break;
 					case ILLEGAL_EM:
-						Logging.err("Illegal Email");
+						GUIUtils.getGuiLogger().err("Illegal Email");
 						break;
 					case ILLEGAL_PH:
-						Logging.err("Illegal Phone");
+						GUIUtils.getGuiLogger().err("Illegal Phone");
 						break;
 					case INVALID_EM:
-						Logging.err("Invalid Email");
+						GUIUtils.getGuiLogger().err("Invalid Email");
 						break;
 					case INVALID_PH:
-						Logging.err("Invalid Phone");
+						GUIUtils.getGuiLogger().err("Invalid Phone");
 						break;
 					case LONG_EM:
-						Logging.err("Email too long");
+						GUIUtils.getGuiLogger().err("Email too long");
 						break;
 					case LONG_PH:
-						Logging.err("Phone too long");
+						GUIUtils.getGuiLogger().err("Phone too long");
 						break;
 					case SHORT_EM:
-						Logging.err("Email too short");
+						GUIUtils.getGuiLogger().err("Email too short");
 						break;
 					case SHORT_PH:
-						Logging.err("Phone too short");
+						GUIUtils.getGuiLogger().err("Phone too short");
 						break;
 					}
 				});
 				acting = false;
 				return;
 			} catch (Exception e4) {
-				Logging.err(e4);
+				GUIUtils.getGuiLogger().err(e4);
 				acting = false;
 				return;
 			} finally {
@@ -441,7 +441,7 @@ public final class LogInWindow extends Window {
 							.display(stage);
 				} catch (Exception e2) {
 					client.stop();
-					Logging.err(e2);
+					GUIUtils.getGuiLogger().err(e2);
 					acting = false;
 				}
 			});

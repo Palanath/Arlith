@@ -10,9 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.frontend.guis.GUIUtils;
 import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.settings.SettingsPage;
@@ -66,8 +66,8 @@ public @Disposable class LeftPanel {
 			leftPanel.getChildren().add(0, mc);
 			VBox.setMargin(mc, new Insets(5, 0, 0, 0));
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to retrieve information about your own user from the server.");
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err("Failed to retrieve information about your own user from the server.");
+			GUIUtils.getGuiLogger().err(e);
 		}
 
 		homeButton.setOnMouseClicked(event -> {
@@ -75,8 +75,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new HomePage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to load the home window.");
-					Logging.err(e);
+					GUIUtils.getGuiLogger().err("Failed to load the home window.");
+					GUIUtils.getGuiLogger().err(e);
 				}
 		});
 		settingsButton.setOnMouseClicked(event -> {
@@ -84,8 +84,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new SettingsPage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to load the home window.");
-					Logging.err(e);
+					GUIUtils.getGuiLogger().err("Failed to load the home window.");
+					GUIUtils.getGuiLogger().err(e);
 				}
 		});
 		threadsButton.setOnMouseClicked(event -> {
@@ -93,8 +93,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new ThreadListViewPage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to load the home window.");
-					Logging.err(e);
+					GUIUtils.getGuiLogger().err("Failed to load the home window.");
+					GUIUtils.getGuiLogger().err(e);
 				}
 		});
 		communitiesButton.setOnMouseClicked(event -> {
@@ -102,8 +102,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new CommunityListViewPage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to load the community window.");
-					Logging.err(e);
+					GUIUtils.getGuiLogger().err("Failed to load the community window.");
+					GUIUtils.getGuiLogger().err(e);
 				}
 		});
 	}

@@ -37,7 +37,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.ClientMessage;
 import pala.apps.arlith.backend.client.api.ClientThread;
@@ -51,6 +50,7 @@ import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.types.MessageValue;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
+import pala.apps.arlith.frontend.guis.GUIUtils;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.apps.arlith.libraries.graphics.dialogs.SimpleDialog;
 import pala.apps.arlith.libraries.graphics.nodes.AdvancedColorPicker;
@@ -211,9 +211,9 @@ public class ThreadViewPage extends BindHandlerPage {
 			name = new Text(msg.getAuthor().getName());
 			bindable(name::setText).bind(msg.getAuthor().usernameView());
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to get the name of the author of a message.");
-			Logging.err(e);
-			Logging.err("Message content: " + msg.getText());
+			GUIUtils.getGuiLogger().err("Failed to get the name of the author of a message.");
+			GUIUtils.getGuiLogger().err(e);
+			GUIUtils.getGuiLogger().err("Message content: " + msg.getText());
 			throw new RuntimeException(e);
 		}
 		name.setFont(Font.font(24));
@@ -230,8 +230,8 @@ public class ThreadViewPage extends BindHandlerPage {
 		try {
 			pfp.setImage(msg.getAuthor().getProfileIcon());
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to obtain the profile picture for the author of a message.");
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err("Failed to obtain the profile picture for the author of a message.");
+			GUIUtils.getGuiLogger().err(e);
 			WritableImage img = new WritableImage(1, 1);
 			img.getPixelWriter().setColor(0, 0, Color.FIREBRICK);
 			pfp.setImage(img);
@@ -315,7 +315,7 @@ public class ThreadViewPage extends BindHandlerPage {
 			});
 			input.setWrapText(true);
 		} catch (IOException e) {
-			Logging.err("Failed to load the CENTER PANEL of the Thread Viewer window.");
+			GUIUtils.getGuiLogger().err("Failed to load the CENTER PANEL of the Thread Viewer window.");
 			throw new WindowLoadFailureException(e);
 		}
 
@@ -447,8 +447,8 @@ public class ThreadViewPage extends BindHandlerPage {
 				if (messages.size() < 50)
 					reachedTop();
 			} catch (RuntimeException e) {
-				Logging.err("An error occurred while loading messages from a thread.");
-				Logging.err(e);
+				GUIUtils.getGuiLogger().err("An error occurred while loading messages from a thread.");
+				GUIUtils.getGuiLogger().err(e);
 				throw new WindowLoadFailureException("Failed to request messages in thread from server.", e);
 			}
 
@@ -470,8 +470,8 @@ public class ThreadViewPage extends BindHandlerPage {
 		try {
 			win.getMenuBar().title.setText(thread.getName().toUpperCase());
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to get thread's name.");
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err("Failed to get thread's name.");
+			GUIUtils.getGuiLogger().err(e);
 			win.getMenuBar().title.setText("A THREAD");
 		}
 		output.setSpacing(0);
@@ -482,7 +482,7 @@ public class ThreadViewPage extends BindHandlerPage {
 			add(thread.getMessage(msg.id()));
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | ObjectNotFoundError
 				| AccessDeniedError | RuntimeException e) {
-			Logging.err("An unexpected error occurred while trying to show a message that you sent.");
+			GUIUtils.getGuiLogger().err("An unexpected error occurred while trying to show a message that you sent.");
 			throw new RuntimeException(e);
 		}
 	}
@@ -501,11 +501,11 @@ public class ThreadViewPage extends BindHandlerPage {
 						scrollBox.setVvalue(scrollBox.getVmax());
 				});
 			}).handle(t -> {
-				Logging.err("Failed to send your message.");
-				Logging.err(t);
+				GUIUtils.getGuiLogger().err("Failed to send your message.");
+				GUIUtils.getGuiLogger().err(t);
 			}).get();
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err(e);
 		}
 		input.clear();
 	}

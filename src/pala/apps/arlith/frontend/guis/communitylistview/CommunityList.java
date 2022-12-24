@@ -17,11 +17,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
 import pala.apps.arlith.frontend.guis.BindHandlerPage.PageBindable;
+import pala.apps.arlith.frontend.guis.GUIUtils;
 
 public class CommunityList {
 	private @FXML VBox root;
@@ -116,8 +116,8 @@ public class CommunityList {
 				double w = img.getWidth(), h = img.getHeight();
 				icon.setViewport(new Rectangle2D(.1 * w, .1 * h, w * .8, h * .8));
 			} catch (CommunicationProtocolError | RuntimeException e) {
-				Logging.err("Failed to load a community's icon. (Community name: " + community.getName() + ", id: "
-						+ community.idHex() + ')');
+				GUIUtils.getGuiLogger().err("Failed to load a community's icon. (Community name: " + community.getName()
+						+ ", id: " + community.idHex() + ')');
 			}
 			(iconBinding = page.bindable(t -> {
 				icon.setImage(t);
@@ -128,8 +128,8 @@ public class CommunityList {
 			try {
 				community.getBackgroundImage();// Load the image.
 			} catch (CommunicationProtocolError | RuntimeException e) {
-				Logging.err("Failed to load a community's background image. (Community name: " + community.getName()
-						+ ", id: " + community.idHex() + ')');
+				GUIUtils.getGuiLogger().err("Failed to load a community's background image. (Community name: "
+						+ community.getName() + ", id: " + community.idHex() + ')');
 			}
 
 			name.setText(community.getName());
@@ -141,7 +141,7 @@ public class CommunityList {
 						backgroundIV.setImage(community.getBackgroundImage());
 					} catch (CommunicationProtocolError | RuntimeException e) {
 						// Handle differently as this can only occur if it fails the first time.
-						Logging.err("Failed to load a community's background image. (Community name: "
+						GUIUtils.getGuiLogger().err("Failed to load a community's background image. (Community name: "
 								+ community.getName() + ", id: " + community.idHex() + ')');
 					}
 				Duration dur = backgroundTransition.getCurrentTime();

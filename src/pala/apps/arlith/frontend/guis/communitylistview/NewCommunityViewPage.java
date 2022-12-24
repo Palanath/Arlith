@@ -25,7 +25,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.GUIUtils;
@@ -75,15 +74,16 @@ public class NewCommunityViewPage implements Page {
 			try {
 				img = Files.readAllBytes(f.toPath());
 			} catch (IOException e) {
-				Logging.err("An IO error occurred while reading the file.");
+				GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
 				return;
 			} catch (OutOfMemoryError e) {
-				Logging.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
+				GUIUtils.getGuiLogger()
+						.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 				return;
 			}
 			Image image = new Image(new ByteArrayInputStream(img));
 			if (image.isError())
-				Logging.err("Couldn't load an image from the specified file.");
+				GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
 			else {
 				icon = img;
 				serverIcon.setImage(image);
@@ -109,15 +109,16 @@ public class NewCommunityViewPage implements Page {
 			try {
 				img = Files.readAllBytes(f.toPath());
 			} catch (IOException e) {
-				Logging.err("An IO error occurred while reading the file.");
+				GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
 				return;
 			} catch (OutOfMemoryError e) {
-				Logging.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
+				GUIUtils.getGuiLogger()
+						.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 				return;
 			}
 			Image image = new Image(new ByteArrayInputStream(img));
 			if (image.isError())
-				Logging.err("Couldn't load an image from the specified file.");
+				GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
 			else {
 				bg = img;
 				serverBackground.setImage(image);
@@ -181,15 +182,16 @@ public class NewCommunityViewPage implements Page {
 				try {
 					img = Files.readAllBytes(f.toPath());
 				} catch (IOException e1) {
-					Logging.err("An IO error occurred while reading the file.");
+					GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
 					return;
 				} catch (OutOfMemoryError e2) {
-					Logging.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
+					GUIUtils.getGuiLogger()
+							.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 					return;
 				}
 				Image image = new Image(new ByteArrayInputStream(img));
 				if (image.isError())
-					Logging.err("Couldn't load an image from the specified file.");
+					GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
 				else {
 					icon = img;
 					serverIcon.setImage(image);
@@ -206,15 +208,16 @@ public class NewCommunityViewPage implements Page {
 				try {
 					img = Files.readAllBytes(f.toPath());
 				} catch (IOException e1) {
-					Logging.err("An IO error occurred while reading the file.");
+					GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
 					return;
 				} catch (OutOfMemoryError e2) {
-					Logging.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
+					GUIUtils.getGuiLogger()
+							.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 					return;
 				}
 				Image image = new Image(new ByteArrayInputStream(img));
 				if (image.isError())
-					Logging.err("Couldn't load an image from the specified file.");
+					GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
 				else {
 					bg = img;
 					serverBackground.setImage(image);
@@ -240,7 +243,7 @@ public class NewCommunityViewPage implements Page {
 		try {
 			cli.createCommunity(serverNamePrompt.getText(), icon, bg);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err(e);
 			return;
 		}
 
@@ -253,8 +256,8 @@ public class NewCommunityViewPage implements Page {
 		try {
 			new CommunityListViewPage().show(window);
 		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the community list page.");
-			Logging.err(e);
+			GUIUtils.getGuiLogger().err("Failed to show the community list page.");
+			GUIUtils.getGuiLogger().err(e);
 		}
 	}
 

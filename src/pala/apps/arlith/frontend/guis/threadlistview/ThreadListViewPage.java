@@ -29,7 +29,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
@@ -77,7 +76,7 @@ public class ThreadListViewPage extends BindHandlerPage {
 				threads.put(user, te);
 				Platform.runLater(() -> boxes.add(te));
 			} catch (CommunicationProtocolError | RuntimeException e3) {
-				Logging.err(
+				GUIUtils.getGuiLogger().err(
 						"Failed to handle an incoming friend event involving user: " + event.getUser().getGid() + '.');
 			}
 		} else if (event.getPreviousState() == FriendStateValue.FRIENDED) {
@@ -103,12 +102,12 @@ public class ThreadListViewPage extends BindHandlerPage {
 						boxes.add(te);
 						threads.put(user, te);
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err("Failed to list the direct thread with user[id=" + user.id() + "].");
+						GUIUtils.getGuiLogger().err("Failed to list the direct thread with user[id=" + user.id() + "].");
 					}
 				}
 			} catch (CommunicationProtocolError | RuntimeException e) {
-				Logging.err("Failed to list friends.");
-				Logging.err(e);
+				GUIUtils.getGuiLogger().err("Failed to list friends.");
+				GUIUtils.getGuiLogger().err(e);
 			}
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the thread list view.", e);
@@ -155,7 +154,7 @@ public class ThreadListViewPage extends BindHandlerPage {
 				cbg.setImage(t);
 			}).handle(t -> {
 				try {
-					Logging.err("Failed to load a user's profile icon (User: " + user.getIdentifier() + ").");
+					GUIUtils.getGuiLogger().err("Failed to load a user's profile icon (User: " + user.getIdentifier() + ").");
 				} catch (CommunicationProtocolError | RuntimeException e) {
 					e.addSuppressed(t);
 					e.printStackTrace();
@@ -179,12 +178,12 @@ public class ThreadListViewPage extends BindHandlerPage {
 					try {
 						window.show(new ThreadViewPage(user.openDirectConversation()));
 					} catch (CommunicationProtocolError | RuntimeException e1) {
-						Logging.err("Failed to open a direct thread with that user.");
-						Logging.err(e1);
+						GUIUtils.getGuiLogger().err("Failed to open a direct thread with that user.");
+						GUIUtils.getGuiLogger().err(e1);
 						FXTools.spawnLabelAtMousePos("Error", Color.FIREBRICK, window.getApplication().getStage());
 					} catch (WindowLoadFailureException e2) {
-						Logging.err("Failed to load the Thread Viewer window.");
-						Logging.err(e2);
+						GUIUtils.getGuiLogger().err("Failed to load the Thread Viewer window.");
+						GUIUtils.getGuiLogger().err(e2);
 						FXTools.spawnLabelAtMousePos("Error", Color.FIREBRICK, window.getApplication().getStage());
 					}
 				}
