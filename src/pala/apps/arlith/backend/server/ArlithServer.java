@@ -197,7 +197,8 @@ public class ArlithServer extends CommunicationConnectionAcceptor {
 	protected void acceptSocket(Socket incomingSocketConnection) throws Exception {
 		// This is called on a new thread (unless
 		// CommunicationConnectionAcceptor#acceptOnNewThread is set to false manually).
-		Logger logger = setupThreadLogger(incomingSocketConnection.getInetAddress().getHostAddress());
+		Logger logger = setupThreadLogger(
+				incomingSocketConnection.getInetAddress().getHostAddress() + ':' + incomingSocketConnection.getPort());
 		logger.std("Connection Established.");
 
 		Communicator communicator = new Communicator(incomingSocketConnection);
