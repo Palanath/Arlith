@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import pala.apps.arlith.application.Logger;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.server.ArlithServer;
