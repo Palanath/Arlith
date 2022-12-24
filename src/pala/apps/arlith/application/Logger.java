@@ -75,4 +75,29 @@ public interface Logger {
 	 * @param text The error text to log.
 	 */
 	void err(String text);
+
+	/**
+	 * <p>
+	 * Logs an error's message and potentially any other information about the error
+	 * that is relevant, such as its stacktrace.
+	 * </p>
+	 * <p>
+	 * By default, this method simply calls {@link #err(String)} with the result of
+	 * calling {@link Throwable#getLocalizedMessage()}. If the provided error was
+	 * caused by another as denoted through {@link Throwable#getCause()}, this
+	 * method then calls {@link #err(Throwable)} with that causal error. If the
+	 * provided error has suppressed any other errors, this method then calls
+	 * {@link #err(Throwable)} with each of those suppressed errors.
+	 * 
+	 * @param error The error to log the message (and potentially, other relevant
+	 *              information) of.
+	 */
+	default void err(Throwable error) {
+		err(error.getLocalizedMessage());
+		if (error.getCause() != null)
+			err(error.getCause());
+		for (Throwable t : error.getSuppressed())
+			err(t);
+	}
+
 }
