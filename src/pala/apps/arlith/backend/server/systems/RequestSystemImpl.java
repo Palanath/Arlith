@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.requests.AuthRequest;
@@ -91,7 +90,7 @@ public class RequestSystemImpl implements RequestSystem {
 	private final ArlithServer server;
 	private final Map<GID, List<RequestConnection>> requestClients = new HashMap<>();
 	private final Map<String, RequestHandler> authenticatedRequestHandlers = new HashMap<>();
-	
+
 	{
 		addHandler(ChangeUsernameRequest.REQUEST_NAME, new ChangeUsernameRequestHandler());
 		addHandler(ChangeEmailRequest.REQUEST_NAME, new ChangeEmailRequestHandler());
@@ -171,7 +170,7 @@ public class RequestSystemImpl implements RequestSystem {
 			authenticatedRequestHandlers.get(req).handle(request, connection);
 		} catch (Exception e) {
 			connection.sendError(new ServerError());
-			Logging.err(e);
+			ArlithServer.getThreadLogger().err(e);
 			connection.closeConnection();// Log Connection out.
 			unregisterRequestClient(connection);
 		}

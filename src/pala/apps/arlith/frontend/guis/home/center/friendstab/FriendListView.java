@@ -23,9 +23,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.libraries.JavaFXUtilities;
 import pala.libs.generic.javafx.FXTools;
 
@@ -148,8 +148,8 @@ public class FriendListView extends TableView<ClientUser> {
 						try {
 							iv.setImage(value.getProfileIcon());
 						} catch (CommunicationProtocolError | RuntimeException e) {
-							Logging.err("An error occurred while loading a user's icon.");
-							Logging.err(e);
+							ArlithFrontend.getGuiLogger().err("An error occurred while loading a user's icon.");
+							ArlithFrontend.getGuiLogger().err(e);
 							iv.setImage(MISSING_PFI_ICON);
 						}
 				}
@@ -168,8 +168,8 @@ public class FriendListView extends TableView<ClientUser> {
 					try {
 						setText(value.getIdentifier());
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err("An error occurred while loading a user's tag.");
-						Logging.err(e);
+						ArlithFrontend.getGuiLogger().err("An error occurred while loading a user's tag.");
+						ArlithFrontend.getGuiLogger().err(e);
 						setText("!#ERR");
 					}
 			}
@@ -196,7 +196,7 @@ public class FriendListView extends TableView<ClientUser> {
 										@Override
 										public void handle(ActionEvent event) {
 											// TODO Revoke friend request.
-											Logging.err("Not yet implemented... :-)");
+											ArlithFrontend.getGuiLogger().err("Not yet implemented... :-)");
 										}
 									});
 									box.getChildren().setAll(rescind);
@@ -206,8 +206,8 @@ public class FriendListView extends TableView<ClientUser> {
 										try {
 											value.friend();
 										} catch (CommunicationProtocolError | RuntimeException e) {
-											Logging.err("An error occurred while trying to friend request the user.");
-											Logging.err(e);
+											ArlithFrontend.getGuiLogger().err("An error occurred while trying to friend request the user.");
+											ArlithFrontend.getGuiLogger().err(e);
 											FXTools.spawnLabelAtMousePos("Error; See Console (Ctrl + F3)",
 													Color.FIREBRICK, FriendListView.this.getScene().getWindow());
 											return;
@@ -224,8 +224,8 @@ public class FriendListView extends TableView<ClientUser> {
 							setText(null);
 							setGraphic(box);
 						} catch (CommunicationProtocolError | RuntimeException e) {
-							Logging.err("An error occurred while checking the friend status of another user.");
-							Logging.err(e);
+							ArlithFrontend.getGuiLogger().err("An error occurred while checking the friend status of another user.");
+							ArlithFrontend.getGuiLogger().err(e);
 							setText("Error");
 							JavaFXUtilities.runFX(() -> setGraphic(null));
 						}

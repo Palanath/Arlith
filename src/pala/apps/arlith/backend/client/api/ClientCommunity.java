@@ -7,7 +7,6 @@ import java.util.Set;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
@@ -110,9 +109,10 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 								return icon.getValue();
 							});
 				} catch (CommunicationProtocolConstructionError e) {
-					Logging.err("Failed to obtain the changed icon of the Community: " + name.getValue() == null
-							? String.valueOf(id())
-							: name.getValue());
+					client().getLogger()
+							.err("Failed to obtain the changed icon of the Community: " + name.getValue() == null
+									? String.valueOf(id())
+									: name.getValue());
 				}
 			break;
 		case "background-image":
@@ -126,9 +126,10 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 								return icon.getValue();
 							});
 				} catch (CommunicationProtocolConstructionError e) {
-					Logging.err("Failed to obtain the changed icon of the Community: " + name.getValue() == null
-							? String.valueOf(id())
-							: name.getValue());
+					client().getLogger()
+							.err("Failed to obtain the changed icon of the Community: " + name.getValue() == null
+									? String.valueOf(id())
+									: name.getValue());
 				}
 			break;
 		default:
@@ -175,10 +176,12 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	 * @return A brand new {@link Set} that was populated by converting each value
 	 *         in {@link #getMemberIDs()} to a {@link ClientUser} using
 	 *         {@link #client()}.{@link ArlithClient#getUser(pala.apps.arlith.backend.common.protocol.types.UserValue)}.
-	 * @throws CommunicationProtocolError         If a {@link CommunicationProtocolError} occurs during the querying of
-	 *                          any {@link UserValue}s.
-	 * @throws RuntimeException If a {@link RuntimeException} occurs during the
-	 *                          querying of any {@link UserValue}s.
+	 * @throws CommunicationProtocolError If a {@link CommunicationProtocolError}
+	 *                                    occurs during the querying of any
+	 *                                    {@link UserValue}s.
+	 * @throws RuntimeException           If a {@link RuntimeException} occurs
+	 *                                    during the querying of any
+	 *                                    {@link UserValue}s.
 	 */
 	public Set<ClientUser> getMembers() throws CommunicationProtocolError, RuntimeException {
 		return client().getBunchOUsers(memberIDs);
@@ -194,12 +197,13 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	 * @param from The beginning index, inclusive, of the members to retrieve
 	 *             {@link ClientUser} representations of.
 	 * @param to   The ending index, exclusive, of the members to retrieve.
-	 * @return The resulting {@link List} containing the retrieved {@link ClientUser}
-	 *         objects.
-	 * @throws CommunicationProtocolError         If a {@link CommunicationProtocolError} occurs during the querying of
-	 *                          any {@link UserValue}s.
-	 * @throws RuntimeException If a {@link RuntimeException} occurs during querying
-	 *                          of any {@link UserValue}s.
+	 * @return The resulting {@link List} containing the retrieved
+	 *         {@link ClientUser} objects.
+	 * @throws CommunicationProtocolError If a {@link CommunicationProtocolError}
+	 *                                    occurs during the querying of any
+	 *                                    {@link UserValue}s.
+	 * @throws RuntimeException           If a {@link RuntimeException} occurs
+	 *                                    during querying of any {@link UserValue}s.
 	 */
 	public Set<ClientUser> getMembers(int from, int to) throws CommunicationProtocolError, RuntimeException {
 		if (to > getMemberCount())

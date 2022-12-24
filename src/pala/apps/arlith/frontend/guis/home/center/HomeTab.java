@@ -21,7 +21,6 @@ import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientMessage;
 import pala.apps.arlith.backend.client.api.ClientThread;
 import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotification;
@@ -30,6 +29,7 @@ import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.FriendStateValue;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.home.EventCard;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 
@@ -246,7 +246,7 @@ public class HomeTab extends PanelTab {
 					try {
 						ident = home.getApp().getClient().getUser(notif.getSourceUser()).getIdentifier();
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err("Failed to get user: " + notif.idHex()
+						ArlithFrontend.getGuiLogger().err("Failed to get user: " + notif.idHex()
 								+ "'s user information (specifically the name). The connection to the server was lost and it could not be reopened. :(");
 						continue;
 					}
@@ -267,7 +267,7 @@ public class HomeTab extends PanelTab {
 						ident = msg.getAuthor().getName();
 						content = msg.getText();
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err(
+						ArlithFrontend.getGuiLogger().err(
 								"Failed to query some information needed to show a notification from the server. (New DM notification for message: "
 										+ notif.getMsg().getHex() + " in " + notif.getThread().getHex() + '.');
 						continue;

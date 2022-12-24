@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
@@ -155,7 +155,7 @@ public class EventSystem {
 			try {
 				fire(event, c);
 			} catch (Exception e) {
-				Logging.err("Failed to fire an event to the client: " + c + '.');
+				ArlithServer.getThreadLogger().err("Failed to fire an event to the client: " + c + '.');
 				if (ex == null)
 					ex = e;
 				else
@@ -194,7 +194,7 @@ public class EventSystem {
 				try {
 					fire(event, g);
 				} catch (Exception e) {
-					Logging.err("Failed to fire an event to the user: " + g + '.');
+					ArlithServer.getThreadLogger().err("Failed to fire an event to the user: " + g + '.');
 					if (ex == null)
 						ex = e;
 					else
@@ -208,7 +208,7 @@ public class EventSystem {
 			try {
 				fire(event, g);
 			} catch (Exception e) {
-				Logging.err("Failed to fire an event to the user: " + g + '.');
+				ArlithServer.getThreadLogger().err("Failed to fire an event to the user: " + g + '.');
 				if (ex == null)
 					ex = e;
 				else
@@ -223,7 +223,7 @@ public class EventSystem {
 				try {
 					fire(event, g);
 				} catch (Exception e) {
-					Logging.err("Failed to fire an event to the user: " + g + '.');
+					ArlithServer.getThreadLogger().err("Failed to fire an event to the user: " + g + '.');
 					if (ex == null)
 						ex = e;
 					else
@@ -237,7 +237,7 @@ public class EventSystem {
 			try {
 				fire(event, g);
 			} catch (Exception e) {
-				Logging.err("Failed to fire an event to the user: " + g + '.');
+				ArlithServer.getThreadLogger().err("Failed to fire an event to the user: " + g + '.');
 				if (ex == null)
 					ex = e;
 				else

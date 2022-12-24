@@ -3,7 +3,10 @@ package pala.apps.arlith;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import pala.apps.arlith.application.Logging;
+import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.backend.client.ArlithClient;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.launchers.ApplicationLauncher;
 import pala.apps.arlith.launchers.jfxclient.JFXLauncher;
 import pala.apps.arlith.libraries.Utilities;
@@ -28,6 +31,30 @@ public class Arlith {
 
 	private static CLIParams CLI_PARAMETERS;
 	private static final String LAUNCHER_PACKAGE = ApplicationLauncher.class.getPackage().getName();
+	/**
+	 * <p>
+	 * The {@link Logger} for the "main program." Loggers for the client and server
+	 * (and its code) belong to the respective classes.
+	 * </p>
+	 * <p>
+	 * The main program refers to the portion of execution that does not belong to
+	 * either the client or the server. It usually entails code that neither the
+	 * {@link ArlithClient} nor the {@link ArlithServer} execute, so all of the code
+	 * in {@link #main(String[])} that runs before either the client or server are
+	 * launched. Right now, typical execution of Arlith is execution of the main
+	 * method, the client or server thread. In those instances, if any logging needs
+	 * to be performed before either the client or server is launched, it can be
+	 * done through this logger.
+	 * </p>
+	 * <p>
+	 * This object should not be modified in most contexts.
+	 * </p>
+	 */
+	private static final StandardLoggerImpl LOGGER = new StandardLoggerImpl("ALITH");
+
+	public static Logger getLogger() {
+		return LOGGER;
+	}
 
 	/**
 	 * Gets the CLI Parameters for the application. This object is
@@ -48,7 +75,7 @@ public class Arlith {
 
 		// Check for various command line options.
 		if (CLI_PARAMETERS.checkFlag(false, "--debug", "-dbg"))
-			Logging.setDebuggingEnabled(true);
+			LOGGER.setLogDebugMessages(true);
 		Utilities.setPreferredDestinationAddress(CLI_PARAMETERS.readString(Utilities.DEFAULT_DESTINATION_ADDRESS,
 				"--server-address", "--servaddr", "--serv-addr", "-sa"));
 		Utilities.setPreferredPort(

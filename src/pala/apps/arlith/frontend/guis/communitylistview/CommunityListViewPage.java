@@ -12,11 +12,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
@@ -87,13 +87,14 @@ public class CommunityListViewPage extends BindHandlerPage {
 				try {
 					myCommunities.new Listing(com);
 				} catch (IOException e) {
-					Logging.err("Displaying a community in the community list failed.");
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err("Displaying a community in the community list failed.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 			}
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to load the communities you're in (as well as the ones publicly available).");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger()
+					.err("Failed to load the communities you're in (as well as the ones publicly available).");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 
 //		client.register(CommunityCreatedEvent.COMMUNITY_CREATED_EVENT, newCommunityHandler);
@@ -106,8 +107,8 @@ public class CommunityListViewPage extends BindHandlerPage {
 				try {
 					new NewCommunityViewPage().show(window);
 				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to show the create community window.");
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to show the create community window.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 		});
 

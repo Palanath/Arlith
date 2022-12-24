@@ -31,12 +31,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.frontend.guis.ApplicationState;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.apps.arlith.libraries.Utilities;
 import pala.libs.generic.JavaTools;
@@ -80,8 +79,8 @@ public class SettingsPage extends BindHandlerPage {
 		try {
 			win.setContent(loader.load(SettingsPage.class.getResourceAsStream("SettingsGUI.fxml")));
 		} catch (IOException e) {
-			Logging.err("Failed to load the settings menu.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to load the settings menu.");
+			ArlithFrontend.getGuiLogger().err(e);
 			throw new WindowLoadFailureException(e);
 		}
 
@@ -99,35 +98,35 @@ public class SettingsPage extends BindHandlerPage {
 			try {
 				ownusr = win.getApplication().getClient().getOwnUser();
 			} catch (RuntimeException | CommunicationProtocolError e) {
-				Logging.err("Failed to obtain username.");
-				Logging.err(e);
+				ArlithFrontend.getGuiLogger().err("Failed to obtain username.");
+				ArlithFrontend.getGuiLogger().err(e);
 				break PROMPT_FILL_BLOCK;
 			}
 			usernamePrompt.setText(ownusr.name());
 			try {
 				emailPrompt.setText(ownusr.getEmail());
 			} catch (CommunicationProtocolError | RuntimeException e) {
-				Logging.err("Failed to contact the server while loading the settings menu.");
-				Logging.err(e);
+				ArlithFrontend.getGuiLogger().err("Failed to contact the server while loading the settings menu.");
+				ArlithFrontend.getGuiLogger().err(e);
 			}
 			try {
 				phonePrompt.setText(ownusr.getPhoneNumber());
 			} catch (CommunicationProtocolError | RuntimeException e) {
-				Logging.err("Failed to contact the server while loading the settings menu.");
-				Logging.err(e);
+				ArlithFrontend.getGuiLogger().err("Failed to contact the server while loading the settings menu.");
+				ArlithFrontend.getGuiLogger().err(e);
 			}
 		}
 
 		try {
 			pfiview.setImage(app.getClient().getOwnUser().getProfileIcon());
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to retrieve PFI.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to retrieve PFI.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 		try {
 			bindable(pfiview::setImage).bind(app.getClient().getOwnUser().profileIconView());
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 
 		int maxroll = 40;// Maximum degrees that the image will rotate along its axis (when mouse is on
@@ -238,7 +237,7 @@ public class SettingsPage extends BindHandlerPage {
 			if (event.getButton() == MouseButton.PRIMARY)
 				selectedMenu.set(profileMenu);
 		});
-		GUIUtils.applyClickAnimation(profileMenu, Color.GOLD, Color.RED, profileTitle);
+		ArlithFrontend.applyClickAnimation(profileMenu, Color.GOLD, Color.RED, profileTitle);
 
 	}
 
@@ -261,20 +260,20 @@ public class SettingsPage extends BindHandlerPage {
 		try (FileInputStream is = new FileInputStream(f)) {
 			i = new Image(is);
 		} catch (IOException e) {
-			Logging.err("Failed to load image: " + f);
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to load image: " + f);
+			ArlithFrontend.getGuiLogger().err(e);
 			return;
 		}
 		if (i.isError()) {
-			Logging.err("Failed to load image: " + f);
-			Logging.err(i.getException());
+			ArlithFrontend.getGuiLogger().err("Failed to load image: " + f);
+			ArlithFrontend.getGuiLogger().err(i.getException());
 			return;
 		}
 		try (FileInputStream is = new FileInputStream(f)) {
 			app.getClient().getOwnUser().setProfileIcon(JavaTools.read(is));
 		} catch (IOException | CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to send image.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to send image.");
+			ArlithFrontend.getGuiLogger().err(e);
 			return;
 		}
 	}
@@ -283,8 +282,8 @@ public class SettingsPage extends BindHandlerPage {
 		try {
 			app.getClient().getOwnUser().setProfileIcon(null);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("An error occurred while contacting the server to remove your profile icon.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("An error occurred while contacting the server to remove your profile icon.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 	}
 
@@ -295,7 +294,7 @@ public class SettingsPage extends BindHandlerPage {
 
 		if (!un.isEmpty())
 			if (!Utilities.isValidUsername(un))
-				Logging.err("Invalid username.");
+				ArlithFrontend.getGuiLogger().err("Invalid username.");
 			else
 				try {
 					if (!un.equals(app.getClient().getOwnUser().usernameView().getValue())) {
@@ -303,14 +302,14 @@ public class SettingsPage extends BindHandlerPage {
 						usernamePrompt.setBorder(successBorder);
 					}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err("An error occurred when setting the new username.");
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err("An error occurred when setting the new username.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 
 		String email = emailPrompt.getText().trim();
 		if (!email.isEmpty())
 			if (!Utilities.isValidEmail(email))
-				Logging.err("Invalid email.");
+				ArlithFrontend.getGuiLogger().err("Invalid email.");
 			else
 				try {
 					if (!email.equals(app.getClient().getOwnUser().getEmail())) {
@@ -318,13 +317,13 @@ public class SettingsPage extends BindHandlerPage {
 						emailPrompt.setBorder(successBorder);
 					}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err("An error occurred when setting the new email.");
+					ArlithFrontend.getGuiLogger().err("An error occurred when setting the new email.");
 				}
 
 		String phone = phonePrompt.getText().trim();
 		if (!phone.isEmpty())
 			if (!Utilities.isValidPhoneNumber(phone))
-				Logging.err("Invalid phone number.");
+				ArlithFrontend.getGuiLogger().err("Invalid phone number.");
 			else {
 				try {
 					if (!phone.equals(app.getClient().getOwnUser().getPhoneNumber())) {
@@ -332,7 +331,7 @@ public class SettingsPage extends BindHandlerPage {
 						phonePrompt.setBorder(successBorder);
 					}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err("An error occurred when setting the new phone number.");
+					ArlithFrontend.getGuiLogger().err("An error occurred when setting the new phone number.");
 				}
 			}
 

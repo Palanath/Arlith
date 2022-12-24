@@ -13,12 +13,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser.FriendState;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.home.center.friendstab.FriendListView;
 import pala.apps.arlith.libraries.Utilities;
@@ -122,7 +122,7 @@ public class FriendsTab extends PanelTab {
 					} catch (CommunicationProtocolError | RuntimeException e) {
 						FXTools.spawnLabelAtMousePos("An error occurred.", Color.FIREBRICK,
 								home.getWindow().getApplication().getStage());
-						Logging.err(e);
+						ArlithFrontend.getGuiLogger().err(e);
 						return;
 					}
 					FXTools.spawnLabelAtMousePos("Friend Request Sent", Color.GREEN,
@@ -134,8 +134,8 @@ public class FriendsTab extends PanelTab {
 								return;
 							}
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err("Failed to check if user being friend requested is already friended.");
-						Logging.err(e);
+						ArlithFrontend.getGuiLogger().err("Failed to check if user being friend requested is already friended.");
+						ArlithFrontend.getGuiLogger().err(e);
 						// If this fails, don't return; still try to friend the user and continue. The
 						// rendering part won't work, but the friend request will still go through.
 					}
@@ -146,9 +146,9 @@ public class FriendsTab extends PanelTab {
 								return;
 							}
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err(
+						ArlithFrontend.getGuiLogger().err(
 								"Failed to check if pending friend request already exists for user being friend requested.");
-						Logging.err(e);
+						ArlithFrontend.getGuiLogger().err(e);
 						// If this part fails, we just want to continue on and send the friend request
 						// anyway, in case the person being friend requested is not already friend
 						// requested.
@@ -178,8 +178,8 @@ public class FriendsTab extends PanelTab {
 							return;
 						}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err("Failed to check if user being friend requested is already friended.");
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to check if user being friend requested is already friended.");
+					ArlithFrontend.getGuiLogger().err(e);
 					// If this fails, don't return; still try to friend the user and continue. The
 					// rendering part won't work, but the friend request will still go through.
 				}
@@ -192,9 +192,9 @@ public class FriendsTab extends PanelTab {
 							return;
 						}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err(
+					ArlithFrontend.getGuiLogger().err(
 							"Failed to check if pending friend request already exists for user being friend requested.");
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err(e);
 					// If this part fails, we just want to continue on and send the friend request
 					// anyway, in case the person being friend requested is not already friend
 					// requested.
@@ -205,7 +205,7 @@ public class FriendsTab extends PanelTab {
 				} catch (CommunicationProtocolError | RuntimeException e) {
 					FXTools.spawnLabelAtMousePos("An error occurred.", Color.FIREBRICK,
 							home.getWindow().getApplication().getStage());
-					Logging.err(e);
+					ArlithFrontend.getGuiLogger().err(e);
 					return;
 				}
 				FXTools.spawnLabelAtMousePos("Friend Request Sent", Color.GREEN,
@@ -221,8 +221,8 @@ public class FriendsTab extends PanelTab {
 								break RESOLVE_FRIEND_STATE;
 							}
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						Logging.err("Failed to check friend status of the user being friend requested.");
-						Logging.err(e);
+						ArlithFrontend.getGuiLogger().err("Failed to check friend status of the user being friend requested.");
+						ArlithFrontend.getGuiLogger().err(e);
 					}
 					// User was not found in incoming list, so there's now only an outgoing friend
 					// request. We make the GUI reflect that.
@@ -273,22 +273,22 @@ public class FriendsTab extends PanelTab {
 			for (ClientUser u : home.getApp().getClient().getIncomingFriendRequests())
 				updateState(u, FriendState.INCOMING_REQUEST);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to list incoming friend requests.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to list incoming friend requests.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 		try {
 			for (ClientUser u : home.getApp().getClient().listFriends())
 				updateState(u, FriendState.FRIENDED);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to list friends.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to list friends.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 		try {
 			for (ClientUser u : home.getApp().getClient().getOutgoingFriendRequests())
 				updateState(u, FriendState.FRIEND_REQUESTED);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to list outgoing friend requests.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to list outgoing friend requests.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 	}
 

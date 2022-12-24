@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.frontend.guis.ApplicationState;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.graphics.Disposable;
 import pala.apps.arlith.graphics.LeftPanel;
 import pala.apps.arlith.graphics.MenuBar;
@@ -100,8 +100,8 @@ public @Disposable class ArlithWindow extends Window {
 		try {
 			contentRoot.setLeft(loader.load(LeftPanel.class.getResourceAsStream("Left Panel.fxml")));
 		} catch (IOException e) {
-			Logging.err("Failed to load the main application layout.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to load the main application layout.");
+			ArlithFrontend.getGuiLogger().err(e);
 			throw new WindowLoadFailureException(e);
 		}
 
@@ -110,8 +110,8 @@ public @Disposable class ArlithWindow extends Window {
 		try {
 			contentRoot.setTop(loader.load(MenuBar.class.getResourceAsStream("Menu Bar.fxml")));
 		} catch (IOException e) {
-			Logging.err("Failed to load the main application layout.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to load the main application layout.");
+			ArlithFrontend.getGuiLogger().err(e);
 			throw new WindowLoadFailureException(e);
 		}
 		stage.setScene(stage.getScene() == null ? new Scene(root)

@@ -16,10 +16,9 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.graphics.Disposable;
 import pala.libs.generic.javafx.FXTools;
 import pala.libs.generic.javafx.bindings.BindingTools;
@@ -60,7 +59,7 @@ public @Disposable class MemberCard extends StackPane {
 		setAlignment(statusIcon, Pos.TOP_RIGHT);
 		setMargin(statusIcon, new Insets(20, 20, 0, 0));
 
-		GUIUtils.applyClickAnimation(this, from, to, color::set);
+		ArlithFrontend.applyClickAnimation(this, from, to, color::set);
 
 		getChildren().setAll(box, statusIcon);
 	}
@@ -76,11 +75,9 @@ public @Disposable class MemberCard extends StackPane {
 						content.putString("Username: " + user.getIdentifier() + "\nGID: " + user.id());
 						content.putHtml("<username>" + user.getIdentifier() + "</><gid>" + user.id() + "</>");
 						if (Clipboard.getSystemClipboard().setContent(content))
-							FXTools.spawnLabelAtMousePos("Copied everything", Color.GREEN,
-									getScene().getWindow());
+							FXTools.spawnLabelAtMousePos("Copied everything", Color.GREEN, getScene().getWindow());
 						else
-							FXTools.spawnLabelAtMousePos("Failed to copy...", Color.FIREBRICK,
-									getScene().getWindow());
+							FXTools.spawnLabelAtMousePos("Failed to copy...", Color.FIREBRICK, getScene().getWindow());
 					} else if (event.isAltDown())
 						if (icon.getImage() != null) {
 							content.putImage(icon.getImage());
@@ -96,11 +93,10 @@ public @Disposable class MemberCard extends StackPane {
 						if (Clipboard.getSystemClipboard().setContent(content))
 							FXTools.spawnLabelAtMousePos("Copied user ID", Color.GREEN, getScene().getWindow());
 						else
-							FXTools.spawnLabelAtMousePos("Failed to copy...", Color.FIREBRICK,
-									getScene().getWindow());
+							FXTools.spawnLabelAtMousePos("Failed to copy...", Color.FIREBRICK, getScene().getWindow());
 					}
 				} catch (CommunicationProtocolError | RuntimeException e) {
-					Logging.err("Failed to obtain client's username for storing in clipboard.");
+					ArlithFrontend.getGuiLogger().err("Failed to obtain client's username for storing in clipboard.");
 				}
 			}
 		});
@@ -109,8 +105,8 @@ public @Disposable class MemberCard extends StackPane {
 		try {
 			icon.setImage(user.getProfileIcon());
 		} catch (CommunicationProtocolError | RuntimeException e1) {
-			Logging.err("Failed to get the profile icon of a user to display in a member card.");
-			Logging.err(e1);
+			ArlithFrontend.getGuiLogger().err("Failed to get the profile icon of a user to display in a member card.");
+			ArlithFrontend.getGuiLogger().err(e1);
 		}
 
 		try {
@@ -128,8 +124,8 @@ public @Disposable class MemberCard extends StackPane {
 				id = id.substring(0, 16) + "...";
 			gid.setText(id);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			Logging.err("Failed to retrieve user information.");
-			Logging.err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to retrieve user information.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 	}
 

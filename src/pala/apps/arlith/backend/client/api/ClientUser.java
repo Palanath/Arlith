@@ -6,7 +6,6 @@ import java.lang.ref.WeakReference;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.Cache;
 import pala.apps.arlith.backend.client.api.caching.ClientCache;
@@ -185,7 +184,8 @@ public class ClientUser extends SimpleClientObject implements Named {
 		super(gid, client);
 	}
 
-	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount, String discriminant) {
+	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount,
+			String discriminant) {
 		this(gid, client);
 		this.username.populate(username);
 		this.status.populate(status);
@@ -301,15 +301,16 @@ public class ClientUser extends SimpleClientObject implements Named {
 			} catch (RuntimeException | CommunicationProtocolError e) {
 				B: {
 					try {
-						Logging.err("Failed to obtain the changed profile icon of the user " + username.get() == null
-								? String.valueOf(id())
-								: username.get().get());
+						client().getLogger()
+								.err("Failed to obtain the changed profile icon of the user " + username.get() == null
+										? String.valueOf(id())
+										: username.get().get());
 					} catch (CommunicationProtocolError | RuntimeException e1) {
 						e1.addSuppressed(e);
-						Logging.err(e1);
+						client().getLogger().err(e1);
 						break B;
 					}
-					Logging.err(e);
+					client().getLogger().err(e);
 				}
 			}
 	}
