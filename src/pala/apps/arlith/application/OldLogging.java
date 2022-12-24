@@ -4,7 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.paint.Color;
 
-public class Logging {
+public class OldLogging {
 
 	private static final Color STANDARD_COLOR = Color.GREEN, WARNING_COLOR = Color.GOLD, ERROR_COLOR = Color.FIREBRICK,
 			DEBUG_COLOR = Color.CORNFLOWERBLUE;
