@@ -100,4 +100,36 @@ public interface Logger {
 			err(t);
 	}
 
+	/**
+	 * Does nothing upon any invocation. This can be used to suppress all log
+	 * information from a utility that logs messages.
+	 */
+	static Logger DUMMY = new Logger() {
+
+		@Override
+		public void wrn(String text) {
+
+		}
+
+		@Override
+		public void std(String text) {
+
+		}
+
+		@Override
+		public void print(String text) {
+
+		}
+
+		@Override
+		public void err(String text) {
+
+		}
+
+		@Override
+		public void dbg(String text) {
+
+		}
+	};
+
 }
