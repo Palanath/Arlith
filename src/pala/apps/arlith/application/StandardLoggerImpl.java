@@ -214,7 +214,7 @@ public class StandardLoggerImpl implements Logger {
 	 * @return The prefix to be used for formatted log outputs.
 	 */
 	protected String createFullPrefix() {
-		return (timestampFormatter == null ? '<' + timestampFormatter.format(Instant.now()) + ">[" : '[') + prefix
+		return (timestampFormatter != null ? '<' + timestampFormatter.format(Instant.now()) + ">[" : '[') + prefix
 				+ "]: ";
 	}
 
