@@ -13,8 +13,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.application.ArlithRuntime;
-import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
+import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
@@ -27,16 +27,47 @@ public abstract class EventSubsystem {
 
 	private final EventReader eventReifier;
 	private EventManager<CommunicationProtocolEvent> eventManager;
+	/**
+	 * The {@link Logger} to which errors and other logging information will be
+	 * sent. Various information is printed to the logger, such as warnings
+	 * (whenever a {@link RateLimitError} is being handled), errors (whenever
+	 * certain types of errors occur, and by default through the
+	 * {@link #generalErrorHandler} and {@link #errorHandler}), and during normal
+	 * operation (such as debug information). This must be non-<code>null</code> and
+	 * should be instantiated with this {@link EventSubsystem}.
+	 */
+	private final Logger logger;
 
-	private Consumer<CommunicationProtocolError> errorHandler = Throwable::printStackTrace;
+	/**
+	 * Used to handle {@link CommunicationProtocolError}s that come up while the
+	 * {@link EventSubsystem} is executing. This {@link Consumer} typically logs or
+	 * prints the error somewhere.
+	 */
+	private Consumer<? super CommunicationProtocolError> errorHandler;
+	/**
+	 * Used to handle general errors that may come up while the
+	 * {@link EventSubsystem} is executing. This {@link Consumer} typically logs or
+	 * prints the error somewhere.
+	 */
+	private Consumer<? super Exception> generalErrorHandler;
 
-	public Consumer<CommunicationProtocolError> getErrorHandler() {
+	public Consumer<? super Exception> getGeneralErrorHandler() {
+		return generalErrorHandler;
+	}
+
+	public void setGeneralErrorHandler(Consumer<? super Exception> generalErrorHandler) {
+		if (generalErrorHandler == null)
+			throw new IllegalArgumentException("The general error handler cannot be null.");
+		this.generalErrorHandler = generalErrorHandler;
+	}
+
+	public Consumer<? super CommunicationProtocolError> getErrorHandler() {
 		return errorHandler;
 	}
 
-	public void setErrorHandler(Consumer<CommunicationProtocolError> errorHandler) {
+	public void setErrorHandler(Consumer<? super CommunicationProtocolError> errorHandler) {
 		if (errorHandler == null)
-			throw null;
+			throw new IllegalArgumentException("The error handler should not be null.");
 		this.errorHandler = errorHandler;
 	}
 
@@ -57,9 +88,17 @@ public abstract class EventSubsystem {
 
 	private boolean daemon = true;
 
-	public EventSubsystem(CommunicationConnection client, EventReader eventReifier) {
+	public EventSubsystem(CommunicationConnection client, EventReader eventReifier, Logger logger) {
 		this.client = client;
 		this.eventReifier = eventReifier;
+		this.logger = logger;
+		errorHandler = generalErrorHandler = logger::err;
+	}
+
+	// TODO Scan for callers of this constructor and change them so that they call
+	// the other constructor and pass in the client's logger.
+	public EventSubsystem(CommunicationConnection client, EventReader eventReifier) {
+		this(client, eventReifier, Logger.DUMMY);
 	}
 
 	public void startup() {
@@ -72,7 +111,7 @@ public abstract class EventSubsystem {
 				} catch (CommunicationProtocolError e2) {
 					errorHandler.accept(e2);
 				} catch (Exception e3) {
-					Logging.err(e3);
+					generalErrorHandler.accept(e3);
 				}
 		});
 		t.setDaemon(daemon);
@@ -91,7 +130,7 @@ public abstract class EventSubsystem {
 				break;
 
 			} catch (RateLimitError e) {
-				Logging.err("Event connection handling a rate limit for reconnecting: " + e.getSleepTimeLong() + "ms.");
+				logger.wrn("Event connection handling a rate limit for reconnecting: " + e.getSleepTimeLong() + "ms.");
 				try {
 					Thread.sleep(e.getSleepTimeLong());
 				} catch (InterruptedException e1) {
@@ -99,25 +138,27 @@ public abstract class EventSubsystem {
 				}
 				continue;
 			} catch (CommunicationProtocolError e) {
-				Logging.err("Encountered a CommunicationProtocolError when trying to authorize the event connection.");
+				logger.err(
+						"Encountered a CommunicationProtocolError when trying to authorize the event connection. The error will be printed below.");
+				logger.err(e);
 			} catch (SocketTimeoutException e) {
-				Logging.err("Timeout when connecting to server. Retrying...");
+				logger.wrn("Timeout when connecting to server. Retrying...");
 				continue;
 			} catch (ClassCastException e) {
-				Logging.err(
-						"The server's response was malformed when reconnecting and authorizing the event connection. Retrying in 5s.");
+				logger.err(
+						"The server's response was malformed when reconnecting and authorizing the event connection. Retrying in 5s, but usually this issue does not go away by just retrying. (Perhaps the client and server are running different versions.)");
 			} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
 					| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
 					| IOException | MalformedResponseException e) {
-				Logging.err("Failed to connect the event connection to the server. Retrying in 5s.");
+				logger.err("Failed to connect the event connection to the server. Retrying in 5s.");
 			}
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				Logging.err(e);
+				return;
 			}
 		}
-		Logging.std("Successfully reconnected the event connection.");
+		logger.std("Successfully reconnected the event connection.");
 		startup();
 	}
 
@@ -130,7 +171,9 @@ public abstract class EventSubsystem {
 	 * Reads a single event from the input stream and fires handlers as appropriate.
 	 * 
 	 * @author Palanath
-	 * @throws CommunicationProtocolError In case the server sends a {@link CommunicationProtocolError} of some sort.
+	 * @throws CommunicationProtocolError In case the server sends a
+	 *                                    {@link CommunicationProtocolError} of some
+	 *                                    sort.
 	 */
 	@SuppressWarnings("unchecked")
 	protected void readEvent() throws CommunicationProtocolError {
@@ -143,25 +186,5 @@ public abstract class EventSubsystem {
 		}
 		eventManager.fire((EventType<CommunicationProtocolEvent>) ei.getType(), ei.getEvent());
 	}
-
-//	/**
-//	 * This method is called upon the failure of a socket operation. It checks if
-//	 * the {@link Client} has been "stopped" by checking if the event
-//	 * thread is null. If it is, this {@link Client} is supposed to have
-//	 * stopped.
-//	 * 
-//	 * @throws E The exception that caused the failure.
-//	 */
-//	private synchronized <E extends Exception> void checkFail(E e) throws E {
-//		if (t != null)// Shutdown was NOT initiated; we encountered a stream error and so the stream
-//						// is dead. We need to reconnect the stream manually.
-//			reconnect();
-//		throw e;
-//	}
-//
-//	private synchronized void checkFail() {
-//		if (t != null)
-//			reconnect();
-//	}
 
 }
