@@ -7,6 +7,7 @@ import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.AuthRequest;
 import pala.apps.arlith.backend.common.protocol.types.AuthProblemValue;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.systems.EventConnectionImpl;
 import pala.apps.arlith.libraries.networking.BlockException;
@@ -14,8 +15,8 @@ import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 /**
  * <p>
- * Handles a {@link AuthRequest}, which is an attempt to log a connection in
- * via {@link AuthToken}.
+ * Handles a {@link AuthRequest}, which is an attempt to log a connection in via
+ * {@link AuthToken}.
  * </p>
  * 
  * @author Palanath
@@ -40,6 +41,13 @@ public final class AuthRequestHandler extends SimpleRequestHandler<AuthRequest> 
 		if (acc != null) {
 			// We get here if the auth token that the connection specified is valid (so we
 			// know what user is trying to log in over this connection).
+
+			// Send a log message noting that someone's connection is logging in.
+			String userTag = client.getServer().getWorld().getUserByID(acc).getTag();
+			ArlithServer.getThreadLogger().std(userTag + " is authenticating this connection via token.");
+			// Regardless of the outcome, quickly set the thread's purpose; update it to
+			// include the user's tag.
+			ArlithServer.changeThreadLoggerPurpose(userTag);
 
 			// Check if they want an event connection or request connection.
 			if (r.getEventConnection().is()) {
