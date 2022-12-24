@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.client.api.ClientThread;
@@ -63,6 +65,30 @@ import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
 
 public class ArlithClient {
+
+	/**
+	 * The logger for this {@link ArlithClient}. All of the faculties that the
+	 * client invokes should log to this logger. Each client and server have its own
+	 * logger to help organize log output on instances running both a client and
+	 * server, and to organize output against portions of the program that do not
+	 * run under a client or server.
+	 */
+	private final Logger logger = new StandardLoggerImpl("CLIENT");
+
+	/**
+	 * Gets this {@link ArlithClient}'s {@link Logger}. This {@link Logger} is used
+	 * to log standard, error, debug, and warning messages that occur during this
+	 * client's execution. It should only be modified in certain contexts, (since
+	 * the same returne d{@link Logger} is used for all operations that this
+	 * {@link ArlithClient} performs), but can be printed to freely by code invoked
+	 * by this client.
+	 * 
+	 * @return The {@link Logger} that can be used to log information for this
+	 *         client.
+	 */
+	public Logger getLogger() {
+		return logger;
+	}
 
 	private static class StandardEventSubsystem extends EventSubsystem {
 		private final AuthToken token;
@@ -127,8 +153,8 @@ public class ArlithClient {
 			// the server, process the result (convert it to a list of ClientCommunities
 			// instead
 			// of CommunicationProtcolCommunities), and then return the processed result.
-			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection), ArlithClient.this::getCommunity,
-					new ArrayList<>());
+			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection),
+					ArlithClient.this::getCommunity, new ArrayList<>());
 		}
 	};
 
@@ -297,21 +323,22 @@ public class ArlithClient {
 	 * media being uploaded. If either media is not being uploaded (i.e. the
 	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
 	 * then it is recommended to supply <code>-1</code> for the media size.
-	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>), then
+	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
+	 * then
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
 	 * @param icon       The icon data itself, or <code>null</code> if no icon is
 	 *                   being supplied. This will be read from once this request
 	 *                   gets processed and is actually sent over the network. The
-	 *                   {@link pala.apps.arlith.libraries.streams.InputStream} supplied
-	 *                   should not be used by other code.
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
+	 *                   supplied should not be used by other code.
 	 * @param background The background data itself, or <code>null</code> if no
 	 *                   background is being supplied. This will be read from once
 	 *                   this request gets processed and is actually sent over the
 	 *                   network. The
-	 *                   {@link pala.apps.arlith.libraries.streams.InputStream} should not
-	 *                   be used by other code.
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
+	 *                   should not be used by other code.
 	 * @return An {@link ActionInterface} wrapping the request.
 	 */
 	public ActionInterface<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
