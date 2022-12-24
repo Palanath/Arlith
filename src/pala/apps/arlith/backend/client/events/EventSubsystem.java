@@ -36,7 +36,27 @@ public abstract class EventSubsystem {
 	 * operation (such as debug information). This must be non-<code>null</code> and
 	 * should be instantiated with this {@link EventSubsystem}.
 	 */
-	private final Logger logger;
+	private Logger logger;
+
+	/**
+	 * Sets the {@link Logger} that this {@link EventSubsystem} uses. This should
+	 * not be <code>null</code>. See {@link #logger} for more details.
+	 * 
+	 * @param logger The non-<code>null</code> {@link Logger} to log messages to.
+	 */
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	/**
+	 * Gets the {@link Logger} that this {@link EventSubsystem} uses.
+	 * 
+	 * @return The logger that this {@link EventSubsystem} logs messages to. See
+	 *         {@link #logger} for more details.
+	 */
+	public Logger getLogger() {
+		return logger;
+	}
 
 	/**
 	 * <p>

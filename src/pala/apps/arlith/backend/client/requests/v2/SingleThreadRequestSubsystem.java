@@ -3,6 +3,7 @@ package pala.apps.arlith.backend.client.requests.v2;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
 
+import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.Logging;
 import pala.apps.arlith.backend.client.requests.Action;
 import pala.apps.arlith.backend.client.requests.Inquiry;
@@ -14,6 +15,12 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystemIn
 	private CommunicationConnection connection;
 	private Thread thread;
 	private final LinkedBlockingQueue<STRSAction<?>> queue = new LinkedBlockingQueue<>();
+
+	private final Logger logger;
+
+	public SingleThreadRequestSubsystem(Logger logger) {
+		this.logger = logger;
+	}
 
 	private abstract class STRSAction<R> implements ActionInterface<R> {
 
@@ -291,9 +298,10 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystemIn
 				// RuntimeExceptions are general purpose.
 				break;
 			} catch (CommunicationProtocolError | RuntimeException | ConnectionStartupException e) {
-				Logging.err("An error occurred while trying to restart the connection to the server. Retrying in " + i
-						+ " seconds.");
-				Logging.err(e);
+				logger.err(
+						"An error occurred while trying to restart the request subsystem connection to the server. Retrying in "
+								+ i + " seconds.");
+				logger.err(e);
 				Thread.sleep(i * 1000);
 			}
 	}

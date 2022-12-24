@@ -94,7 +94,7 @@ public class ArlithClient {
 		private final AuthToken token;
 
 		public StandardEventSubsystem(CommunicationConnection client, AuthToken token) {
-			super(client, new StandardEventReader());
+			super(client, new StandardEventReader());// Logger is added in after initialization. See called constructor.
 			this.token = token;
 		}
 
@@ -303,7 +303,12 @@ public class ArlithClient {
 	}
 
 	ArlithClient(CommunicationConnection eventConnection, AuthToken authToken, RequestSubsystemInterface reqSubsystem) {
-		this(new StandardEventSubsystem(eventConnection, authToken), reqSubsystem);
+		StandardEventSubsystem es = new StandardEventSubsystem(eventConnection, authToken);
+		es.setLogger(logger);
+		this.eventSubsystem = es;
+		eventSubsystem.setEventManager(eventManager);
+		this.requestSubsystem = reqSubsystem;
+		startup();
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
