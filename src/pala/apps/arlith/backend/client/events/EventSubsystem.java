@@ -39,15 +39,27 @@ public abstract class EventSubsystem {
 	private final Logger logger;
 
 	/**
+	 * <p>
 	 * Used to handle {@link CommunicationProtocolError}s that come up while the
 	 * {@link EventSubsystem} is executing. This {@link Consumer} typically logs or
 	 * prints the error somewhere.
+	 * </p>
+	 * <p>
+	 * This method prints errors to the {@link #logger} by default using
+	 * {@link Logger#err(Throwable)}.
+	 * </p>
 	 */
 	private Consumer<? super CommunicationProtocolError> errorHandler;
 	/**
+	 * <p>
 	 * Used to handle general errors that may come up while the
 	 * {@link EventSubsystem} is executing. This {@link Consumer} typically logs or
 	 * prints the error somewhere.
+	 * </p>
+	 * <p>
+	 * This method prints errors to the {@link #logger} by default using
+	 * {@link Logger#err(Throwable)}.
+	 * </p>
 	 */
 	private Consumer<? super Exception> generalErrorHandler;
 
