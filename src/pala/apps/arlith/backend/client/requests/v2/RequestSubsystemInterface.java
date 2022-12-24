@@ -73,10 +73,11 @@ public interface RequestSubsystemInterface {
 	 * Returns an {@link ActionInterface} that executes the specified
 	 * {@link ArlithFunction}. The {@link ArlithFunction} is provided a
 	 * {@link CommunicationConnection} hooked up to the server, through which it can
-	 * communicate. If execution of the {@link ArlithFunction} completes exceptionally,
-	 * then the returned {@link ActionInterface} completes exceptionally for the
-	 * same reason. Otherwise, if the {@link Function} completes normally, the
-	 * returned {@link ActionInterface} does as well with the same result.
+	 * communicate. If execution of the {@link ArlithFunction} completes
+	 * exceptionally, then the returned {@link ActionInterface} completes
+	 * exceptionally for the same reason. Otherwise, if the {@link Function}
+	 * completes normally, the returned {@link ActionInterface} does as well with
+	 * the same result.
 	 * 
 	 * @param <R>        An upper bound on the type of the return value of the
 	 *                   {@link ActionInterface}.

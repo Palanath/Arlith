@@ -12,9 +12,11 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import pala.apps.arlith.Arlith;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
 import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
@@ -28,15 +30,22 @@ public abstract class EventSubsystem {
 	private final EventReader eventReifier;
 	private EventManager<CommunicationProtocolEvent> eventManager;
 	/**
+	 * <p>
 	 * The {@link Logger} to which errors and other logging information will be
 	 * sent. Various information is printed to the logger, such as warnings
 	 * (whenever a {@link RateLimitError} is being handled), errors (whenever
 	 * certain types of errors occur, and by default through the
 	 * {@link #generalErrorHandler} and {@link #errorHandler}), and during normal
-	 * operation (such as debug information). This must be non-<code>null</code> and
-	 * should be instantiated with this {@link EventSubsystem}.
+	 * operation (such as debug information). This must be non-<code>null</code>.
+	 * </p>
+	 * <p>
+	 * Typically this starts out as the {@link Arlith#getLogger() main Arlith
+	 * Application Logger} but gets set to the {@link ArlithClient#getLogger()
+	 * client's logger} once this {@link EventSubsystem} becomes attached to a
+	 * client. By default, this is {@link Arlith#getLogger()}.
+	 * </p>
 	 */
-	private Logger logger;
+	private Logger logger = Arlith.getLogger();
 
 	/**
 	 * Sets the {@link Logger} that this {@link EventSubsystem} uses. This should
@@ -45,6 +54,8 @@ public abstract class EventSubsystem {
 	 * @param logger The non-<code>null</code> {@link Logger} to log messages to.
 	 */
 	public void setLogger(Logger logger) {
+		if (logger == null)
+			throw new IllegalArgumentException("The logger cannot be null.");
 		this.logger = logger;
 	}
 
@@ -130,7 +141,7 @@ public abstract class EventSubsystem {
 	// TODO Scan for callers of this constructor and change them so that they call
 	// the other constructor and pass in the client's logger.
 	public EventSubsystem(CommunicationConnection client, EventReader eventReifier) {
-		this(client, eventReifier, Logger.DUMMY);
+		this(client, eventReifier, Arlith.getLogger());
 	}
 
 	public void startup() {

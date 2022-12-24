@@ -26,10 +26,8 @@ import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotificatio
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
-import pala.apps.arlith.backend.client.events.StandardEventReader;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
-import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
@@ -38,7 +36,6 @@ import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChanged
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.backend.common.protocol.requests.AuthRequest;
 import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
 import pala.apps.arlith.backend.common.protocol.requests.CreateCommunityRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
@@ -49,7 +46,6 @@ import pala.apps.arlith.backend.common.protocol.requests.GetOutgoingFriendReques
 import pala.apps.arlith.backend.common.protocol.requests.GetOwnUserRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListFriendsRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListJoinedCommunitiesRequest;
-import pala.apps.arlith.backend.common.protocol.types.BooleanValue;
 import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.common.protocol.types.CommunityValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
@@ -58,6 +54,7 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
+import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
@@ -88,24 +85,6 @@ public class ArlithClient {
 	 */
 	public Logger getLogger() {
 		return logger;
-	}
-
-	private static class StandardEventSubsystem extends EventSubsystem {
-		private final AuthToken token;
-
-		public StandardEventSubsystem(CommunicationConnection client, AuthToken token) {
-			super(client, new StandardEventReader());// Logger is added in after initialization. See called constructor.
-			this.token = token;
-		}
-
-		@Override
-		protected void authorize(CommunicationConnection connection) throws CommunicationProtocolError {
-			AuthRequest req = new AuthRequest(token);
-			req.setEventConnection(BooleanValue.TRUE);
-			req.sendRequest(connection);
-			req.receiveResponse(connection);
-		}
-
 	}
 
 	private final EventManager<CommunicationProtocolEvent> eventManager = new EventManager<>();
@@ -295,20 +274,20 @@ public class ArlithClient {
 	private final EventSubsystem eventSubsystem;
 	private final RequestSubsystemInterface requestSubsystem;
 
+	/**
+	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
+	 * and {@link RequestSubsystemInterface}. The {@link EventSubsystem}'s
+	 * {@link EventManager} is set to {@link #eventManager}. Once setup and
+	 * construction is complete, the client needs to be started up with a call to
+	 * {@link #startup()} before it can be used.
+	 * 
+	 * @param eventSubsystem   The {@link EventSubsystem} to use.
+	 * @param requestSubsystem The {@link RequestSubsystemInterface} to use.
+	 */
 	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystemInterface requestSubsystem) {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
 		this.requestSubsystem = requestSubsystem;
-		startup();
-	}
-
-	ArlithClient(CommunicationConnection eventConnection, AuthToken authToken, RequestSubsystemInterface reqSubsystem) {
-		StandardEventSubsystem es = new StandardEventSubsystem(eventConnection, authToken);
-		es.setLogger(logger);
-		this.eventSubsystem = es;
-		eventSubsystem.setEventManager(eventManager);
-		this.requestSubsystem = reqSubsystem;
-		startup();
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
@@ -715,7 +694,7 @@ public class ArlithClient {
 	 * Called after successful login to set up the event handler and the
 	 * auto-reconnect system.
 	 */
-	private synchronized void startup() {
+	synchronized void startup() {
 		if (running)
 			throw new IllegalStateException("Application Client already running!");
 		running = true;

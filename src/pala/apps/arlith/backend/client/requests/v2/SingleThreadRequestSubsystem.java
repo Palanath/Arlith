@@ -3,8 +3,9 @@ package pala.apps.arlith.backend.client.requests.v2;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
 
+import pala.apps.arlith.Arlith;
 import pala.apps.arlith.application.Logger;
-import pala.apps.arlith.application.Logging;
+import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.requests.Action;
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
@@ -16,10 +17,51 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystemIn
 	private Thread thread;
 	private final LinkedBlockingQueue<STRSAction<?>> queue = new LinkedBlockingQueue<>();
 
-	private final Logger logger;
+	/**
+	 * The {@link Logger} used to log error and other messages to. This typically
+	 * starts out as the {@link Arlith#getLogger() main Arlith Application Logger}
+	 * and then gets changed to the {@link ArlithClient#getLogger() client's logger}
+	 * once the client boots up and this {@link SingleThreadRequestSubsystem} is
+	 * attached to it.
+	 */
+	private Logger logger = Arlith.getLogger();
+
+	/**
+	 * Gets the {@link Logger} that this {@link SingleThreadRequestSubsystem} uses.
+	 * See {@link #logger} for more information.
+	 * 
+	 * @return The {@link Logger} used by this {@link SingleThreadRequestSubsystem}
+	 */
+	public Logger getLogger() {
+		return logger;
+	}
+
+	/**
+	 * Sets the {@link Logger} that this {@link SingleThreadRequestSubsystem} uses.
+	 * See {@link #logger} for more information.
+	 * 
+	 * @param logger The {@link Logger} used by this
+	 *               {@link SingleThreadRequestSubsystem}.
+	 */
+	public void setLogger(Logger logger) {
+		if (logger == null)
+			throw new IllegalArgumentException("Logger should not be null.");
+		this.logger = logger;
+	}
 
 	public SingleThreadRequestSubsystem(Logger logger) {
 		this.logger = logger;
+	}
+
+	/**
+	 * Instantiates this {@link SingleThreadRequestSubsystem} with the
+	 * {@link Arlith#getLogger() main Arlith Application Logger} as its
+	 * {@link Logger}. Typical use of this object involves changing the
+	 * {@link Logger} it uses to the {@link ArlithClient#getLogger() client's
+	 * logger} once this object becomes attached to the client.
+	 */
+	public SingleThreadRequestSubsystem() {
+		this(Arlith.getLogger());
 	}
 
 	private abstract class STRSAction<R> implements ActionInterface<R> {

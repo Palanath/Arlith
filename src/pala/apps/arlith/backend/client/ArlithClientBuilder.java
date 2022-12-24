@@ -223,7 +223,13 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			return new ArlithClient(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
+			ArlithClient client = new ArlithClient(es, rs);
+			es.setLogger(client.getLogger());
+			rs.setLogger(client.getLogger());
+			client.startup();
+			return client;
 		} catch (Exception e) {
 			conn.close();
 			throw e;
@@ -264,7 +270,13 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			return new ArlithClient(conn, authToken, new RequestSubsystemImpl(host, port, authToken));
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
+			ArlithClient client = new ArlithClient(es, rs);
+			es.setLogger(client.getLogger());
+			rs.setLogger(client.getLogger());
+			client.startup();
+			return client;
 		} catch (Exception e) {
 			conn.close();
 			throw e;
