@@ -27,7 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 import pala.apps.arlith.libraries.graphics.windows.Page;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
@@ -74,16 +74,16 @@ public class NewCommunityViewPage implements Page {
 			try {
 				img = Files.readAllBytes(f.toPath());
 			} catch (IOException e) {
-				GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
+				ArlithFrontend.getGuiLogger().err("An IO error occurred while reading the file.");
 				return;
 			} catch (OutOfMemoryError e) {
-				GUIUtils.getGuiLogger()
+				ArlithFrontend.getGuiLogger()
 						.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 				return;
 			}
 			Image image = new Image(new ByteArrayInputStream(img));
 			if (image.isError())
-				GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
+				ArlithFrontend.getGuiLogger().err("Couldn't load an image from the specified file.");
 			else {
 				icon = img;
 				serverIcon.setImage(image);
@@ -109,16 +109,16 @@ public class NewCommunityViewPage implements Page {
 			try {
 				img = Files.readAllBytes(f.toPath());
 			} catch (IOException e) {
-				GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
+				ArlithFrontend.getGuiLogger().err("An IO error occurred while reading the file.");
 				return;
 			} catch (OutOfMemoryError e) {
-				GUIUtils.getGuiLogger()
+				ArlithFrontend.getGuiLogger()
 						.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 				return;
 			}
 			Image image = new Image(new ByteArrayInputStream(img));
 			if (image.isError())
-				GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
+				ArlithFrontend.getGuiLogger().err("Couldn't load an image from the specified file.");
 			else {
 				bg = img;
 				serverBackground.setImage(image);
@@ -154,7 +154,7 @@ public class NewCommunityViewPage implements Page {
 		nodes.add(backArrow1);
 		nodes.add(backArrow2);
 		nodes.add(backArrow3);
-		GUIUtils.applyClickAnimation(nodes, Color.GOLD, Color.RED, backArrow1, backArrow2, backArrow3);
+		ArlithFrontend.applyClickAnimation(nodes, Color.GOLD, Color.RED, backArrow1, backArrow2, backArrow3);
 		backArrow1.setCursor(Cursor.HAND);
 		backArrow2.setCursor(Cursor.HAND);
 		backArrow3.setCursor(Cursor.HAND);
@@ -182,16 +182,16 @@ public class NewCommunityViewPage implements Page {
 				try {
 					img = Files.readAllBytes(f.toPath());
 				} catch (IOException e1) {
-					GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
+					ArlithFrontend.getGuiLogger().err("An IO error occurred while reading the file.");
 					return;
 				} catch (OutOfMemoryError e2) {
-					GUIUtils.getGuiLogger()
+					ArlithFrontend.getGuiLogger()
 							.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 					return;
 				}
 				Image image = new Image(new ByteArrayInputStream(img));
 				if (image.isError())
-					GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
+					ArlithFrontend.getGuiLogger().err("Couldn't load an image from the specified file.");
 				else {
 					icon = img;
 					serverIcon.setImage(image);
@@ -208,16 +208,16 @@ public class NewCommunityViewPage implements Page {
 				try {
 					img = Files.readAllBytes(f.toPath());
 				} catch (IOException e1) {
-					GUIUtils.getGuiLogger().err("An IO error occurred while reading the file.");
+					ArlithFrontend.getGuiLogger().err("An IO error occurred while reading the file.");
 					return;
 				} catch (OutOfMemoryError e2) {
-					GUIUtils.getGuiLogger()
+					ArlithFrontend.getGuiLogger()
 							.err("Could not load the specified image as an icon. The file is too large to fit in RAM.");
 					return;
 				}
 				Image image = new Image(new ByteArrayInputStream(img));
 				if (image.isError())
-					GUIUtils.getGuiLogger().err("Couldn't load an image from the specified file.");
+					ArlithFrontend.getGuiLogger().err("Couldn't load an image from the specified file.");
 				else {
 					bg = img;
 					serverBackground.setImage(image);
@@ -243,7 +243,7 @@ public class NewCommunityViewPage implements Page {
 		try {
 			cli.createCommunity(serverNamePrompt.getText(), icon, bg);
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			GUIUtils.getGuiLogger().err(e);
+			ArlithFrontend.getGuiLogger().err(e);
 			return;
 		}
 
@@ -256,8 +256,8 @@ public class NewCommunityViewPage implements Page {
 		try {
 			new CommunityListViewPage().show(window);
 		} catch (WindowLoadFailureException e) {
-			GUIUtils.getGuiLogger().err("Failed to show the community list page.");
-			GUIUtils.getGuiLogger().err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to show the community list page.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 	}
 

@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pala.apps.arlith.frontend.guis.ApplicationState;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.home.center.FriendsTab;
 import pala.apps.arlith.frontend.guis.home.center.HomeTab;
 import pala.apps.arlith.frontend.guis.home.center.PanelTab;
@@ -64,7 +64,7 @@ public class HomePage extends BindHandlerPage {
 			tabs = new PanelTab[] { new HomeTab(this), new FriendsTab(this), new StatsTab(this) };
 			win.setContent(root);
 		} catch (IOException e) {
-			GUIUtils.getGuiLogger().err("Failed to load the CENTER PANEL of the home window.");
+			ArlithFrontend.getGuiLogger().err("Failed to load the CENTER PANEL of the home window.");
 			throw new WindowLoadFailureException(e);
 		}
 

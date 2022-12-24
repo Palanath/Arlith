@@ -14,7 +14,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Communicator;
 import pala.apps.arlith.libraries.networking.Connection;
@@ -102,7 +102,7 @@ public class CommunicationConnection implements EventSystem<ClientEvent>, Connec
 			try {
 				return execute(act);
 			} catch (BlockException e) {
-				GUIUtils.getGuiLogger().err("Connection broken; waiting 5 seconds and restarting.");
+				ArlithFrontend.getGuiLogger().err("Connection broken; waiting 5 seconds and restarting.");
 				try {
 					Thread.sleep(5000);
 					restartConnectionOnError();
@@ -112,7 +112,7 @@ public class CommunicationConnection implements EventSystem<ClientEvent>, Connec
 			} catch (UnknownCommStateException e) {
 				if (sock == null)
 					throw new RuntimeException("Connection manually stopped.");
-				GUIUtils.getGuiLogger().err("Connection broken; waiting 5 seconds and restarting.");
+				ArlithFrontend.getGuiLogger().err("Connection broken; waiting 5 seconds and restarting.");
 				try {
 					Thread.sleep(5000);
 					restartConnectionOnError();
@@ -142,12 +142,12 @@ public class CommunicationConnection implements EventSystem<ClientEvent>, Connec
 			} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
 					| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
 					| MalformedResponseException e) {
-				GUIUtils.getGuiLogger()
+				ArlithFrontend.getGuiLogger()
 						.err("An error occurred while restarting a connection to the server. Retrying in 5 seconds.");
-				GUIUtils.getGuiLogger().err(e);
+				ArlithFrontend.getGuiLogger().err(e);
 			} catch (IOException e) {
-				GUIUtils.getGuiLogger().err("Failed to establish connection with server. Retrying in 5 seconds");
-				GUIUtils.getGuiLogger().err(e);
+				ArlithFrontend.getGuiLogger().err("Failed to establish connection with server. Retrying in 5 seconds");
+				ArlithFrontend.getGuiLogger().err(e);
 			}
 	}
 

@@ -2,7 +2,7 @@ package pala.apps.arlith.launchers.jfxclient;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.login.LogInWindow;
 import pala.libs.generic.guis.Window;
 
@@ -31,7 +31,7 @@ public class JFXApplicationClass extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Window.getDefaultApplicationProperties().themeStylesheet
 				.put("/pala/apps/arlith/graphics/stylesheets/default-styles.css");
-		GUIUtils.prepareStage(primaryStage);
+		ArlithFrontend.prepareStage(primaryStage);
 		primaryStage.show();
 		new LogInWindow().display(primaryStage);
 	}

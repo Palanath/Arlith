@@ -26,7 +26,7 @@ import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
 
-public final class GUIUtils {
+public final class ArlithFrontend {
 
 	/**
 	 * The GUI Logger designed to be used for logging done by the frontend GUI. This

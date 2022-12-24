@@ -2,7 +2,7 @@ package pala.apps.arlith.graphics;
 
 import static javafx.scene.paint.Color.GOLD;
 import static javafx.scene.paint.Color.RED;
-import static pala.apps.arlith.frontend.guis.GUIUtils.applyClickAnimation;
+import static pala.apps.arlith.frontend.guis.ArlithFrontend.applyClickAnimation;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.GUIUtils;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.settings.SettingsPage;
@@ -66,8 +66,8 @@ public @Disposable class LeftPanel {
 			leftPanel.getChildren().add(0, mc);
 			VBox.setMargin(mc, new Insets(5, 0, 0, 0));
 		} catch (CommunicationProtocolError | RuntimeException e) {
-			GUIUtils.getGuiLogger().err("Failed to retrieve information about your own user from the server.");
-			GUIUtils.getGuiLogger().err(e);
+			ArlithFrontend.getGuiLogger().err("Failed to retrieve information about your own user from the server.");
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 
 		homeButton.setOnMouseClicked(event -> {
@@ -75,8 +75,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new HomePage());
 				} catch (WindowLoadFailureException e) {
-					GUIUtils.getGuiLogger().err("Failed to load the home window.");
-					GUIUtils.getGuiLogger().err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to load the home window.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 		});
 		settingsButton.setOnMouseClicked(event -> {
@@ -84,8 +84,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new SettingsPage());
 				} catch (WindowLoadFailureException e) {
-					GUIUtils.getGuiLogger().err("Failed to load the home window.");
-					GUIUtils.getGuiLogger().err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to load the home window.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 		});
 		threadsButton.setOnMouseClicked(event -> {
@@ -93,8 +93,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new ThreadListViewPage());
 				} catch (WindowLoadFailureException e) {
-					GUIUtils.getGuiLogger().err("Failed to load the home window.");
-					GUIUtils.getGuiLogger().err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to load the home window.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 		});
 		communitiesButton.setOnMouseClicked(event -> {
@@ -102,8 +102,8 @@ public @Disposable class LeftPanel {
 				try {
 					win.show(new CommunityListViewPage());
 				} catch (WindowLoadFailureException e) {
-					GUIUtils.getGuiLogger().err("Failed to load the community window.");
-					GUIUtils.getGuiLogger().err(e);
+					ArlithFrontend.getGuiLogger().err("Failed to load the community window.");
+					ArlithFrontend.getGuiLogger().err(e);
 				}
 		});
 	}
