@@ -49,7 +49,7 @@ public class LaunchSettingsWindow extends Window {
 			Utilities.setPreferredDestinationAddress(serverAddress.getText().trim());
 		if (!serverAddress.getText().trim().isEmpty())
 			Utilities.setPreferredPort(Integer.parseInt(serverPort.getText().trim()));
-		ArlithFrontend.getGuiLogger().dbg("Client endpoint set to " + Utilities.getPreferredDestinationAddress() + ':'
+		ArlithFrontend.getGuiLogger().std("Client endpoint set to " + Utilities.getPreferredDestinationAddress() + ':'
 				+ Utilities.getPreferredPort() + " successfully.");
 	}
 
