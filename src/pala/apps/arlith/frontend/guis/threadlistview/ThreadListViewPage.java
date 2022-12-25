@@ -102,7 +102,8 @@ public class ThreadListViewPage extends BindHandlerPage {
 						boxes.add(te);
 						threads.put(user, te);
 					} catch (CommunicationProtocolError | RuntimeException e) {
-						ArlithFrontend.getGuiLogger().err("Failed to list the direct thread with user[id=" + user.id() + "].");
+						ArlithFrontend.getGuiLogger()
+								.err("Failed to list the direct thread with user[id=" + user.id() + "].");
 					}
 				}
 			} catch (CommunicationProtocolError | RuntimeException e) {
@@ -133,8 +134,8 @@ public class ThreadListViewPage extends BindHandlerPage {
 			tnbox.setAlignment(Pos.CENTER_LEFT);
 			setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED, CornerRadii.EMPTY,
 					new BorderWidths(0, 0, 1, 0))));
-			ArlithFrontend.applyClickAnimation(this, Color.GOLD, Color.RED, ArlithFrontend.CLICK_AND_RELEASE_ANIMATION_TIME,
-					threadname);
+			ArlithFrontend.applyClickAnimation(this, Color.GOLD, Color.RED,
+					ArlithFrontend.CLICK_AND_RELEASE_ANIMATION_TIME, threadname);
 			setSpacing(10);
 			getChildren().setAll(icon, tnbox);
 			hoverProperty().addListener((observable, oldValue,
@@ -154,13 +155,14 @@ public class ThreadListViewPage extends BindHandlerPage {
 				cbg.setImage(t);
 			}).handle(t -> {
 				try {
-					ArlithFrontend.getGuiLogger().err("Failed to load a user's profile icon (User: " + user.getIdentifier() + ").");
+					ArlithFrontend.getGuiLogger()
+							.err("Failed to load a user's profile icon (User: " + user.getIdentifier() + ").");
 				} catch (CommunicationProtocolError | RuntimeException e) {
 					e.addSuppressed(t);
-					e.printStackTrace();
+					ArlithFrontend.getGuiLogger().err(e);
 					return;
 				}
-				t.printStackTrace();
+				ArlithFrontend.getGuiLogger().err(t);
 			}).get();
 			// Missing texture icon is loaded on first use, so if we don't need to, we don't
 			// load it here.

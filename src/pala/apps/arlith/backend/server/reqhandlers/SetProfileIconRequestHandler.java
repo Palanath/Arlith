@@ -9,6 +9,7 @@ import pala.apps.arlith.backend.common.protocol.requests.SetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestHandler;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
@@ -77,13 +78,13 @@ public final class SetProfileIconRequestHandler implements RequestHandler {
 				try {
 					client.getUser().setProfileIcon(null);
 				} catch (IOException | UnknownCommStateException | BlockException e) {
-					e.printStackTrace();// Won't happen.
+					ArlithServer.getThreadLogger().err(e);// Won't happen.
 				}
 			else {
 				try {
 					client.getUser().setProfileIcon(media.getMedia());
 				} catch (IOException | UnknownCommStateException | BlockException e) {
-					e.printStackTrace();
+					ArlithServer.getThreadLogger().err(e);
 					client.sendError(new ServerError());
 					return;
 				}

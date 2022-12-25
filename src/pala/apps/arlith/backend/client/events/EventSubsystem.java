@@ -224,7 +224,7 @@ public abstract class EventSubsystem {
 		try {
 			ei = eventReifier.apply(client);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			logger.err(e);
 			throw e;
 		}
 		eventManager.fire((EventType<CommunicationProtocolEvent>) ei.getType(), ei.getEvent());

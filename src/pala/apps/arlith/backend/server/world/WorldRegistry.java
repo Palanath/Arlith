@@ -188,8 +188,8 @@ abstract class WorldRegistry {
 		} catch (final FileNotFoundException e) {
 			throw new IllegalArgumentException("Object with specified type and GID not found or could not be loaded.");
 		} catch (IOException e1) {
-			System.err.println("Error while loading file: " + file);
-			e1.printStackTrace();
+			world.getServer().getLogger().err("Error while loading file: " + file);
+			world.getServer().getLogger().err(e1);
 			throw new RuntimeException("File loading error.");
 		}
 	}

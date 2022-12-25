@@ -209,7 +209,7 @@ public class ArlithServer extends CommunicationConnectionAcceptor {
 			try {
 				requestManager.handleRequest(connection);
 			} catch (ClassCastException | MalformedIncomingRequestException | RequestNotSupportedException e) {
-				e.printStackTrace();
+				logger.err(e);
 
 			} catch (UnknownCommStateException | BlockException e) {
 				// Connection issue or connection reset.

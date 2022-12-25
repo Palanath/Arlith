@@ -8,6 +8,7 @@ import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.GetCommunityImageRequest;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.libraries.networking.BlockException;
@@ -61,7 +62,7 @@ public final class GetCommunityImageRequestHandler extends SimpleRequestHandler<
 					try {
 						icon.close();// Close the icon so that the file isn't locked.
 					} catch (IOException e) {
-						e.printStackTrace();
+						ArlithServer.getThreadLogger().err(e);
 					}
 				}
 		}

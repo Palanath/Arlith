@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import pala.apps.arlith.Arlith;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
 import pala.apps.arlith.libraries.networking.Communicator;
@@ -142,7 +143,7 @@ public abstract class CommunicationConnectionAcceptor implements EventSystem<Ser
 					} catch (InterruptedException e) {// This shouldn't happen, but can. In case it does, this object
 														// should be
 														// considered dead.
-						e.printStackTrace();
+						Arlith.getLogger().err(e);// TODO Update this to use the server logger.
 						return;
 					}
 				}
@@ -199,7 +200,7 @@ public abstract class CommunicationConnectionAcceptor implements EventSystem<Ser
 						// set the exception property *and then* return its lock.
 			} catch (InterruptedException e) {// This shouldn't happen, but can. In case it does, this object should be
 												// considered dead.
-				e.printStackTrace();
+				Arlith.getLogger().err(e);// TODO Update this to use the server logger.
 				return;
 			}
 		}

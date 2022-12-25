@@ -62,9 +62,9 @@ import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
  * </table>
  * <h2>Object Storage</h2>
  * <p>
- * Each object, e.g. {@link ServerCommunity Communities}, {@link ServerUser Users},
- * {@link ServerMessage Messages}, etc., stores its primary data in its respective
- * folder {@link #getObjectDirectory()}.
+ * Each object, e.g. {@link ServerCommunity Communities}, {@link ServerUser
+ * Users}, {@link ServerMessage Messages}, etc., stores its primary data in its
+ * respective folder {@link #getObjectDirectory()}.
  * </p>
  * <p>
  * TODO Include more details on this! TODO Update object storage methods so that
@@ -134,13 +134,13 @@ public class ServerWorldImpl implements ServerWorld {
 			registry.scan();// Should be called after object paths are set.
 		} catch (Exception e) {
 			// IMPLEMENT: handle exception
-			e.printStackTrace();
+			server.getLogger().err(e);
 		}
 	}
 
 	@Override
-	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password, final String email,
-			final String phoneNumber) {
+	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password,
+			final String email, final String phoneNumber) {
 		final ServerUserImpl user = new ServerUserImpl(this, username, email, phoneNumber, password);
 
 		if (user.hasEmail())

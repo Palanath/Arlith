@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import pala.apps.arlith.Arlith;
 import pala.apps.arlith.graphics.windows.ArlithWindow;
 
 public class ArlithRuntime {
@@ -85,14 +86,14 @@ public class ArlithRuntime {
 		switch (instance) {
 		case CLIENT:
 			thread.setUncaughtExceptionHandler((t, e) -> {
-				System.err.println("The [CLIENT] thread: " + t.getName() + " had an uncaught error:");
-				e.printStackTrace();
+				Arlith.getLogger().err("A [CLIENT] thread, " + t.getName() + " had an uncaught error.");
+				Arlith.getLogger().err(e);
 			});
 			break;
 		case SERVER:
 			thread.setUncaughtExceptionHandler((t, e) -> {
-				System.err.println("The [SERVER] thread: " + t.getName() + " had an uncaught error:");
-				e.printStackTrace();
+				Arlith.getLogger().err("A [SERVER] thread, " + t.getName() + " had an uncaught error.");
+				Arlith.getLogger().err(e);
 			});
 		}
 	}

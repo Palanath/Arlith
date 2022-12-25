@@ -180,8 +180,8 @@ public interface RequestConnection extends ClientConnection {
 	/**
 	 * <p>
 	 * Returns the {@link ServerWorld} to be used for API calls by request-handling
-	 * code. Such code can call {@link ServerWorld} functions and access objects in the
-	 * server world to perform the requests invoked by the client connected over
+	 * code. Such code can call {@link ServerWorld} functions and access objects in
+	 * the server world to perform the requests invoked by the client connected over
 	 * this {@link RequestConnection}.
 	 * </p>
 	 * <p>
@@ -234,7 +234,8 @@ public interface RequestConnection extends ClientConnection {
 	 *                                   so the connection was closed.
 	 */
 	default void sendError(CommunicationProtocolError error) throws UnknownCommStateException {
-		error.printStackTrace();
+		ArlithServer.getThreadLogger().err("Sending an error to the client: " + error.getClass().getSimpleName());
+		ArlithServer.getThreadLogger().err(error);
 		error.send(getConnection());
 	}
 

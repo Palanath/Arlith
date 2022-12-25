@@ -7,6 +7,7 @@ import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.GetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
+import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
 import pala.apps.arlith.libraries.networking.BlockException;
@@ -48,7 +49,7 @@ public final class GetProfileIconRequestHandler extends SimpleRequestHandler<Get
 					try {
 						icon.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						ArlithServer.getThreadLogger().err(e);
 					}
 				}
 		}

@@ -61,7 +61,7 @@ public final class LogInWindow extends Window {
 		try {
 			launchSettingsWindow.display(launchSettingsStage);
 		} catch (WindowLoadFailureException e) {
-			e.printStackTrace();
+			ArlithFrontend.getGuiLogger().err(e);
 		}
 	}
 
@@ -246,7 +246,8 @@ public final class LogInWindow extends Window {
 						.setPhoneNumber(pn).createAccount();
 			} catch (CreateAccountError e3) {
 				Platform.runLater(() -> {
-					ArlithFrontend.getGuiLogger().err("Failed to create account; server returned failure code: " + e3.getType() + '.');
+					ArlithFrontend.getGuiLogger()
+							.err("Failed to create account; server returned failure code: " + e3.getType() + '.');
 					switch (e3.getType()) {
 					case ILLEGAL_PW:
 						ArlithFrontend.getGuiLogger().err("Illegal Password");
@@ -373,7 +374,8 @@ public final class LogInWindow extends Window {
 				client = builder.login();
 			} catch (LoginError e3) {
 				Platform.runLater(() -> {
-					ArlithFrontend.getGuiLogger().err("Failed to log in; server returned failure code: " + e3.getLoginError() + '.');
+					ArlithFrontend.getGuiLogger()
+							.err("Failed to log in; server returned failure code: " + e3.getLoginError() + '.');
 					switch (e3.getLoginError()) {
 					case ILLEGAL_PW:
 						ArlithFrontend.getGuiLogger().err("Illegal Password");

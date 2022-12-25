@@ -38,7 +38,6 @@ public class LaunchSettingsWindow extends Window {
 		} catch (IOException e) {
 			ArlithFrontend.getGuiLogger().err("An error occurred while trying to launch the server.");
 			ArlithFrontend.getGuiLogger().err(e);
-			e.printStackTrace();
 		} finally {
 			launchServerButton.setDisable(!completed);
 		}
