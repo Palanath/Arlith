@@ -21,8 +21,8 @@ import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.application.logging.Logger;
+import pala.apps.arlith.application.logging.LoggingUtilities;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
 
@@ -33,7 +33,7 @@ public final class ArlithFrontend {
 	 * logger prints whether or not the calling thread is the JavaFX Application
 	 * thread as a part of the log message's prefix.
 	 */
-	private static final Logger GUI_LOGGER = new StandardLoggerImpl("GUI") {
+	private static final Logger GUI_LOGGER = new LoggingUtilities.ConfiguredStandardLogger("GUI") {
 		protected String createFullPrefix() {
 			return "{FXThrd?" + Platform.isFxApplicationThread() + '}' + super.createFullPrefix();
 		}
