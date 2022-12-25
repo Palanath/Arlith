@@ -41,6 +41,7 @@ public class Flags {
 	 * written inside this time-directory.
 	 * </p>
 	 * 
+	 * @flag --log-file-location
 	 * @return The location that log files are placed in.
 	 */
 	public String getLogFileLocation() {
@@ -51,6 +52,7 @@ public class Flags {
 	 * Determines whether logging output is printed to a file instead of the
 	 * standard out.
 	 * 
+	 * @flag --file-logging
 	 * @return <code>true</code> if file logging is enabled, <code>false</code>
 	 *         otherwise.
 	 */
@@ -63,6 +65,7 @@ public class Flags {
 	 * logs (standard, warning, error, and debug). This flag only takes effect when
 	 * {@link #isFileLogging() file logging} is enabled.
 	 * 
+	 * @flag --separate-log-files
 	 * @return <code>true</code> if separate files will be used, <code>false</code>
 	 *         otherwise.
 	 */
@@ -74,6 +77,7 @@ public class Flags {
 	 * Determines whether debug mode is enabled. Debug mode causes debug messages to
 	 * be logged.
 	 * 
+	 * @flag --debug -dbg
 	 * @return Whether debug mode is enabled.
 	 */
 	public boolean isDebugMode() {
@@ -84,6 +88,7 @@ public class Flags {
 	 * This flag causes the Arlith server to be launched instead of the Arlith
 	 * client.
 	 * 
+	 * @flag --launch-server -ls
 	 * @return Whether the server or client is launched.
 	 */
 	public boolean isLaunchServer() {
@@ -96,6 +101,7 @@ public class Flags {
 	 * server is launched (i.e. <code>-ls</code> or <code>--launch-server</code> is
 	 * specified alongside this flag).
 	 * 
+	 * @flag --server-address --servaddr --serv-addr -sa
 	 * @return The default destination address that the client will attempt to
 	 *         connect to.
 	 */
@@ -109,6 +115,7 @@ public class Flags {
 	 * this flag will affect the application whether the client or server is
 	 * launched.
 	 * 
+	 * @flag --server-port --servprt --serv-prt -sp
 	 * @return The port to use for the client/server.
 	 */
 	public int getDefaultServerPort() {
