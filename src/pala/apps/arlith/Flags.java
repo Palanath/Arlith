@@ -6,7 +6,7 @@ import static pala.apps.arlith.libraries.Utilities.DEFAULT_PORT;
 import pala.libs.generic.parsers.cli.CLIParams;
 
 public class Flags {
-	private final boolean debugMode, launchServer;
+	private final boolean debugMode, launchServer, fileLogging, separateLogFiles;
 	private final String defaultServerAddress;
 	private final int defaultServerPort;
 
@@ -16,6 +16,31 @@ public class Flags {
 				"--serv-addr", "-sa");
 		defaultServerPort = params.readInt(DEFAULT_PORT, "--server-port", "--servprt", "--serv-prt", "-sp");
 		launchServer = params.checkFlag(false, "--launch-server", "-ls");
+		fileLogging = params.checkFlag(false, "--file-logging");
+		separateLogFiles = params.checkFlag(false, "--separate-log-files");
+	}
+
+	/**
+	 * Determines whether logging output is printed to a file instead of the
+	 * standard out.
+	 * 
+	 * @return <code>true</code> if file logging is enabled, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isFileLogging() {
+		return fileLogging;
+	}
+
+	/**
+	 * Determines whether separate log files are used for each of the four types of
+	 * logs (standard, warning, error, and debug). This flag only takes effect when
+	 * {@link #isFileLogging() file logging} is enabled.
+	 * 
+	 * @return <code>true</code> if separate files will be used, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isSeparateLogFiles() {
+		return separateLogFiles;
 	}
 
 	/**
