@@ -21,8 +21,8 @@ import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pala.apps.arlith.application.JFXArlithRuntime;
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.javafx.FXTools;
 

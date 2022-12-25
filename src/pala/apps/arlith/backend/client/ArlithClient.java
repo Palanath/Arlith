@@ -14,8 +14,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.client.api.ClientThread;

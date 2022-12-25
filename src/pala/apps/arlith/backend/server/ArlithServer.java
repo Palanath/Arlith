@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.util.Map;
 
 import pala.apps.arlith.application.ArlithRuntime;
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;

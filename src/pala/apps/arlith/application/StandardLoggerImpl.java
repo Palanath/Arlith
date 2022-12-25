@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import pala.apps.arlith.application.logging.Logger;
+
 /**
  * An implementation of {@link Logger} that prints to the standard output and
  * standard error. This class does not depend on any frameworks or APIs other

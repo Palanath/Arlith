@@ -6,8 +6,8 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.launchers.ApplicationLauncher;
