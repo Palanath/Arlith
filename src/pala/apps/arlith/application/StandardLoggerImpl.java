@@ -1,8 +1,11 @@
 package pala.apps.arlith.application;
 
+import java.io.PrintStream;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import pala.apps.arlith.application.logging.Logger;
 
 /**
  * An implementation of {@link Logger} that prints to the standard output and
@@ -158,9 +161,105 @@ public class StandardLoggerImpl implements Logger {
 		this.timestampFormatter = timestampFormatter;
 	}
 
+	private PrintStream stdStream = System.out, wrnStream = System.out, dbgStream = System.out, errStream = System.err;
+
+	/**
+	 * Gets the standard stream to which {@link #std(String)} logging is printed. By
+	 * default, this is {@link System#out}.
+	 * 
+	 * @return The standard stream.
+	 */
+	public PrintStream getStdStream() {
+		return stdStream;
+	}
+
+	/**
+	 * Sets the standard stream to which {@link #std(String)} logging is printed. By
+	 * default, this is {@link System#out}. This should never be <code>null</code>.
+	 * Attempting to set this to <code>null</code> will raise an
+	 * {@link IllegalArgumentException}.
+	 * 
+	 * @param stdStream The new standard stream.
+	 */
+	public void setStdStream(PrintStream stdStream) {
+		if (stdStream == null)
+			throw new IllegalArgumentException("Standard stream cannot be null.");
+		this.stdStream = stdStream;
+	}
+
+	/**
+	 * Gets the warning stream to which {@link #wrnStream} logging is printed. By
+	 * default, this is {@link System#out}.
+	 * 
+	 * @return The warning stream.
+	 */
+	public PrintStream getWrnStream() {
+		return wrnStream;
+	}
+
+	/**
+	 * Sets the warning stream to which {@link #wrnStream} logging is printed. By
+	 * default, this is {@link System#out}. This should never be <code>null</code>.
+	 * Attempting to set this to <code>null</code> will raise an
+	 * {@link IllegalArgumentException}.
+	 * 
+	 * @param wrnStream The new warning stream.
+	 */
+	public void setWrnStream(PrintStream wrnStream) {
+		if (stdStream == null)
+			throw new IllegalArgumentException("Warning stream cannot be null.");
+		this.wrnStream = wrnStream;
+	}
+
+	/**
+	 * Gets the debug stream to which {@link #dbg(String)} logging is printed. By
+	 * default, this is {@link System#out}.
+	 * 
+	 * @return The debug stream.
+	 */
+	public PrintStream getDbgStream() {
+		return dbgStream;
+	}
+
+	/**
+	 * Sets the debug stream to which {@link #dbg(String)} logging is printed. By
+	 * default, this is {@link System#out}. This should never be <code>null</code>.
+	 * Attempting to set this to <code>null</code> will raise an
+	 * {@link IllegalArgumentException}.
+	 * 
+	 * @param dbgStream The new debug stream.
+	 */
+	public void setDbgStream(PrintStream dbgStream) {
+		if (stdStream == null)
+			throw new IllegalArgumentException("Debug stream cannot be null.");
+		this.dbgStream = dbgStream;
+	}
+
+	/**
+	 * Gets the error stream to which {@link #err(String)} logging is printed. By
+	 * default, this is {@link System#err}, <b>not</b> {@link System#out}.
+	 * 
+	 * @return The error stream.
+	 */
+	public PrintStream getErrStream() {
+		return errStream;
+	}
+
+	/**
+	 * Sets the error stream to which {@link #err(String)} logging is printed. By
+	 * default, this is {@link System#err}, <b>not</b> {@link System#out}. This
+	 * should never be <code>null</code>. Attempting to set this to
+	 * <code>null</code> will raise an {@link IllegalArgumentException}.
+	 * 
+	 * @param errStream The new error stream.
+	 */
+	public void setErrStream(PrintStream errStream) {
+		this.errStream = errStream;
+	}
+
 	@Override
 	public void print(String text) {
-		System.out.println(text);
+		stdStream.println(text);
 	}
 
 	/**
@@ -168,7 +267,7 @@ public class StandardLoggerImpl implements Logger {
 	 */
 	@Override
 	public void std(String text) {
-		System.out.println(createFullPrefix() + text);
+		stdStream.println(createFullPrefix() + text);
 	}
 
 	/**
@@ -177,7 +276,7 @@ public class StandardLoggerImpl implements Logger {
 	 */
 	@Override
 	public void wrn(String text) {
-		System.out.println(createFullPrefix() + "(WARN): " + text);
+		wrnStream.println(createFullPrefix() + "(WARN): " + text);
 	}
 
 	/**
@@ -187,7 +286,7 @@ public class StandardLoggerImpl implements Logger {
 	@Override
 	public void dbg(String text) {
 		if (logDebugMessages)
-			System.out.println(createFullPrefix() + "(DEBUG): " + text);
+			dbgStream.println(createFullPrefix() + "(DEBUG): " + text);
 	}
 
 	/**
@@ -196,7 +295,7 @@ public class StandardLoggerImpl implements Logger {
 	 */
 	@Override
 	public void err(String text) {
-		System.err.println(createFullPrefix() + text);
+		errStream.println(createFullPrefix() + text);
 	}
 
 	/**

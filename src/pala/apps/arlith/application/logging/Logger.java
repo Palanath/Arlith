@@ -1,4 +1,4 @@
-package pala.apps.arlith.application;
+package pala.apps.arlith.application.logging;
 
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.server.ArlithServer;

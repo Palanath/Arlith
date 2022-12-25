@@ -4,7 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
 
 import pala.apps.arlith.Arlith;
-import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.requests.Action;
 import pala.apps.arlith.backend.client.requests.Inquiry;

@@ -14,8 +14,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
+import pala.apps.arlith.application.logging.LoggingUtilities;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.client.api.ClientThread;
@@ -70,7 +71,7 @@ public class ArlithClient {
 	 * server, and to organize output against portions of the program that do not
 	 * run under a client or server.
 	 */
-	private final Logger logger = new StandardLoggerImpl("CLIENT");
+	private final Logger logger = LoggingUtilities.getConfiguredStandardLogger("CLIENT");
 
 	/**
 	 * Gets this {@link ArlithClient}'s {@link Logger}. This {@link Logger} is used

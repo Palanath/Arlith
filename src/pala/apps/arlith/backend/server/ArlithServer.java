@@ -5,8 +5,9 @@ import java.net.Socket;
 import java.util.Map;
 
 import pala.apps.arlith.application.ArlithRuntime;
-import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
+import pala.apps.arlith.application.logging.Logger;
+import pala.apps.arlith.application.logging.LoggingUtilities;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
@@ -28,7 +29,7 @@ public class ArlithServer extends CommunicationConnectionAcceptor {
 	 * Used for logging regarding general server operations and messages. For
 	 * thread-specific logging, see
 	 */
-	private final Logger logger = new StandardLoggerImpl("SERVER");
+	private final Logger logger = LoggingUtilities.getConfiguredStandardLogger("SERVER");
 	private final ServerWorld world = new ServerWorldImpl(new File("arlith-data"), this);
 	private final RequestSystemImpl requestManager = new RequestSystemImpl(this);
 	/**
@@ -129,7 +130,7 @@ public class ArlithServer extends CommunicationConnectionAcceptor {
 		if (threadData.containsKey(THREAD_LOGGER_KEY))
 			throw new IllegalArgumentException("The specified thread (" + thread.getName() + ", with given purpose \""
 					+ purpose + "\"), already has a logger associated with it.");
-		StandardLoggerImpl logger = new StandardLoggerImpl("SERVER::" + purpose);
+		StandardLoggerImpl logger = LoggingUtilities.getConfiguredStandardLogger("SERVER::" + purpose);
 		threadData.put(THREAD_LOGGER_KEY, logger);
 		return logger;
 	}

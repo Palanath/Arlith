@@ -15,7 +15,7 @@ import javax.crypto.NoSuchPaddingException;
 import pala.apps.arlith.Arlith;
 import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.application.ArlithRuntime.Instance;
-import pala.apps.arlith.application.Logger;
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
