@@ -7,7 +7,7 @@ import pala.libs.generic.parsers.cli.CLIParams;
 
 public class Flags {
 	private final boolean debugMode, launchServer, fileLogging, separateLogFiles;
-	private final String defaultServerAddress;
+	private final String defaultServerAddress, logFileLocation;
 	private final int defaultServerPort;
 
 	public Flags(CLIParams params) {
@@ -18,6 +18,33 @@ public class Flags {
 		launchServer = params.checkFlag(false, "--launch-server", "-ls");
 		fileLogging = params.checkFlag(false, "--file-logging");
 		separateLogFiles = params.checkFlag(false, "--separate-log-files");
+		logFileLocation = params.readString("arlith-logs", "--log-file-location");
+	}
+
+	/**
+	 * <p>
+	 * Specifies what folder log files are stored in. The log file is put in a
+	 * sub-directory of this directory and are named based on whether log files are
+	 * split or different types of messages are being written to the same file (see
+	 * {@link #isSeparateLogFiles()}).
+	 * </p>
+	 * <p>
+	 * The default value of this flag is <code>"arlith-logs"</code>. Inside this
+	 * directory, a new directory is made whose name is string representing the time
+	 * that the program started up, in the format <code>MM-dd-yyyy--hh-mm-ss</code>,
+	 * where <code>MM</code> is up to two digits representing the month,
+	 * <code>dd</code> is up to two digits representing the day of the month,
+	 * <code>yyyy</code> is four digits representing the year, <code>hh</code> is up
+	 * to two digits representing the hour of the day, <code>mm</code> is up to two
+	 * digits representing the minute of the hour, and <code>ss</code> is up to two
+	 * digits representing the second of the minute. Log files for the program are
+	 * written inside this time-directory.
+	 * </p>
+	 * 
+	 * @return The location that log files are placed in.
+	 */
+	public String getLogFileLocation() {
+		return logFileLocation;
 	}
 
 	/**

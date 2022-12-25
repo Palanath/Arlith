@@ -1,7 +1,10 @@
 package pala.apps.arlith;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 
 import pala.apps.arlith.application.Logger;
 import pala.apps.arlith.application.StandardLoggerImpl;
@@ -66,6 +69,31 @@ public class Arlith {
 		// Check for various command line options.
 		if (LAUNCH_FLAGS.isDebugMode())
 			LOGGER.setLogDebugMessages(true);
+
+		if (LAUNCH_FLAGS.isFileLogging()) {
+			LocalDateTime time = Utilities.PROGRAM_LAUNCH_TIME;
+			String timeString = time.getMonthValue() + '-' + time.getDayOfMonth() + '-' + time.getYear() + "--"
+					+ time.getHour() + '-' + time.getMinute() + '-' + time.getSecond();
+			if (LAUNCH_FLAGS.isSeparateLogFiles()) {
+				LOGGER.setStdStream(new PrintStream(new File(
+						LAUNCH_FLAGS.getLogFileLocation() + '/' + timeString + "/main-program/standard-logs.log")));
+				LOGGER.setDbgStream(new PrintStream(
+						new File(LAUNCH_FLAGS.getLogFileLocation() + '/' + timeString + "/main-program/debug.log")));
+				LOGGER.setErrStream(new PrintStream(
+						new File(LAUNCH_FLAGS.getLogFileLocation() + '/' + timeString + "/main-program/errors.log")));
+				LOGGER.setWrnStream(new PrintStream(
+						new File(LAUNCH_FLAGS.getLogFileLocation() + '/' + timeString + "/main-program/warnings.log")));
+			} else {
+				PrintStream arlithGeneralLog = new PrintStream(
+						new File(LAUNCH_FLAGS.getLogFileLocation() + '/' + timeString + "/main-program/all.log"));
+				arlithGeneralLog.println("All log outputs are being forwarded to this log file.");
+				LOGGER.setDbgStream(arlithGeneralLog);
+				LOGGER.setErrStream(arlithGeneralLog);
+				LOGGER.setStdStream(arlithGeneralLog);
+				LOGGER.setWrnStream(arlithGeneralLog);
+			}
+		}
+
 		Utilities.setPreferredDestinationAddress(LAUNCH_FLAGS.getDefaultServerAddress());
 		Utilities.setPreferredPort(LAUNCH_FLAGS.getDefaultServerPort());
 

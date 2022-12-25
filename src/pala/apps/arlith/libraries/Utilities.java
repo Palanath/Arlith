@@ -1,5 +1,6 @@
 package pala.apps.arlith.libraries;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import pala.libs.generic.strings.StringTools;
@@ -14,6 +15,7 @@ import pala.libs.generic.strings.StringTools;
 public class Utilities {
 	public static final String DEFAULT_DESTINATION_ADDRESS = "arlith.net";
 	public static final int DEFAULT_PORT = 42069;
+	public static final LocalDateTime PROGRAM_LAUNCH_TIME = LocalDateTime.now();
 
 	private static int preferredPort = DEFAULT_PORT;
 	private static String preferredDestinationAddress = DEFAULT_DESTINATION_ADDRESS;
