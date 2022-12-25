@@ -13,7 +13,7 @@ import pala.libs.generic.strings.StringTools;
  *
  */
 public class Utilities {
-	public static final String DEFAULT_DESTINATION_ADDRESS = "arlith.net";
+	public static final String DEFAULT_DESTINATION_ADDRESS = "app.arlith.net";
 	public static final int DEFAULT_PORT = 42069;
 	public static final LocalDateTime PROGRAM_LAUNCH_TIME = LocalDateTime.now();
 
