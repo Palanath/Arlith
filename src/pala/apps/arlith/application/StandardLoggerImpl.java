@@ -8,10 +8,12 @@ import java.time.format.DateTimeFormatter;
 import pala.apps.arlith.application.logging.Logger;
 
 /**
- * An implementation of {@link Logger} that prints to the standard output and
- * standard error. This class does not depend on any frameworks or APIs other
- * than {@link Instant}, {@link DateTimeFormatter}, and {@link System#out} and
- * {@link System#err}.
+ * An implementation of {@link Logger} that, by default, prints to the standard
+ * output and standard error, but can be reconfigured to print to other
+ * {@link PrintStream}s. This class does not depend on any (non-Logging)
+ * frameworks or APIs other than {@link Instant}, {@link DateTimeFormatter},
+ * {@link ZoneId}, {@link System#out}, {@link System#err}, and
+ * {@link PrintStream}.
  * 
  * @author Palanath
  *
@@ -296,6 +298,18 @@ public class StandardLoggerImpl implements Logger {
 	@Override
 	public void err(String text) {
 		errStream.println(createFullPrefix() + text);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Logs the stacktrace of the error to the {@link #getErrStream() error output
+	 * stream} in addition to its causal and suppressory information.
+	 */
+	@Override
+	public void err(Throwable error) {
+		Logger.super.err(error);
+		error.printStackTrace(errStream);
 	}
 
 	/**
