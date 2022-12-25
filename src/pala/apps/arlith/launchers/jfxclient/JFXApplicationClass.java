@@ -29,6 +29,7 @@ public class JFXApplicationClass extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ArlithFrontend.getGuiLogger().err(e));
 		Window.getDefaultApplicationProperties().themeStylesheet
 				.put("/pala/apps/arlith/graphics/stylesheets/default-styles.css");
 		ArlithFrontend.prepareStage(primaryStage);
