@@ -29,7 +29,7 @@ import pala.libs.generic.parsers.cli.CLIParams;
  */
 public class Arlith {
 
-	private static CLIParams CLI_PARAMETERS;
+	private static Flags LAUNCH_FLAGS;
 	private static final String LAUNCHER_PACKAGE = ApplicationLauncher.class.getPackage().getName();
 	/**
 	 * <p>
@@ -56,35 +56,23 @@ public class Arlith {
 		return LOGGER;
 	}
 
-	/**
-	 * Gets the CLI Parameters for the application. This object is
-	 * {@link CLIParams#isIgnoreCase() ignore-case} by default. This object should
-	 * not be modified, but can be read or checked as needed.
-	 * 
-	 * @return The {@link CLIParams} that the application was launched with.
-	 * 
-	 * @author Palanath
-	 */
-	public static CLIParams getCLIParameters() {
-		return CLI_PARAMETERS;
+	public static Flags getLaunchFlags() {
+		return LAUNCH_FLAGS;
 	}
 
 	public static void main(String[] args) throws IOException {
-		CLI_PARAMETERS = new CLIParams(args);
-		CLI_PARAMETERS.setIgnoreCase(true);
+		LAUNCH_FLAGS = new Flags(new CLIParams(args));
 
 		// Check for various command line options.
-		if (CLI_PARAMETERS.checkFlag(false, "--debug", "-dbg"))
+		if (LAUNCH_FLAGS.isDebugMode())
 			LOGGER.setLogDebugMessages(true);
-		Utilities.setPreferredDestinationAddress(CLI_PARAMETERS.readString(Utilities.DEFAULT_DESTINATION_ADDRESS,
-				"--server-address", "--servaddr", "--serv-addr", "-sa"));
-		Utilities.setPreferredPort(
-				CLI_PARAMETERS.readInt(Utilities.DEFAULT_PORT, "--server-port", "--servprt", "--serv-prt", "-sp"));
+		Utilities.setPreferredDestinationAddress(LAUNCH_FLAGS.getDefaultServerAddress());
+		Utilities.setPreferredPort(LAUNCH_FLAGS.getDefaultServerPort());
 
 		ApplicationLauncher launcher;
 		// Launch the app.
 		try {
-			if (CLI_PARAMETERS.checkFlag(false, "--launch-server", "-ls"))
+			if (LAUNCH_FLAGS.isLaunchServer())
 				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".terminalserver.ServerLauncher")
 						.getConstructor().newInstance();
 			else
