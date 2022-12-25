@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pala.apps.arlith.backend.server.ArlithServer;
+import pala.apps.arlith.frontend.guis.ArlithFrontend;
 import pala.apps.arlith.libraries.Utilities;
 import pala.libs.generic.guis.ApplicationProperties;
 import pala.libs.generic.guis.Window;
@@ -32,9 +33,11 @@ public class LaunchSettingsWindow extends Window {
 			server.setPort(Integer.parseInt(localPort.getText().trim()));
 			server.start();
 			completed = true;
-			System.out.println("Successfully launched the server. You'll need to close the program to stop it.");
+			ArlithFrontend.getGuiLogger().std("Successfully launched the server on port: " + server.getActualPort()
+					+ ". You'll need to close the program to stop it.");
 		} catch (IOException e) {
-			System.err.println("An error occurred while trying to launch the server.");
+			ArlithFrontend.getGuiLogger().err("An error occurred while trying to launch the server.");
+			ArlithFrontend.getGuiLogger().err(e);
 			e.printStackTrace();
 		} finally {
 			launchServerButton.setDisable(!completed);
@@ -46,7 +49,8 @@ public class LaunchSettingsWindow extends Window {
 			Utilities.setPreferredDestinationAddress(serverAddress.getText().trim());
 		if (!serverAddress.getText().trim().isEmpty())
 			Utilities.setPreferredPort(Integer.parseInt(serverPort.getText().trim()));
-		System.out.println("Client endpoint set successfully.");
+		ArlithFrontend.getGuiLogger().dbg("Client endpoint set to " + Utilities.getPreferredDestinationAddress() + ':'
+				+ Utilities.getPreferredPort() + " successfully.");
 	}
 
 	@Override
