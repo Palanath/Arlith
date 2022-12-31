@@ -184,7 +184,7 @@ public class ArlithClientBuilder {
 		this(username, disc, password, host, DEFAULT_DESTINATION_PORT);
 	}
 
-	public ArlithClientBuilder() throws UnknownHostException {
+	public ArlithClientBuilder() {
 		this(null, "0", (InetAddress) null);
 	}
 
