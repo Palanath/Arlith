@@ -79,7 +79,11 @@ public class Arlith {
 		ApplicationLauncher launcher;
 		// Launch the app.
 		try {
-			if (LAUNCH_FLAGS.isLaunchServer())
+			if (LAUNCH_FLAGS.isTestClient())
+				launcher = (ApplicationLauncher) Class
+						.forName(LAUNCHER_PACKAGE + ".testguiclient.TestGUIClientLauncher").getConstructor()
+						.newInstance();
+			else if (LAUNCH_FLAGS.isLaunchServer())
 				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".terminalserver.ServerLauncher")
 						.getConstructor().newInstance();
 			else
