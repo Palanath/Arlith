@@ -14,10 +14,8 @@ public class ClientGUIFrontend implements Frontend {
 
 	@Override
 	public void launch() {
-		// Prepare initial scene.
-		ArlithClientBuilder builder = new ArlithClientBuilder();
-		LogInScene lis = new LogInScene(this, builder);
-		lis.show();// Show initial scene.
+		// Prepare and show initial scene.
+		new LogInScene(this, new ArlithClientBuilder()).show();
 	}
 
 	public Stage getStage() {
