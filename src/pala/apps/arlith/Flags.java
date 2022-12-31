@@ -3,10 +3,11 @@ package pala.apps.arlith;
 import static pala.apps.arlith.libraries.Utilities.DEFAULT_DESTINATION_ADDRESS;
 import static pala.apps.arlith.libraries.Utilities.DEFAULT_PORT;
 
+import pala.apps.arlith.launchers.testguiclient.TestGUIClientLauncher;
 import pala.libs.generic.parsers.cli.CLIParams;
 
 public class Flags {
-	private final boolean debugMode, launchServer, fileLogging, separateLogFiles;
+	private final boolean debugMode, launchServer, fileLogging, separateLogFiles, testClient;
 	private final String defaultServerAddress, logFileLocation;
 	private final int defaultServerPort;
 
@@ -19,6 +20,20 @@ public class Flags {
 		fileLogging = params.checkFlag(false, "--file-logging");
 		separateLogFiles = params.checkFlag(false, "--separate-log-files");
 		logFileLocation = params.readString("arlith-logs", "--log-file-location");
+		testClient = params.checkFlag(false, "--test-client");
+	}
+
+	/**
+	 * <p>
+	 * Used for testing. If this flag is set, the {@link TestGUIClientLauncher} is
+	 * invoked.
+	 * </p>
+	 * 
+	 * @return Whether the Client Test GUI launcher will be invoked upon startup or
+	 *         not.
+	 */
+	public boolean isTestClient() {
+		return testClient;
 	}
 
 	/**
