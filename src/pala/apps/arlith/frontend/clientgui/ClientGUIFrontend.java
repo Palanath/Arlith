@@ -2,7 +2,9 @@ package pala.apps.arlith.frontend.clientgui;
 
 import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.libraries.frontends.Frontend;
+import pala.apps.arlith.libraries.frontends.FrontendScene.SceneShowFailureException;
 
 public class ClientGUIFrontend implements Frontend {
 
@@ -15,7 +17,12 @@ public class ClientGUIFrontend implements Frontend {
 	@Override
 	public void launch() {
 		// Prepare and show initial scene.
-		new LogInScene(this, new ArlithClientBuilder()).show();
+		try {
+			new LogInScene(this, new ArlithClientBuilder()).show();
+		} catch (SceneShowFailureException e) {
+			ArlithFrontend.getGuiLogger().err("Failed to show the log in scene.");
+			ArlithFrontend.getGuiLogger().err(e);
+		}
 	}
 
 	public Stage getStage() {
