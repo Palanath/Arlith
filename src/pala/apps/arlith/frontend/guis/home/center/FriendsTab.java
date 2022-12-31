@@ -18,7 +18,7 @@ import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser.FriendState;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.home.center.friendstab.FriendListView;
 import pala.apps.arlith.libraries.Utilities;

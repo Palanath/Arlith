@@ -18,7 +18,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.graphics.Disposable;
 import pala.libs.generic.javafx.FXTools;
 import pala.libs.generic.javafx.bindings.BindingTools;

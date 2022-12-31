@@ -2,7 +2,7 @@ package pala.apps.arlith.graphics;
 
 import static javafx.scene.paint.Color.GOLD;
 import static javafx.scene.paint.Color.RED;
-import static pala.apps.arlith.frontend.guis.ArlithFrontend.applyClickAnimation;
+import static pala.apps.arlith.frontend.ArlithFrontend.applyClickAnimation;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.communitylistview.CommunityListViewPage;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 import pala.apps.arlith.frontend.guis.settings.SettingsPage;

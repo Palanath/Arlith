@@ -25,7 +25,7 @@ import javafx.scene.text.TextAlignment;
 import pala.apps.arlith.application.JFXArlithRuntime;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.libraries.JavaFXUtilities;
 import pala.libs.generic.javafx.FXTools;
 

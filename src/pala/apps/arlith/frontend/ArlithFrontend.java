@@ -1,4 +1,4 @@
-package pala.apps.arlith.frontend.guis;
+package pala.apps.arlith.frontend;
 
 import java.util.Set;
 

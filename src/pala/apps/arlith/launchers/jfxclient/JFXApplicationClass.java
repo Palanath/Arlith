@@ -2,7 +2,7 @@ package pala.apps.arlith.launchers.jfxclient;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.login.LogInWindow;
 import pala.libs.generic.guis.Window;
 

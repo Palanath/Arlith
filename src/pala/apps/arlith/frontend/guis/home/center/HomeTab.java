@@ -29,7 +29,7 @@ import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.FriendStateValue;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.home.EventCard;
 import pala.apps.arlith.frontend.guis.home.HomePage;
 

@@ -19,9 +19,9 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.guis.BindHandlerPage;
 import pala.apps.arlith.frontend.guis.BindHandlerPage.PageBindable;
-import pala.apps.arlith.frontend.guis.ArlithFrontend;
 
 public class CommunityList {
 	private @FXML VBox root;
