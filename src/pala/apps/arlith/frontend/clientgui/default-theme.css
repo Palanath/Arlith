@@ -1,0 +1,32 @@
+.root {
+	-arlith-theme-orange: #FF4001;
+	-arlith-theme-blue: #0301AD;
+	-arlith-background-color: #472152;
+	-arlith-light-text-fill: lightgray;
+	-arlith-dark-text-fill: dimgray;
+	-arlith-highlight-fill: white;
+
+	-fx-font-family: Arial, sans-serif;
+	-fx-focus-color: -arlith-theme-blue;
+	-fx-text-fill: -arlith-light-text-fill;
+	-fx-fill: -arlith-light-text-fill;
+	-fx-background-color: -arlith-background-color;
+}
+
+Button {
+	-active-button-color: -button-color;
+	-fx-background-color: -active-button-color;
+	-fx-text-fill: ladder(-button-color, white 49%, black 50%);
+}
+Button:hover {
+	 -active-button-color: derive(-button-color, 20%);
+}
+Button:armed {
+	 -active-button-color: derive(-button-color, -10%);
+}
+Text {
+	-fx-fill: -arlith-light-text-fill;
+}
+.title {
+	-fx-fill: -arlith-highlight-fill;
+}
