@@ -12,6 +12,8 @@ public class LogInScene implements FrontendScene<ClientGUIFrontend> {
 	private final ClientGUIFrontend frontend;
 	private final ArlithClientBuilder builder;
 	private Scene scene;
+	
+	private LogInGUI controller;
 
 	public LogInScene(ClientGUIFrontend frontend, ArlithClientBuilder builder) {
 		this.frontend = frontend;
@@ -26,16 +28,21 @@ public class LogInScene implements FrontendScene<ClientGUIFrontend> {
 	@Override
 	public void show() throws SceneShowFailureException {
 		FXMLLoader loader = new FXMLLoader(LogInScene.class.getResource("LogInGUI.fxml"));
-		loader.setController(this);
 		Parent root;
 		try {
 			root = loader.load();
 		} catch (IOException e) {
 			throw new SceneShowFailureException(e, this);
 		}
+		controller = loader.getController();
 		scene = new Scene(root);
+		initialize();// Set up responsiveness of GUI and stuff.
 		frontend.getStage().setScene(scene);
 		frontend.getStage().show();
+	}
+
+	private void initialize() {
+		scene.getStylesheets().add("pala/apps/arlith/frontend/clientgui/default-theme.css");
 	}
 
 }
