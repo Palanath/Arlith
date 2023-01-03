@@ -1,15 +1,31 @@
 package pala.apps.arlith.frontend.themes.arlithdefault.clientgui;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import pala.apps.arlith.frontend.interfaces.clientgui.LogInPresentation;
+import javafx.stage.Stage;
+import pala.apps.arlith.frontend.clientgui.login.LogInInterface;
+import pala.apps.arlith.frontend.clientgui.login.LogInPresentation;
+import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public class LogInScenePresentation implements LogInPresentation {
+	private final Stage stage;
+	private final LogInInterface logic;
+
+	public LogInScenePresentation(Stage stage, LogInInterface logic) {
+		this.stage = stage;
+		this.logic = logic;
+	}
+
 	public @FXML BorderPane root;
 	public @FXML VBox logInBox;
 	public @FXML Text title;
@@ -33,5 +49,24 @@ public class LogInScenePresentation implements LogInPresentation {
 	@Override
 	public String getPassword() {
 		return passwordPromptText.getText();
+	}
+
+	@Override
+	public void show() throws WindowLoadFailureException {
+		// TODO Auto-generated method stub
+		FXMLLoader loader = new FXMLLoader(LogInScenePresentation.class.getResource("LogInGUI.fxml"));
+		loader.setController(this);
+		Parent parent;
+		try {
+			parent = loader.load();
+		} catch (IOException e) {
+			throw new WindowLoadFailureException(e);
+		}
+		Scene s = new Scene(parent);
+		stage.setScene(s);
+	}
+
+	@Override
+	public void hide() {// Do nothing when done.
 	}
 }

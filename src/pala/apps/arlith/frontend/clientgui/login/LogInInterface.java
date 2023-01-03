@@ -1,4 +1,4 @@
-package pala.apps.arlith.frontend.interfaces.clientgui;
+package pala.apps.arlith.frontend.clientgui.login;
 
 import pala.apps.arlith.libraries.frontends.interfacing.UserInterface;
 
