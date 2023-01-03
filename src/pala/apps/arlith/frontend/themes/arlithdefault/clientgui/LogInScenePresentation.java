@@ -2,6 +2,8 @@ package pala.apps.arlith.frontend.themes.arlithdefault.clientgui;
 
 import java.io.IOException;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,6 +43,13 @@ public class LogInScenePresentation implements LogInPresentation {
 	public @FXML TextField passwordPromptField;;
 	public @FXML Button logInButton;
 
+	private @FXML void initialize() {
+		EventHandler<ActionEvent> handler = a -> logic.triggerLogIn();
+		usernamePromptField.setOnAction(handler);
+		passwordPromptField.setOnAction(handler);
+		logInButton.setOnAction(handler);
+	}
+
 	@Override
 	public String getUsername() {
 		return usernamePromptText.getText();
@@ -53,7 +62,6 @@ public class LogInScenePresentation implements LogInPresentation {
 
 	@Override
 	public void show() throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
 		FXMLLoader loader = new FXMLLoader(LogInScenePresentation.class.getResource("LogInGUI.fxml"));
 		loader.setController(this);
 		Parent parent;
