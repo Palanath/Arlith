@@ -8,4 +8,4 @@
  * @author Palanath
  *
  */
-package pala.apps.arlith.frontend.themes.arlith;
+package pala.apps.arlith.frontend.themes.arlithdefault;
