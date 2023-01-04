@@ -10,6 +10,7 @@ import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.clientgui.logic.login.LogInLogicImpl;
 import pala.apps.arlith.frontend.clientgui.themes.arlithdefault.ArlithDefaultTheme;
+import pala.apps.arlith.frontend.clientgui.themes.testtheme1.TestTheme1;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.libraries.frontends.Frontend;
@@ -74,6 +75,8 @@ public class ClientGUIFrontend implements Frontend {
 	private final Stage stage;
 	private final List<Theme> themes = new ArrayList<>();
 	{
+		// Add test theme for testing.
+		themes.add(new TestTheme1());
 		// Add default theme.
 		themes.add(new ArlithDefaultTheme());
 	}
