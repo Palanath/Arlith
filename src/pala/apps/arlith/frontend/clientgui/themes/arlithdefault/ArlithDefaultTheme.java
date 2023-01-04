@@ -26,23 +26,9 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
  */
 public class ArlithDefaultTheme implements Theme {
 
-	/**
-	 * The {@link Stage} upon which to show new presentations.
-	 */
-	private Stage stage;
-
-	public Stage getStage() {
-		return stage;
-	}
-
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public <P extends Presentation<L>, L extends Logic<P>> P supply(L userInterface) {
-		System.out.println(userInterface.getClass());
 		if (userInterface instanceof LogInLogic)
 			return (P) new LogInPresentationImpl((LogInLogic) userInterface);
 		return null;
