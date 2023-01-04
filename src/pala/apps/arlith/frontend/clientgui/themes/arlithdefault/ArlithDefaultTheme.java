@@ -1,8 +1,9 @@
-package pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login;
+package pala.apps.arlith.frontend.clientgui.themes.arlithdefault;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import pala.apps.arlith.frontend.clientgui.Theme;
+import pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login.LogInPresentationImpl;
 import pala.apps.arlith.frontend.clientgui.Logic;
 import pala.apps.arlith.frontend.clientgui.Presentation;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;

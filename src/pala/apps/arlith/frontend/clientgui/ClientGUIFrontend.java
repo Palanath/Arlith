@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.clientgui.logic.login.LogInLogicImpl;
-import pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login.ArlithDefaultTheme;
+import pala.apps.arlith.frontend.clientgui.themes.arlithdefault.ArlithDefaultTheme;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.libraries.frontends.Frontend;
