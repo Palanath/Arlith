@@ -14,7 +14,6 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.libraries.frontends.Frontend;
 import pala.apps.arlith.libraries.frontends.FrontendScene;
-import pala.apps.arlith.libraries.frontends.FrontendScene.SceneShowFailureException;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 /**
