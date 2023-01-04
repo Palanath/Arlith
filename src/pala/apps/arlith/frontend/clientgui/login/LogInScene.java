@@ -59,25 +59,41 @@ public class LogInScene implements FrontendScene<ClientGUIFrontend>, LogInInterf
 
 	@Override
 	public void triggerLogIn() {
-		// TODO Auto-generated method stub
-		String un = presentation.getUsername(), pw = presentation.getPassword();
-		ArlithFrontend.getGuiLogger().dbg("Log in with username=" + un + ", password=" + pw);
+		presentation.lockUIForLoggingIn();
+		Thread t = new Thread(() -> {
+			try {
+				String un = presentation.getUsername(), pw = presentation.getPassword();
+				ArlithFrontend.getGuiLogger().dbg("Log in with username=" + un + ", password=" + pw);
 
-		builder.setUsername(un);
-		builder.setPassword(pw);
-		ArlithClient client;
-		try {
-			client = builder.login();
-		} catch (LoginError e) {
-			presentation.showLoginProblem(e.getLoginError());
-		} catch (LoginFailureException | MalformedServerResponseException e) {
-			ArlithFrontend.getGuiLogger().err(e);
-		}
+				builder.setUsername(un);
+				builder.setPassword(pw);
+				ArlithClient client;
+				try {
+					client = builder.login();
+				} catch (LoginError e) {
+					presentation.showLoginProblem(e.getLoginError());
+				} catch (LoginFailureException | MalformedServerResponseException e) {
+					ArlithFrontend.getGuiLogger().err(e);
+				}
 
-		// Upon successful log in, disable the presentation and show the next scene.
-		// frontend.setClient(client);
-		// presentation.hide();
-		// new WhateverNextSceneWillBeCalled(frontend).show();
+//				Platform.runLater(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						// Upon successful log in, disable the presentation and show the next scene.
+//						frontend.setClient(client);
+//						presentation.hide();
+//						new WhateverNextSceneWillBeCalled(frontend).show();
+//					}
+//				});
+			} finally {
+				// Once the above Platform.runLater(...) call is uncommented, the following line
+				// will need to be reconsidered.
+				presentation.unlockUIForLoggingIn();
+			}
+		});
+		t.start();
 	}
 
 }
