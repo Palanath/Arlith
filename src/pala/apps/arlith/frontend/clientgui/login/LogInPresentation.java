@@ -1,21 +1,32 @@
 package pala.apps.arlith.frontend.clientgui.login;
 
+import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public interface LogInPresentation {
 	/**
-	 * Retrieves the username from the user. Used for logging in.
+	 * Retrieves the username from the user. Called by the interface's logic while
+	 * attempting to log the user in.
 	 * 
 	 * @return The {@link String} username from the user.
 	 */
 	String getUsername();
 
 	/**
-	 * Retrieves the password from the user. Used for logging in.
+	 * Retrieves the password from the user. Called by the interface's logic while
+	 * attempting to log the user in.
 	 * 
 	 * @return The {@link String} password from the user.
 	 */
 	String getPassword();
+
+	/**
+	 * Indicates to the user that the specified type of problem arose while
+	 * attempting to log the user in.
+	 * 
+	 * @param problem
+	 */
+	void showLoginProblem(LoginProblemValue problem);
 
 	/**
 	 * Enables this presentation to start receiving user input so that it may

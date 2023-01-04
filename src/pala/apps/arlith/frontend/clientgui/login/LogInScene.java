@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui.login;
 
+import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.client.MalformedServerResponseException;
@@ -62,23 +63,19 @@ public class LogInScene implements FrontendScene<ClientGUIFrontend>, LogInInterf
 		String un = presentation.getUsername(), pw = presentation.getPassword();
 		ArlithFrontend.getGuiLogger().dbg("Log in with username=" + un + ", password=" + pw);
 
-//		builder.setUsername(un);
-//		builder.setPassword(pw);
-//		try {
-//			builder.login();
-//		} catch (LoginError e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (MalformedServerResponseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (LoginFailureException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		builder.setUsername(un);
+		builder.setPassword(pw);
+		ArlithClient client;
+		try {
+			client = builder.login();
+		} catch (LoginError e) {
+			presentation.showLoginProblem(e.getLoginError());
+		} catch (LoginFailureException | MalformedServerResponseException e) {
+			ArlithFrontend.getGuiLogger().err(e);
+		}
 
 		// Upon successful log in, disable the presentation and show the next scene.
-		// frontend.setClient(
+		// frontend.setClient(client);
 		// presentation.hide();
 		// new WhateverNextSceneWillBeCalled(frontend).show();
 	}
