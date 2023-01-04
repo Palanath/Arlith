@@ -134,6 +134,7 @@ public class ClientGUIFrontend implements Frontend {
 			ArlithFrontend.getGuiLogger().err("Failed to show the log in scene.");
 			ArlithFrontend.getGuiLogger().err(e);
 		}
+		stage.centerOnScreen();
 	}
 
 	/**
