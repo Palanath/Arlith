@@ -145,4 +145,14 @@ public class LogInScenePresentation implements LogInPresentation {
 			// Add error text right before "Log In" button.
 			logInBox.getChildren().add(logInBox.getChildren().size() - 1, loginErrorText);
 	}
+
+	@Override
+	public void lockUIForLoggingIn() {
+		logInBox.setDisable(true);
+	}
+
+	@Override
+	public void unlockUIForLoggingIn() {
+		logInBox.setDisable(false);
+	}
 }
