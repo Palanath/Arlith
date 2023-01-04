@@ -2,10 +2,16 @@ package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
 
 import javafx.scene.Scene;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public class LogInPresentationImpl implements LogInPresentation {
+	private final LogInLogic logic;
+
+	public LogInPresentationImpl(LogInLogic logic) {
+		this.logic = logic;
+	}
 
 	@Override
 	public Scene getScene() throws WindowLoadFailureException {
