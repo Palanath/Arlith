@@ -51,7 +51,10 @@ public class LogInScenePresentation implements LogInPresentation {
 	public @FXML Button logInButton;
 
 	private @FXML void initialize() {
-		EventHandler<ActionEvent> handler = a -> logic.triggerLogIn();
+		EventHandler<ActionEvent> handler = a -> {
+			logInBox.getChildren().remove(loginErrorText);
+			logic.triggerLogIn();
+		};
 		usernamePromptField.setOnAction(handler);
 		passwordPromptField.setOnAction(handler);
 		logInButton.setOnAction(handler);
