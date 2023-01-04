@@ -13,8 +13,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.login.LogInInterface;
 import pala.apps.arlith.frontend.clientgui.login.LogInPresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
@@ -40,7 +42,12 @@ public class LogInScenePresentation implements LogInPresentation {
 	public @FXML HBox passwordPromptTextSection;
 	public @FXML Text passwordPromptText;
 	public @FXML Text passwordPromptTextAsterisk;
-	public @FXML TextField passwordPromptField;;
+	public @FXML TextField passwordPromptField;
+	// Goes right before "Log In" button in GUI when needed.
+	public final Text loginErrorText = new Text();
+	{
+		loginErrorText.setFill(Color.FIREBRICK);
+	}
 	public @FXML Button logInButton;
 
 	private @FXML void initialize() {
@@ -76,5 +83,66 @@ public class LogInScenePresentation implements LogInPresentation {
 
 	@Override
 	public void hide() {// Do nothing when done.
+	}
+
+	@Override
+	public void showLoginProblem(LoginProblemValue problem) {
+		switch (problem) {
+		case ILLEGAL_EM:
+			loginErrorText.setText("That email address is not allowed.");
+			break;
+		case ILLEGAL_PH:
+			loginErrorText.setText("That phone number is not allowed.");
+			break;
+		case ILLEGAL_PW:
+			loginErrorText.setText("That password is not allowed.");
+			break;
+		case ILLEGAL_UN:
+			loginErrorText.setText("That username is not allowed.");
+			break;
+		case LONG_EM:
+			loginErrorText.setText("The email address you entered is too long.");
+			break;
+		case LONG_PH:
+			loginErrorText.setText("The phone number you entered is too long.");
+			break;
+		case LONG_PW:
+			loginErrorText.setText("The password you entered is too long.");
+			break;
+		case LONG_UN:
+			loginErrorText.setText("The username you entered is too long.");
+			break;
+		case INVALID_EM:
+			loginErrorText.setText("No account with that email address found.");
+			break;
+		case INVALID_PH:
+			loginErrorText.setText("No account with that phone number found.");
+			break;
+		case INVALID_PW:// I need to find out what these mean again.
+			loginErrorText.setText("That password is wrong.");
+			break;
+		case INVALID_UN:
+			loginErrorText.setText("No account with that username found.");
+			break;
+		case SHORT_EM:
+			loginErrorText.setText("The email address you entered is too short.");
+			break;
+		case SHORT_PH:
+			loginErrorText.setText("The phone number you entered is too short.");
+			break;
+		case SHORT_PW:
+			loginErrorText.setText("The password you entered is too short.");
+			break;
+		case SHORT_UN:
+			loginErrorText.setText("The username you entered is too short.");
+			break;
+		default:
+			loginErrorText.setText("An unknown error occurred.");
+			break;
+		}
+
+		if (!logInBox.getChildren().contains(loginErrorText))
+			// Add error text right before "Log In" button.
+			logInBox.getChildren().add(logInBox.getChildren().size() - 1, loginErrorText);
 	}
 }
