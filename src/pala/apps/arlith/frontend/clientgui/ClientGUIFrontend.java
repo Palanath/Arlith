@@ -74,13 +74,13 @@ public class ClientGUIFrontend implements Frontend {
 
 	private final Stage stage;
 	private final List<Theme> themes = new ArrayList<>();
+	{
+		// Add default theme.
+		themes.add(new ArlithDefaultTheme());
+	}
 
 	public ClientGUIFrontend(Stage stage) {
 		this.stage = stage;
-		// Add default theme.
-		ArlithDefaultTheme theme = new ArlithDefaultTheme();
-		themes.add(theme);
-		theme.setStage(stage);
 	}
 
 	/**
