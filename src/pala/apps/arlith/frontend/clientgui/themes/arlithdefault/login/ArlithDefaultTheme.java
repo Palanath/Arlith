@@ -1,11 +1,11 @@
-package pala.apps.arlith.frontend.themes.arlithdefault;
+package pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pala.apps.arlith.frontend.clientgui.login.LogInLogic;
-import pala.apps.arlith.frontend.themes.arlithdefault.clientgui.LogInScenePresentation;
-import pala.apps.arlith.libraries.frontends.interfacing.Theme;
-import pala.apps.arlith.libraries.frontends.interfacing.UserInterface;
+import pala.apps.arlith.frontend.clientgui.Theme;
+import pala.apps.arlith.frontend.clientgui.Logic;
+import pala.apps.arlith.frontend.clientgui.Presentation;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 
 /**
  * <p>
@@ -17,7 +17,7 @@ import pala.apps.arlith.libraries.frontends.interfacing.UserInterface;
  * Presentations under this {@link Theme} show themselves by changing the
  * {@link Scene} of the {@link Stage} that is stored by this {@link Theme}
  * object at the time that the presentation is constructed and returned from
- * {@link #supply(UserInterface)}.
+ * {@link #supply(Logic)}.
  * </p>
  * 
  * @author Palanath
@@ -40,9 +40,10 @@ public class ArlithDefaultTheme implements Theme {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <P> P supply(UserInterface<? super P> userInterface) {
+	public <P extends Presentation<L>, L extends Logic<P>> P supply(L userInterface) {
+		System.out.println(userInterface.getClass());
 		if (userInterface instanceof LogInLogic)
-			return (P) new LogInScenePresentation(stage, (LogInLogic) userInterface);
+			return (P) new LogInPresentationImpl((LogInLogic) userInterface);
 		return null;
 	}
 

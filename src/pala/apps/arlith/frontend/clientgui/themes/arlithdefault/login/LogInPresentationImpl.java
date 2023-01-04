@@ -1,4 +1,4 @@
-package pala.apps.arlith.frontend.themes.arlithdefault.clientgui;
+package pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login;
 
 import java.io.IOException;
 
@@ -15,18 +15,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
-import pala.apps.arlith.frontend.clientgui.login.LogInLogic;
-import pala.apps.arlith.frontend.clientgui.login.LogInPresentation;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
-public class LogInScenePresentation implements LogInPresentation {
-	private final Stage stage;
+public class LogInPresentationImpl implements LogInPresentation {
 	private final LogInLogic logic;
+	private Scene scene;
 
-	public LogInScenePresentation(Stage stage, LogInLogic logic) {
-		this.stage = stage;
+	public LogInPresentationImpl(LogInLogic logic) {
 		this.logic = logic;
 	}
 
@@ -68,24 +66,6 @@ public class LogInScenePresentation implements LogInPresentation {
 	@Override
 	public String getPassword() {
 		return passwordPromptText.getText();
-	}
-
-	@Override
-	public void show() throws WindowLoadFailureException {
-		FXMLLoader loader = new FXMLLoader(LogInScenePresentation.class.getResource("LogInGUI.fxml"));
-		loader.setController(this);
-		Parent parent;
-		try {
-			parent = loader.load();
-		} catch (IOException e) {
-			throw new WindowLoadFailureException(e);
-		}
-		Scene s = new Scene(parent);
-		stage.setScene(s);
-	}
-
-	@Override
-	public void hide() {// Do nothing when done.
 	}
 
 	@Override
@@ -157,5 +137,20 @@ public class LogInScenePresentation implements LogInPresentation {
 	@Override
 	public void unlockUIForLoggingIn() {
 		logInBox.setDisable(false);
+	}
+
+	@Override
+	public Scene getScene() throws WindowLoadFailureException {
+		if (scene != null)
+			return scene;
+		FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
+		loader.setController(this);
+		Parent parent;
+		try {
+			parent = loader.load();
+		} catch (IOException e) {
+			throw new WindowLoadFailureException(e);
+		}
+		return scene = new Scene(parent);
 	}
 }
