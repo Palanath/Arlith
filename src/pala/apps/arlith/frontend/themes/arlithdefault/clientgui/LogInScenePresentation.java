@@ -17,15 +17,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
-import pala.apps.arlith.frontend.clientgui.login.LogInInterface;
+import pala.apps.arlith.frontend.clientgui.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.login.LogInPresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public class LogInScenePresentation implements LogInPresentation {
 	private final Stage stage;
-	private final LogInInterface logic;
+	private final LogInLogic logic;
 
-	public LogInScenePresentation(Stage stage, LogInInterface logic) {
+	public LogInScenePresentation(Stage stage, LogInLogic logic) {
 		this.stage = stage;
 		this.logic = logic;
 	}

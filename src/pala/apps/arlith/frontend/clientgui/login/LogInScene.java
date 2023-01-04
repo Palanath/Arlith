@@ -18,7 +18,7 @@ import pala.libs.generic.guis.Window.WindowLoadFailureException;
  * @author Palanath
  *
  */
-public class LogInScene implements FrontendScene<ClientGUIFrontend>, LogInInterface {
+public class LogInScene implements FrontendScene<ClientGUIFrontend>, LogInLogic {
 	private final ClientGUIFrontend frontend;
 	private final ArlithClientBuilder builder;
 	private LogInPresentation presentation;

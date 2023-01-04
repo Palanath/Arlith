@@ -30,7 +30,7 @@ public interface LogInPresentation {
 
 	/**
 	 * Prevents the user from triggering a <code>log-in</code> (via
-	 * {@link LogInInterface#triggerLogIn()}) until {@link #unlockUIForLoggingIn()}
+	 * {@link LogInLogic#triggerLogIn()}) until {@link #unlockUIForLoggingIn()}
 	 * is called. The UI should remain responsive so as to indicate to the user that
 	 * the application is still alive, and should, preferably, also indicate to the
 	 * user that the application is currently attempting to log in. If this method
@@ -49,10 +49,10 @@ public interface LogInPresentation {
 
 	/**
 	 * Enables this presentation to start receiving user input so that it may
-	 * trigger {@link LogInInterface#triggerLogIn()} at the user's request. <i>This
+	 * trigger {@link LogInLogic#triggerLogIn()} at the user's request. <i>This
 	 * method is typically provided in presentation interfaces for UIs that accept
 	 * user input.</i> This method is typically called by the corresponding
-	 * interface type ({@link LogInInterface}) so that it can point out to the
+	 * interface type ({@link LogInLogic}) so that it can point out to the
 	 * presentation that it is ready for the presentation to display itself to the
 	 * user. If this method is called more than once, the behavior of any of the
 	 * subsequent invocations is undefined. Additionally, if this method is called
@@ -69,7 +69,7 @@ public interface LogInPresentation {
 	 * to. The presentation should perform any cleanup necessary upon invocation of
 	 * this method. If this method is called more than once, the behavior of any of
 	 * the subsequent invocations is undefined. Additionally, if this method is
-	 * called before {@link #show(LogInInterface)}, its behavior is undefined.
+	 * called before {@link #show(LogInLogic)}, its behavior is undefined.
 	 */
 	void hide();
 }

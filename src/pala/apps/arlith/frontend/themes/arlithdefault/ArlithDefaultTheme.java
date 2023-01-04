@@ -2,7 +2,7 @@ package pala.apps.arlith.frontend.themes.arlithdefault;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pala.apps.arlith.frontend.clientgui.login.LogInInterface;
+import pala.apps.arlith.frontend.clientgui.login.LogInLogic;
 import pala.apps.arlith.frontend.themes.arlithdefault.clientgui.LogInScenePresentation;
 import pala.apps.arlith.libraries.frontends.interfacing.Theme;
 import pala.apps.arlith.libraries.frontends.interfacing.UserInterface;
@@ -41,8 +41,8 @@ public class ArlithDefaultTheme implements Theme {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <P> P supply(UserInterface<? super P> userInterface) {
-		if (userInterface instanceof LogInInterface)
-			return (P) new LogInScenePresentation(stage, (LogInInterface) userInterface);
+		if (userInterface instanceof LogInLogic)
+			return (P) new LogInScenePresentation(stage, (LogInLogic) userInterface);
 		return null;
 	}
 
