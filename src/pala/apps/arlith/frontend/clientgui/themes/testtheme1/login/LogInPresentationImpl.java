@@ -7,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -37,8 +36,11 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML VBox logInBox, inputsBox;
 	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
 	public @FXML Text title;
-	public @FXML Button logInButton;
 	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
+	private final NiceLookingButton logInButton = new NiceLookingButton();
+	{
+		logInButton.setText("Log In");
+	}
 
 	private @FXML void initialize() {
 		root.setOnMouseClicked(a -> root.requestFocus());
@@ -51,8 +53,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 						new RadialGradient(-30, -.1, .2, .9, 1, true, CycleMethod.NO_CYCLE,
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
-		inputsBox.getChildren().add(0, usernamePrompt);
-		inputsBox.getChildren().add(1, passwordPrompt);
+		inputsBox.getChildren().addAll(usernamePrompt, passwordPrompt, logInButton);
 		usernamePrompt.getPrompt().setText("Username");
 		usernamePrompt.setNecessary(true);
 		passwordPrompt.getPrompt().setText("Password");

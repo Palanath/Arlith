@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -16,11 +15,7 @@
                   <Font size="24.0" />
                </font>
             </Text>
-            <VBox fx:id="inputsBox" alignment="CENTER" spacing="40.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Button fx:id="logInButton" mnemonicParsing="false" text="LOG IN" />
-               </children>
-            </VBox>
+            <VBox fx:id="inputsBox" alignment="CENTER" spacing="40.0" VBox.vgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
