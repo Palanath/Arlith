@@ -2,6 +2,8 @@ package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
 
 import java.io.IOException;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -57,6 +59,11 @@ public class LogInPresentationImpl implements LogInPresentation {
 		passwordPrompt.setNecessary(true);
 		usernamePrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
+
+		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
+		usernamePrompt.getInput().setOnAction(submitHandler);
+		passwordPrompt.getInput().setOnAction(submitHandler);
+		logInButton.setOnAction(submitHandler);
 
 		logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		logInButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
