@@ -23,6 +23,7 @@ import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
+import pala.libs.generic.javafx.FXTools;
 
 public class LogInPresentationImpl implements LogInPresentation {
 	private final LogInLogic logic;
@@ -57,6 +58,26 @@ public class LogInPresentationImpl implements LogInPresentation {
 		passwordPrompt.setNecessary(true);
 		usernamePrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
+
+		logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
+		logInButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
+			if (!logInButton.isPressed())
+				if (newValue)
+					logInButton.setBackground(
+							FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate().desaturate()));
+				else
+					logInButton
+							.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
+		});
+		logInButton.armedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue)
+				logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE));
+			else if (logInButton.isHover())
+				logInButton.setBackground(
+						FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate().desaturate()));
+			else
+				logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
+		});
 	}
 
 	@Override
