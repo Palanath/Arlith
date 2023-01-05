@@ -51,6 +51,8 @@ public class LogInPresentationImpl implements LogInPresentation {
 						CornerRadii.EMPTY, Insets.EMPTY)));
 		inputsBox.getChildren().add(0, usernamePrompt);
 		inputsBox.getChildren().add(1, passwordPrompt);
+		usernamePrompt.getPrompt().setText("Username:");
+		passwordPrompt.getPrompt().setText("Password:");
 	}
 
 	@Override
