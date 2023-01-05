@@ -37,10 +37,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
 	public @FXML Text title;
 	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
-	private final NiceLookingButton logInButton = new NiceLookingButton();
-	{
-		logInButton.setText("Log In");
-	}
+	private final NiceLookingButton logInButton = new NiceLookingButton("Log In");
 
 	private @FXML void initialize() {
 		root.setOnMouseClicked(a -> root.requestFocus());

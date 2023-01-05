@@ -12,6 +12,15 @@ public class NiceLookingButton extends Button {
 		setActiveColor(activeColor);
 	}
 
+	public NiceLookingButton(String text) {
+		super(text);
+	}
+
+	public NiceLookingButton(String text, Color activeColor) {
+		this(text);
+		setActiveColor(activeColor);
+	}
+
 	public NiceLookingButton() {
 	}
 
