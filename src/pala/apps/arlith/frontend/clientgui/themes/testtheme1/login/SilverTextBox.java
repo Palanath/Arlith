@@ -15,6 +15,19 @@ public class SilverTextBox extends VBox {
 	private final TextField input = new TextField();
 	private final Line line = new Line();
 	private static final Color FOCUSED_LINE_COLOR = Color.color(1, 1, 1, .7);
+
+	public Text getPrompt() {
+		return prompt;
+	}
+
+	public TextField getInput() {
+		return input;
+	}
+
+	public Line getLine() {
+		return line;
+	}
+
 	{
 		prompt.setFill(Color.BLACK);
 		getChildren().addAll(prompt, input, line);
