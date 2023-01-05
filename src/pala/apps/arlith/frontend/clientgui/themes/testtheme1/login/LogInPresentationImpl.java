@@ -53,6 +53,8 @@ public class LogInPresentationImpl implements LogInPresentation {
 		inputsBox.getChildren().add(1, passwordPrompt);
 		usernamePrompt.getPrompt().setText("Username:");
 		passwordPrompt.getPrompt().setText("Password:");
+		usernamePrompt.setPrefWidth(300);
+		passwordPrompt.setPrefWidth(300);
 	}
 
 	@Override
