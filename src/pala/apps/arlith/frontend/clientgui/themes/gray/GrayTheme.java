@@ -1,12 +1,12 @@
-package pala.apps.arlith.frontend.clientgui.themes.testtheme1;
+package pala.apps.arlith.frontend.clientgui.themes.gray;
 
 import pala.apps.arlith.frontend.clientgui.Logic;
 import pala.apps.arlith.frontend.clientgui.Presentation;
 import pala.apps.arlith.frontend.clientgui.Theme;
-import pala.apps.arlith.frontend.clientgui.themes.testtheme1.login.LogInPresentationImpl;
+import pala.apps.arlith.frontend.clientgui.themes.gray.login.LogInPresentationImpl;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 
-public class TestTheme1 implements Theme {
+public class GrayTheme implements Theme {
 
 	@SuppressWarnings("unchecked")
 	@Override

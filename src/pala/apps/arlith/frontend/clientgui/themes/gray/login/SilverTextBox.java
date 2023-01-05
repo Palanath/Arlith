@@ -1,4 +1,4 @@
-package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
+package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;

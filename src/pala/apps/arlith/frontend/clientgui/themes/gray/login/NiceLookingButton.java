@@ -1,4 +1,4 @@
-package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
+package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
