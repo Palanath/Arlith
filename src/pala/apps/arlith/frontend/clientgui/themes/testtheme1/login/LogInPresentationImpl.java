@@ -99,14 +99,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+		return usernamePrompt.getInput().getText();
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+		return usernamePrompt.getInput().getText();
 	}
 
 	@Override
@@ -117,14 +115,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public void lockUIForLoggingIn() {
-		// TODO Auto-generated method stub
-
+		logInBox.setDisable(true);
 	}
 
 	@Override
 	public void unlockUIForLoggingIn() {
-		// TODO Auto-generated method stub
-
+		logInBox.setDisable(false);
 	}
 
 }
