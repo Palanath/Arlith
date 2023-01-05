@@ -41,6 +41,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
 
 	private @FXML void initialize() {
+		root.setOnMouseClicked(a -> root.requestFocus());
 		root.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY),
 				new BackgroundFill(new RadialGradient(30, .2, .3, -.1, 1, true, CycleMethod.NO_CYCLE,
 						new Stop(0, Color.DARKGRAY), new Stop(.4, Color.TRANSPARENT)), CornerRadii.EMPTY, Insets.EMPTY),
