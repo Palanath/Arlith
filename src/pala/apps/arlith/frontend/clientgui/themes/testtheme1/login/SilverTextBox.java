@@ -2,6 +2,7 @@ package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
 
 import javafx.animation.Transition;
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -12,30 +13,14 @@ import pala.libs.generic.javafx.FXTools;
 
 public class SilverTextBox extends VBox {
 	private final Text prompt = new Text();
-	private final TextField input = new TextField();
+	private final TextField input;
 	private final Line line = new Line();
 	private static final Color FOCUSED_LINE_COLOR = Color.color(1, 1, 1, .7);
 
-	public Text getPrompt() {
-		return prompt;
-	}
-
-	public TextField getInput() {
-		return input;
-	}
-
-	public Line getLine() {
-		return line;
-	}
-
-	{
-		prompt.setFill(Color.BLACK);
+	public SilverTextBox(boolean password) {
+		input = password ? new PasswordField() : new TextField();
 		getChildren().addAll(prompt, input, line);
-		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
-		line.setStrokeWidth(3);
-		line.setEndX(1);// Used to fix a resizing issue (GUI jitters by a few pixels when line has
-						// changes from non-zero to zero endX).
-		line.setStroke(Color.TRANSPARENT);
+
 		Transition trans = new Transition() {
 			{
 				setCycleDuration(Duration.seconds(.2));
@@ -48,6 +33,7 @@ public class SilverTextBox extends VBox {
 				line.setEndX(frac * (input.getWidth() - line.getStrokeWidth() - 1) + 1);
 			}
 		};
+		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
 				line.setStroke(Color.TRANSPARENT);
@@ -66,5 +52,29 @@ public class SilverTextBox extends VBox {
 				trans.play();
 			}
 		});
+	}
+
+	public SilverTextBox() {
+		this(false);
+	}
+
+	public Text getPrompt() {
+		return prompt;
+	}
+
+	public TextField getInput() {
+		return input;
+	}
+
+	public Line getLine() {
+		return line;
+	}
+
+	{
+		prompt.setFill(Color.BLACK);
+		line.setStrokeWidth(3);
+		line.setEndX(1);// Used to fix a resizing issue (GUI jitters by a few pixels when line has
+						// changes from non-zero to zero endX).
+		line.setStroke(Color.TRANSPARENT);
 	}
 }

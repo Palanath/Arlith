@@ -37,7 +37,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
 	public @FXML Text title;
 	public @FXML Button logInButton;
-	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox();
+	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
 
 	private @FXML void initialize() {
 		root.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY),
