@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -17,6 +18,8 @@ import javafx.util.Duration;
 import pala.libs.generic.javafx.FXTools;
 
 public class SilverTextBox extends VBox {
+	private static final Background FOCUSED_BACKGROUND_COLOR = FXTools.getBackgroundFromColor(Color.gray(.8, .8)),
+			UNFOCUSED_BACKGROUND_COLOR = FXTools.getBackgroundFromColor(Color.gray(.7, .7));
 	private final Text prompt = new Text(), asterisk = new Text("*");
 	private final HBox promptBox = new HBox(2, prompt);
 	private final TextField input;
@@ -64,20 +67,20 @@ public class SilverTextBox extends VBox {
 				line.setEndX(frac * (input.getWidth() - line.getStrokeWidth() - 1) + 1);
 			}
 		};
-		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .7)));
+		input.setBackground(UNFOCUSED_BACKGROUND_COLOR);
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
 				line.setStroke(Color.TRANSPARENT);
 		});
 		input.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
-				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.8, .5)));
+				input.setBackground(FOCUSED_BACKGROUND_COLOR);
 
 				line.setStroke(FOCUSED_LINE_COLOR);
 				trans.setRate(1);
 				trans.play();
 			} else {
-				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .7)));
+				input.setBackground(UNFOCUSED_BACKGROUND_COLOR);
 
 				trans.setRate(-1);
 				trans.play();
