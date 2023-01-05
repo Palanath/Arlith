@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -34,12 +33,11 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	public @FXML BorderPane root;
-	public @FXML VBox logInBox, usernamePrompt, passwordPrompt;
+	public @FXML VBox logInBox, inputsBox;
 	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
-	public @FXML Text usernamePromptText, usernamePromptTextRequiredAsterisk, passwordPromptText,
-			passwordPromptTextAsterisk, title;
-	public @FXML TextField usernamePromptField, passwordPromptField;
+	public @FXML Text title;
 	public @FXML Button logInButton;
+	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox();
 
 	private @FXML void initialize() {
 		root.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY),
@@ -51,6 +49,8 @@ public class LogInPresentationImpl implements LogInPresentation {
 						new RadialGradient(-30, -.1, .2, .9, 1, true, CycleMethod.NO_CYCLE,
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
+		inputsBox.getChildren().add(0, usernamePrompt);
+		inputsBox.getChildren().add(1, passwordPrompt);
 	}
 
 	@Override
