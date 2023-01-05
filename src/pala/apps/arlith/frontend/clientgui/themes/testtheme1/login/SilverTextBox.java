@@ -64,20 +64,20 @@ public class SilverTextBox extends VBox {
 				line.setEndX(frac * (input.getWidth() - line.getStrokeWidth() - 1) + 1);
 			}
 		};
-		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
+		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .7)));
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
 				line.setStroke(Color.TRANSPARENT);
 		});
 		input.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
-				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.8, .3)));
+				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.8, .5)));
 
 				line.setStroke(FOCUSED_LINE_COLOR);
 				trans.setRate(1);
 				trans.play();
 			} else {
-				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
+				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .7)));
 
 				trans.setRate(-1);
 				trans.play();
