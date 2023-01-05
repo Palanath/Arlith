@@ -1,25 +1,56 @@
 package pala.apps.arlith.frontend.clientgui.themes.testtheme1.login;
 
 import javafx.animation.Transition;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import pala.libs.generic.javafx.FXTools;
 
 public class SilverTextBox extends VBox {
-	private final Text prompt = new Text();
+	private final Text prompt = new Text(), asterisk = new Text("*");
+	private final HBox promptBox = new HBox(2, prompt);
 	private final TextField input;
 	private final Line line = new Line();
 	private static final Color FOCUSED_LINE_COLOR = Color.color(1, 1, 1, .7);
 
-	public SilverTextBox(boolean password) {
+	private final BooleanProperty necessary = new SimpleBooleanProperty();
+	{
+		asterisk.setFill(Color.ORANGERED);
+		asterisk.setFont(Font.font(null, FontWeight.BOLD, -1));
+		necessary.addListener((observable, oldValue, newValue) -> {
+			if (newValue)
+				promptBox.getChildren().setAll(prompt, asterisk);
+			else
+				promptBox.getChildren().setAll(prompt);
+		});
+	}
+
+	public boolean isNecessary() {
+		return necessary.get();
+	}
+
+	public void setNecessary(boolean necessary) {
+		this.necessary.set(necessary);
+	}
+
+	public BooleanProperty necessaryProperty() {
+		return necessary;
+	}
+
+	public SilverTextBox(boolean password, boolean necessary) {
 		input = password ? new PasswordField() : new TextField();
-		getChildren().addAll(prompt, input, line);
+		getChildren().addAll(promptBox, input, line);
+		setNecessary(necessary);
 
 		Transition trans = new Transition() {
 			{
@@ -52,6 +83,10 @@ public class SilverTextBox extends VBox {
 				trans.play();
 			}
 		});
+	}
+
+	public SilverTextBox(boolean password) {
+		this(password, false);
 	}
 
 	public SilverTextBox() {
