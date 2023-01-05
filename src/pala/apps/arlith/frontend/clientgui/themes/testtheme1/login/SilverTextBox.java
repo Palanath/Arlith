@@ -18,7 +18,7 @@ public class SilverTextBox extends VBox {
 	{
 		prompt.setFill(Color.BLACK);
 		getChildren().addAll(prompt, input, line);
-		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.8, .3)));
+		input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
 		line.setStrokeWidth(3);
 		line.setEndX(1);// Used to fix a resizing issue (GUI jitters by a few pixels when line has
 						// changes from non-zero to zero endX).
@@ -41,10 +41,14 @@ public class SilverTextBox extends VBox {
 		});
 		input.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
+				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.8, .3)));
+
 				line.setStroke(FOCUSED_LINE_COLOR);
 				trans.setRate(1);
 				trans.play();
 			} else {
+				input.setBackground(FXTools.getBackgroundFromColor(Color.gray(.6, .5)));
+
 				trans.setRate(-1);
 				trans.play();
 			}
