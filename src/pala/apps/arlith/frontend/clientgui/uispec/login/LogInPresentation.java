@@ -3,6 +3,28 @@ package pala.apps.arlith.frontend.clientgui.uispec.login;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.Presentation;
 
+/**
+ * <p>
+ * Specification for the presentation of the Log In scene's UI to the user. This
+ * type specifies all of the methods and functionality that the <i>logic</i> of
+ * the UI will need to be able to invoke on whatever presentation information is
+ * showing (presenting) the UI to the end-user. The presentation implementation
+ * should support the methods specified in this type so that the logic can
+ * effectively engage with the end-user.
+ * </p>
+ * <p>
+ * In addition to the abstract methods in this interface, the implementation
+ * should also:
+ * </p>
+ * <ol>
+ * <li>Invoke the logic's {@link LogInLogic#triggerLogIn()} method whenever the
+ * user attempts to log in. (What constitutes the user attempting to log in is
+ * determined by the presentation implementation.)</li>
+ * </ol>
+ * 
+ * @author Palanath
+ *
+ */
 public interface LogInPresentation extends Presentation<LogInLogic> {
 	/**
 	 * Retrieves the username from the user. Called by the interface's logic while
