@@ -167,6 +167,13 @@ public interface ServerUser extends ServerObject {
 	 * If the provided username is the same as this user's existing username, this
 	 * method does nothing and returns the current discriminator.
 	 * </p>
+	 * <h2>Syntax</h2>
+	 * <p>
+	 * <span style="color: red;">This method does not enforce any syntactical
+	 * requirements</span> on any of the parameters given; care should be taken when
+	 * calling this method to verify that provided inputs are valid for the
+	 * implementation.
+	 * </p>
 	 *
 	 * @param newUsername The new username of the user.
 	 * @return The discriminator of this user with the new username.

@@ -91,6 +91,13 @@ public interface ServerWorld {
 	 * provided email or provided phone number is <code>null</code>, the user is
 	 * made without the parameter.
 	 * </p>
+	 * <h2>Syntax</h2>
+	 * <p>
+	 * <span style="color: red;">This method does not enforce any syntactical
+	 * requirements</span> on any of the parameters given; care should be taken when
+	 * calling this method to verify that provided inputs are valid for the
+	 * implementation.
+	 * </p>
 	 *
 	 * @param username    The user's username.
 	 * @param password    The user's hashed password.
