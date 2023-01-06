@@ -59,9 +59,9 @@ public interface ServerWorld {
 
 	/**
 	 * <p>
-	 * Creates a new Application user with the provided username, password, and email,
-	 * if the email is not already taken. The account will have no registered phone
-	 * number. A discriminator will be allocated for the user automatically.
+	 * Creates a new Application user with the provided username, password, and
+	 * email, if the email is not already taken. The account will have no registered
+	 * phone number. A discriminator will be allocated for the user automatically.
 	 * </p>
 	 * <p>
 	 * If the provided email is already in use, this method returns
@@ -97,8 +97,8 @@ public interface ServerWorld {
 	 * @param email       The user's email. Can be <code>null</code>, in which case
 	 *                    the {@link ServerUser} is created without an email.
 	 * @param phoneNumber The user's phone number. Can be <code>null</code>, in
-	 *                    which case the {@link ServerUser} is created without a phone
-	 *                    number.
+	 *                    which case the {@link ServerUser} is created without a
+	 *                    phone number.
 	 * @return A new {@link ServerUser}, or <code>null</code> if either the provided
 	 *         username or email are taken.
 	 */
@@ -106,11 +106,11 @@ public interface ServerWorld {
 
 	/**
 	 * <p>
-	 * Creates a new {@link ServerUser} with the provided username, password hash, and
-	 * phone number. If the phone number is <code>null</code>, the {@link ServerUser} is
-	 * created without a phone number. If the provided phone number is not
-	 * <code>null</code> and is taken, the user is not created and this method
-	 * returns <code>null</code>.
+	 * Creates a new {@link ServerUser} with the provided username, password hash,
+	 * and phone number. If the phone number is <code>null</code>, the
+	 * {@link ServerUser} is created without a phone number. If the provided phone
+	 * number is not <code>null</code> and is taken, the user is not created and
+	 * this method returns <code>null</code>.
 	 * </p>
 	 *
 	 * @param username    The user's username.
@@ -118,10 +118,11 @@ public interface ServerWorld {
 	 * @param phoneNumber The user's phone number. Can be <code>null</code>, in
 	 *                    which case the user will not have a registered phone
 	 *                    number.
-	 * @return The {@link ServerUser}, or <code>null</code> if the provided phone number
-	 *         is taken.
+	 * @return The {@link ServerUser}, or <code>null</code> if the provided phone
+	 *         number is taken.
 	 */
-	default ServerUser createUserWithPhone(final String username, final HexHashValue password, final String phoneNumber) {
+	default ServerUser createUserWithPhone(final String username, final HexHashValue password,
+			final String phoneNumber) {
 		return createUserWithEmailAndPhone(username, password, null, phoneNumber);
 	}
 
@@ -184,8 +185,8 @@ public interface ServerWorld {
 	 * Gets a user by its {@link GID}.
 	 * 
 	 * @param id The {@link GID} of the user to get.
-	 * @return The {@link ServerUser} or <code>null</code> if none with the specified
-	 *         {@link GID} was found.
+	 * @return The {@link ServerUser} or <code>null</code> if none with the
+	 *         specified {@link GID} was found.
 	 */
 	ServerUser getUserByID(GID id);
 
