@@ -16,13 +16,14 @@ import pala.apps.arlith.backend.server.contracts.world.ServerUser;
 import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
 
 /**
+ * <h1>Server World Implementation</h1>
  * <p>
- * An implementation of the Application Server world system using inner-classes.
- * The implementation minimal in functionality (there are few, if any, public
- * API provided on top of the implemented interfaces), but the implementation
- * features saving to and loading from cold-storage (in a simple way).
+ * This is the cardinal class of the Server's default implementation of the
+ * Server World API (see server world package). This implementation uses the
+ * filesystem to store data while offline and is minimal, in that it does not
+ * provide much functionality on top of the base specification.
  * </p>
- * <h1>Filesystem</h1>
+ * <h2>Filesystem</h2>
  * <p>
  * There are many different types of data that need to be stored by the server's
  * world (e.g. data specific to objects, like a user's ID or username, and
@@ -60,7 +61,7 @@ import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
  * object, but are a whole, separate piece of media.</td>
  * </tr>
  * </table>
- * <h2>Object Storage</h2>
+ * <h3>Object Storage</h3>
  * <p>
  * Each object, e.g. {@link ServerCommunity Communities}, {@link ServerUser
  * Users}, {@link ServerMessage Messages}, etc., stores its primary data in its
@@ -70,11 +71,12 @@ import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
  * TODO Include more details on this! TODO Update object storage methods so that
  * they <b>actually align with this documentation</b>.
  * </p>
- * <h2>Asset Storage</h2>
+ * <h3>Asset Storage</h3>
  * <p>
  * Each type of object has its own directory in the
  *
  * @author Palanath
+ * @see pala.apps.arlith.backend.server.contracts.world
  *
  */
 public class ServerWorldImpl implements ServerWorld {
