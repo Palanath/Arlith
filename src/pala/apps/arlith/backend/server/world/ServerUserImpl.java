@@ -212,14 +212,17 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void changePhone(final String newPhone) {
+	public boolean changePhone(final String newPhone) {
 		if (!Objects.equals(phone, newPhone)) {
+			if (Utilities.checkPhoneNumberValidity(newPhone) != null || getWorld().checkIfPhoneTaken(newPhone))
+				return false;
 			if (phone != null)
 				getWorld().usersByPhone.remove(phone);
 			if (newPhone != null)
 				getWorld().usersByPhone.put(phone = newPhone, this);
 			save();
 		}
+		return true;
 	}
 
 	@Override
