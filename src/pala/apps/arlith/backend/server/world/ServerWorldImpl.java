@@ -143,6 +143,11 @@ public class ServerWorldImpl implements ServerWorld {
 	@Override
 	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password,
 			final String email, final String phoneNumber) {
+		if (usersByEmail.containsKey(email))
+			return null;
+		if (usersByPhone.containsKey(phoneNumber))
+			return null;
+
 		final ServerUserImpl user = new ServerUserImpl(this, username, email, phoneNumber, password);
 
 		if (user.hasEmail())
