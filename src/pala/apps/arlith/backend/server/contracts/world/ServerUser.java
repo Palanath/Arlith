@@ -117,6 +117,11 @@ public interface ServerUser extends ServerObject {
 	 * method does nothing.</li>
 	 * <li>If the provided email address is <code>null</code>, this user's email
 	 * address is unregistered.</li>
+	 * <li>If the provided email is not syntactically valid as per <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
+	 * this method does nothing and returns <code>null</code>.</li>
+	 * <li>If the provided email is already in use by another account, this method
+	 * does nothing and returns <code>null</code>.</li>
 	 * </ul>
 	 *
 	 * @param newEmail The new email address.
@@ -143,6 +148,11 @@ public interface ServerUser extends ServerObject {
 	 * this method does nothing.</li>
 	 * <li>If the provided phone number is <code>null</code>, this user's phone
 	 * number is unregistered.</li>
+	 * <li>If the provided phone number is not syntactically valid as per <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
+	 * this method does nothing and returns <code>null</code>.</li>
+	 * <li>If the provided phone number is already in use by another account, this
+	 * method does nothing and returns <code>null</code>.</li>
 	 * </ul>
 	 *
 	 * @param newPhone The new phone number of this user.
@@ -165,14 +175,10 @@ public interface ServerUser extends ServerObject {
 	 * </p>
 	 * <p>
 	 * If the provided username is the same as this user's existing username, this
-	 * method does nothing and returns the current discriminator.
-	 * </p>
-	 * <h2>Syntax</h2>
-	 * <p>
-	 * <span style="color: red;">This method does not enforce any syntactical
-	 * requirements</span> on any of the parameters given; care should be taken when
-	 * calling this method to verify that provided inputs are valid for the
-	 * implementation.
+	 * method does nothing and returns <code>null</code>. If the provided username
+	 * is not syntactically valid, in accordance with <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
+	 * this method does nothing and returns <code>null</code>.
 	 * </p>
 	 *
 	 * @param newUsername The new username of the user.
