@@ -114,19 +114,19 @@ public interface ServerUser extends ServerObject {
 	 * </p>
 	 * <ul>
 	 * <li>If the provided email is the same as the current email address, this
-	 * method does nothing.</li>
+	 * method does nothing and returns <code>true</code>.</li>
 	 * <li>If the provided email address is <code>null</code>, this user's email
-	 * address is unregistered.</li>
+	 * address is unregistered and this method returns <code>true</code>.</li>
 	 * <li>If the provided email is not syntactically valid as per <a href=
 	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
-	 * this method does nothing and returns.</li>
+	 * this method does nothing and returns <code>false</code>.</li>
 	 * <li>If the provided email is already in use by another account, this method
-	 * does nothing and returns.</li>
+	 * does nothing and returns <code>false</code>.</li>
 	 * </ul>
 	 *
 	 * @param newEmail The new email address.
 	 */
-	void changeEmail(String newEmail);
+	boolean changeEmail(String newEmail);
 
 	/**
 	 * Changes this user's password. This does not log the user out of any
@@ -145,19 +145,19 @@ public interface ServerUser extends ServerObject {
 	 * </p>
 	 * <ul>
 	 * <li>If the provided phone number is the same as the current phone number,
-	 * this method does nothing.</li>
+	 * this method does nothing and returns <code>true</code>.</li>
 	 * <li>If the provided phone number is <code>null</code>, this user's phone
-	 * number is unregistered.</li>
+	 * number is unregistered and this method returns <code>true</code>.</li>
 	 * <li>If the provided phone number is not syntactically valid as per <a href=
 	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
-	 * this method does nothing.</li>
+	 * this method does nothing and returns <code>false</code>.</li>
 	 * <li>If the provided phone number is already in use by another account, this
-	 * method does nothing.</li>
+	 * method does nothing and returns <code>false</code>.</li>
 	 * </ul>
 	 *
 	 * @param newPhone The new phone number of this user.
 	 */
-	void changePhone(String newPhone);
+	boolean changePhone(String newPhone);
 
 	/**
 	 * <p>
