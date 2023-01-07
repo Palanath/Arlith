@@ -141,8 +141,9 @@ public class ServerWorldImpl implements ServerWorld {
 	}
 
 	@Override
-	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password,
+	public ServerUser createUserWithEmailAndPhoneUnchecked(final String username, final HexHashValue password,
 			final String email, final String phoneNumber) {
+		// Check for already used email/phone.
 		if (email != null && usersByEmail.containsKey(email))
 			return null;
 		if (phoneNumber != null && usersByPhone.containsKey(phoneNumber))
