@@ -143,9 +143,9 @@ public class ServerWorldImpl implements ServerWorld {
 	@Override
 	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password,
 			final String email, final String phoneNumber) {
-		if (usersByEmail.containsKey(email))
+		if (email != null && usersByEmail.containsKey(email))
 			return null;
-		if (usersByPhone.containsKey(phoneNumber))
+		if (phoneNumber != null && usersByPhone.containsKey(phoneNumber))
 			return null;
 
 		final ServerUserImpl user = new ServerUserImpl(this, username, email, phoneNumber, password);
@@ -200,8 +200,9 @@ public class ServerWorldImpl implements ServerWorld {
 				return piv;
 		}
 		// If all 10K are taken, go to 10000, then 10001, 10002, etc.
-		for (pivot = 10000; usersByDisc.containsKey(pivot < 10 ? "000" + pivot
-				: pivot < 100 ? "00" + pivot : pivot < 1000 ? "0" + pivot : String.valueOf(pivot)); pivot++)
+		// Note: This does NOT allocate discriminators of length 5+ that have a 0 in any
+		// digit but the last four.
+		for (pivot = 10000; usersByDisc.containsKey(String.valueOf(pivot)); pivot++)
 			;
 		return String.valueOf(pivot);
 	}
