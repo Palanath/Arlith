@@ -119,9 +119,9 @@ public interface ServerUser extends ServerObject {
 	 * address is unregistered.</li>
 	 * <li>If the provided email is not syntactically valid as per <a href=
 	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
-	 * this method does nothing and returns <code>null</code>.</li>
+	 * this method does nothing and returns.</li>
 	 * <li>If the provided email is already in use by another account, this method
-	 * does nothing and returns <code>null</code>.</li>
+	 * does nothing and returns.</li>
 	 * </ul>
 	 *
 	 * @param newEmail The new email address.
@@ -150,9 +150,9 @@ public interface ServerUser extends ServerObject {
 	 * number is unregistered.</li>
 	 * <li>If the provided phone number is not syntactically valid as per <a href=
 	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
-	 * this method does nothing and returns <code>null</code>.</li>
+	 * this method does nothing.</li>
 	 * <li>If the provided phone number is already in use by another account, this
-	 * method does nothing and returns <code>null</code>.</li>
+	 * method does nothing.</li>
 	 * </ul>
 	 *
 	 * @param newPhone The new phone number of this user.
