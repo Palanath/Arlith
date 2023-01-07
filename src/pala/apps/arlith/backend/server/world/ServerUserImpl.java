@@ -168,9 +168,12 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 	}
 
 	@Override
-	public void changeEmail(final String newEmail) {
+	public boolean changeEmail(final String newEmail) {
 		// If the emails are the same, do nothing.
 		if (!Objects.equals(email, newEmail)) {
+			// Check for syntax and already-in-use emails.
+			if (Utilities.checkEmailValidity(newEmail) != null || getWorld().checkIfEmailTaken(newEmail))
+				return false;
 			// If the previous email was not null, we need to unregister the email->user
 			// mapping in the world.
 			if (email != null)
@@ -181,6 +184,7 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 				getWorld().usersByEmail.put(email = newEmail, this);
 			save();
 		}
+		return true;
 	}
 
 	@Override
