@@ -20,6 +20,7 @@ import pala.apps.arlith.backend.server.contracts.media.MediaUpload;
 import pala.apps.arlith.backend.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.backend.server.contracts.world.ServerDirectThread;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.streams.InputStream;
@@ -220,7 +221,10 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 	@Override
 	public String changeUsername(final String newUsername) {
 		if (newUsername.equals(username))
-			return discriminator;
+			return null;
+		if (Utilities.checkUsernameValidity(newUsername) != null)
+			return null;
+
 		final Map<String, ServerUserImpl> usersByDisc = getWorld().usersByUsername.get(username);
 		usersByDisc.remove(discriminator);// Remove this user from the username pool.
 
