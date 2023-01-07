@@ -79,7 +79,16 @@ public class Utilities {
 				if ((j = JavaTools.indexOf(String.valueOf(username.charAt(i)), getControlCharacters())) != -1)
 					return new UsernameIssue(j, Issue.CONTAINED_ILLEGAL_CHARACTER);
 		return null;
+	}
 
+	public static Object checkEmailValidity(String email) {
+		// TODO Implement
+		return null;
+	}
+
+	public static Object checkPhoneNumberValidity(String phoneNumber) {
+		// TODO Implement
+		return null;
 	}
 
 	public static class UsernameIssue {
