@@ -18,7 +18,9 @@ import pala.libs.generic.json.JSONValue;
 /**
  * <h1>Change Email Request</h1>
  * <p>
- * Represents a request to change the user's email on Arlith.
+ * Represents a request to change the user's email on Arlith. After a successful
+ * invocation of this request, the email address associated with the user
+ * invoking the request will be the specified {@link #getEmail()}.
  * </p>
  * <h2>Request Structure</h2>
  * <p>
