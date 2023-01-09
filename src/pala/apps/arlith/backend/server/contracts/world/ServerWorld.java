@@ -134,7 +134,7 @@ public interface ServerWorld {
 	default ServerUser createUserWithEmailAndPhone(String username, HexHashValue password, String email,
 			String phoneNumber) {
 		return Utilities.checkUsernameValidity(username) == null && Utilities.checkEmailValidity(email) == null
-				&& Utilities.checkPhoneNumberValidity(phoneNumber) == null
+				&& (phoneNumber == null || Utilities.checkPhoneNumberValidity(phoneNumber) == null)
 						? createUserWithEmailAndPhoneUnchecked(username, password, email, phoneNumber)
 						: null;
 	}
