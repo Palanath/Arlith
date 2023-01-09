@@ -22,6 +22,9 @@ public final class ChangePhoneNumberRequestHandler extends SimpleRequestHandler<
 				if (Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
 					client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_PH));
 					return;
+				} else if (client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
+					client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_PH));
+					return;
 				}
 			client.getUser().changePhone(r.phoneNumber());
 			client.sendResult(new CompletionValue());
