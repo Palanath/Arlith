@@ -165,4 +165,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
