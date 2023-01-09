@@ -6,6 +6,7 @@ import pala.apps.arlith.backend.common.protocol.requests.ChangeEmailRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.CreateAccountProblemValue;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
+import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
@@ -31,7 +32,9 @@ public final class ChangeEmailRequestHandler extends SimpleRequestHandler<Change
 			client.sendError(new RestrictedError());
 		else if (client.getWorld().checkIfEmailTaken(r.email()))
 			client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_EM));
-		else {
+		else if (Utilities.checkEmailValidity(r.email()) != null) {
+			client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_UN));
+		} else {
 			client.getUser().changeEmail(r.email());
 			client.sendResult(new CompletionValue());
 		}
