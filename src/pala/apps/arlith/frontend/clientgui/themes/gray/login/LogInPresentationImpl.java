@@ -54,7 +54,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
 		inputsBox.getChildren().addAll(usernamePrompt, passwordPrompt, logInButton);
-		usernamePrompt.getPrompt().setText("Username");
+		usernamePrompt.getPrompt().setText("Account Tag/Email/Phone");
 		usernamePrompt.setNecessary(true);
 		passwordPrompt.getPrompt().setText("Password");
 		passwordPrompt.setNecessary(true);
