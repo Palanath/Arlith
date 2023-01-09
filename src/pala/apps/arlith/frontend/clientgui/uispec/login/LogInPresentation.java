@@ -60,6 +60,13 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	String getPassword();
 
 	/**
+	 * Gets a user's username for the purposes of creating an account.
+	 * 
+	 * @return
+	 */
+	String getUsername();
+
+	/**
 	 * Retrieves the email from the user for the purposes of creating an account.
 	 * 
 	 * @return The user's email address.
