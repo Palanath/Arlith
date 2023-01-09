@@ -57,7 +57,7 @@ public class CreateAccountRequest extends SimpleCommunicationProtocolRequest<Aut
 	}
 
 	public String phoneNumber() {
-		return getPhoneNumber() != null ? getPhoneNumber().getValue() : null;
+		return hasPhoneNumber() ? getPhoneNumber().getValue() : null;
 	}
 
 	public TextValue getEmailAddress() {
