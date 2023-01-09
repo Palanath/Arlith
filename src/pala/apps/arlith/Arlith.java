@@ -67,11 +67,11 @@ public class Arlith {
 	public static void main(String[] args) throws IOException {
 		LAUNCH_FLAGS = new Flags(new CLIParams(args));
 
+		LOGGER = LoggingUtilities.getConfiguredStandardLogger("ARLITH");
+
 		// Check for various command line options.
 		if (LAUNCH_FLAGS.isDebugMode())
 			LOGGER.setLogDebugMessages(true);
-
-		LOGGER = LoggingUtilities.getConfiguredStandardLogger("ARLITH");
 
 		Utilities.setPreferredDestinationAddress(LAUNCH_FLAGS.getDefaultServerAddress());
 		Utilities.setPreferredPort(LAUNCH_FLAGS.getDefaultServerPort());
