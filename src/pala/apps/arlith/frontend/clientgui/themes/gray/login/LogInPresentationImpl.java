@@ -44,16 +44,21 @@ public class LogInPresentationImpl implements LogInPresentation {
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In"),
 			createAccountButton = new NiceLookingButton("Create Account");
 
+	private final Hyperlink createAccountHyperlink = new StyledHyperlink("Create Account..."),
+			backToLogInHyperlink = new StyledHyperlink("Back to Log In");
+
 	private void showLogInUI() {
 		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
 		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
 		inputsBox.setSpacing(40);
+		passwordPrompt.getChildren().set(2, createAccountHyperlink);
 	}
 
 	private void showCreateAccountUI() {
 		inputsBox.getChildren().setAll(usernamePrompt, emailPrompt, phoneNumberPrompt, passwordPrompt,
 				createAccountButton);
 		inputsBox.setSpacing(30);
+		passwordPrompt.getChildren().set(2, backToLogInHyperlink);
 	}
 
 	private @FXML void initialize() {
@@ -85,16 +90,8 @@ public class LogInPresentationImpl implements LogInPresentation {
 		emailPrompt.setNecessary(true);
 		phoneNumberPrompt.getPrompt().setText("Phone Number");
 
-		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
-		createAccountHyperlink.setTextFill(Color.BLUE);
-		createAccountHyperlink.textFillProperty()
-				.bind(Bindings.createObjectBinding(
-						() -> createAccountHyperlink.isArmed() ? Color.RED
-								: createAccountHyperlink.isVisited() ? Color.gray(.18) : Color.BLUE,
-						createAccountHyperlink.armedProperty(), createAccountHyperlink.visitedProperty()));
-		createAccountHyperlink.setBorder(null);
-		passwordPrompt.getChildren().add(createAccountHyperlink);
 		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
+		backToLogInHyperlink.setOnAction(a -> showLogInUI());
 
 		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
 		logInIdentPrompt.getInput().setOnAction(submitHandler);
