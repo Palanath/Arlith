@@ -143,16 +143,27 @@ public class ServerWorldImpl implements ServerWorld {
 	@Override
 	public ServerUser createUserWithEmailAndPhoneUnchecked(final String username, final HexHashValue password,
 			final String email, final String phoneNumber) {
+		// Make sure required parameters were provided.
+		if (username == null)
+			throw new IllegalArgumentException("Username must be provided when creating a user.");
+		if (email == null)
+			throw new IllegalArgumentException("Email must be provided when creating a user.");
+		if (password == null)
+			throw new IllegalArgumentException("Password must be provided when creating a user.");
+
 		// Check for already used email/phone.
 		if (email != null && usersByEmail.containsKey(email))
 			return null;
 		if (phoneNumber != null && usersByPhone.containsKey(phoneNumber))
 			return null;
 
+		// Create new user. Conflicting names are resolved via discriminator.
 		final ServerUserImpl user = new ServerUserImpl(this, username, email, phoneNumber, password);
 
-		if (user.hasEmail())
-			usersByEmail.put(email, user);
+		// As per documentation, require an email to be present. (See above.) (This may
+		// be changed in a future update.)
+//		if (user.hasEmail())
+		usersByEmail.put(email, user);
 		if (user.hasPhoneNumber())
 			usersByPhone.put(phoneNumber, user);
 		Map<String, ServerUserImpl> usersByDiscriminator;
