@@ -47,11 +47,13 @@ public class LogInPresentationImpl implements LogInPresentation {
 	private void showLogInUI() {
 		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
 		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
+		inputsBox.setSpacing(40);
 	}
 
 	private void showCreateAccountUI() {
 		inputsBox.getChildren().setAll(usernamePrompt, emailPrompt, phoneNumberPrompt, passwordPrompt,
 				createAccountButton);
+		inputsBox.setSpacing(30);
 	}
 
 	private @FXML void initialize() {
@@ -73,9 +75,15 @@ public class LogInPresentationImpl implements LogInPresentation {
 		passwordPrompt.setNecessary(true);
 		logInIdentPrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
+
 		usernamePrompt.setPrefWidth(300);
 		emailPrompt.setPrefWidth(300);
 		phoneNumberPrompt.setPrefWidth(300);
+		usernamePrompt.getPrompt().setText("Username");
+		usernamePrompt.setNecessary(true);
+		emailPrompt.getPrompt().setText("Email");
+		emailPrompt.setNecessary(true);
+		phoneNumberPrompt.getPrompt().setText("Phone Number");
 
 		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
 		createAccountHyperlink.setTextFill(Color.BLUE);
