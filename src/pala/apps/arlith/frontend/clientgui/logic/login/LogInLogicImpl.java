@@ -11,8 +11,8 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 
 /**
- * This class represents the log in scene for the client GUI frontend. This
- * class instantiates the
+ * This class represents the logic for the initial scene shown to the user of
+ * the Client GUI frontend.
  * 
  * @author Palanath
  *
@@ -37,7 +37,7 @@ public class LogInLogicImpl implements LogInLogic {
 		presentation.lockUIForLoggingIn();
 		Thread t = new Thread(() -> {
 			try {
-				String un = presentation.getUsername(), pw = presentation.getPassword();
+				String un = presentation.getLogInIdentifier(), pw = presentation.getPassword();
 				ArlithFrontend.getGuiLogger().dbg("Log in with username=" + un + ", password=" + pw);
 
 				builder.setUsername(un);
@@ -69,6 +69,12 @@ public class LogInLogicImpl implements LogInLogic {
 			}
 		});
 		t.start();
+	}
+
+	@Override
+	public void triggerCreateAccount() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
