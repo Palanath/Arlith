@@ -64,10 +64,25 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 		return phoneNumber;
 	}
 
+	/**
+	 * Gets the {@link String} value of the phone number to be sent in this request,
+	 * or <code>null</code> if this is a request to remove any registered phone
+	 * number.
+	 * 
+	 * @return The phone number, as a string, or <code>null</code>.
+	 */
 	public String phoneNumber() {
 		return phoneNumber.getValue();
 	}
 
+	/**
+	 * Sets the phone number that this object is a request to change the user's
+	 * associated phone number to. If the specified phone number is
+	 * <code>null</code>, represent a request to remove the registered phone number
+	 * associated with the logged-in user.
+	 * 
+	 * @param phoneNumber The phone number, or <code>null</code>.
+	 */
 	public void setPhoneNumber(TextValue phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
