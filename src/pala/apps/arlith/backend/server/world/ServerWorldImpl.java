@@ -16,13 +16,14 @@ import pala.apps.arlith.backend.server.contracts.world.ServerUser;
 import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
 
 /**
+ * <h1>Server World Implementation</h1>
  * <p>
- * An implementation of the Application Server world system using inner-classes.
- * The implementation minimal in functionality (there are few, if any, public
- * API provided on top of the implemented interfaces), but the implementation
- * features saving to and loading from cold-storage (in a simple way).
+ * This is the cardinal class of the Server's default implementation of the
+ * Server World API (see server world package). This implementation uses the
+ * filesystem to store data while offline and is minimal, in that it does not
+ * provide much functionality on top of the base specification.
  * </p>
- * <h1>Filesystem</h1>
+ * <h2>Filesystem</h2>
  * <p>
  * There are many different types of data that need to be stored by the server's
  * world (e.g. data specific to objects, like a user's ID or username, and
@@ -60,7 +61,7 @@ import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
  * object, but are a whole, separate piece of media.</td>
  * </tr>
  * </table>
- * <h2>Object Storage</h2>
+ * <h3>Object Storage</h3>
  * <p>
  * Each object, e.g. {@link ServerCommunity Communities}, {@link ServerUser
  * Users}, {@link ServerMessage Messages}, etc., stores its primary data in its
@@ -70,11 +71,12 @@ import pala.apps.arlith.backend.server.contracts.world.ServerWorld;
  * TODO Include more details on this! TODO Update object storage methods so that
  * they <b>actually align with this documentation</b>.
  * </p>
- * <h2>Asset Storage</h2>
+ * <h3>Asset Storage</h3>
  * <p>
  * Each type of object has its own directory in the
  *
  * @author Palanath
+ * @see pala.apps.arlith.backend.server.contracts.world
  *
  */
 public class ServerWorldImpl implements ServerWorld {
@@ -139,12 +141,29 @@ public class ServerWorldImpl implements ServerWorld {
 	}
 
 	@Override
-	public ServerUser createUserWithEmailAndPhone(final String username, final HexHashValue password,
+	public ServerUser createUserWithEmailAndPhoneUnchecked(final String username, final HexHashValue password,
 			final String email, final String phoneNumber) {
+		// Make sure required parameters were provided.
+		if (username == null)
+			throw new IllegalArgumentException("Username must be provided when creating a user.");
+		if (email == null)
+			throw new IllegalArgumentException("Email must be provided when creating a user.");
+		if (password == null)
+			throw new IllegalArgumentException("Password must be provided when creating a user.");
+
+		// Check for already used email/phone.
+		if (email != null && usersByEmail.containsKey(email))
+			return null;
+		if (phoneNumber != null && usersByPhone.containsKey(phoneNumber))
+			return null;
+
+		// Create new user. Conflicting names are resolved via discriminator.
 		final ServerUserImpl user = new ServerUserImpl(this, username, email, phoneNumber, password);
 
-		if (user.hasEmail())
-			usersByEmail.put(email, user);
+		// As per documentation, require an email to be present. (See above.) (This may
+		// be changed in a future update.)
+//		if (user.hasEmail())
+		usersByEmail.put(email, user);
 		if (user.hasPhoneNumber())
 			usersByPhone.put(phoneNumber, user);
 		Map<String, ServerUserImpl> usersByDiscriminator;
@@ -193,8 +212,9 @@ public class ServerWorldImpl implements ServerWorld {
 				return piv;
 		}
 		// If all 10K are taken, go to 10000, then 10001, 10002, etc.
-		for (pivot = 10000; usersByDisc.containsKey(pivot < 10 ? "000" + pivot
-				: pivot < 100 ? "00" + pivot : pivot < 1000 ? "0" + pivot : String.valueOf(pivot)); pivot++)
+		// Note: This does NOT allocate discriminators of length 5+ that have a 0 in any
+		// digit but the last four.
+		for (pivot = 10000; usersByDisc.containsKey(String.valueOf(pivot)); pivot++)
 			;
 		return String.valueOf(pivot);
 	}

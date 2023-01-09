@@ -3,6 +3,8 @@ package pala.apps.arlith.libraries;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import pala.apps.arlith.libraries.Utilities.UsernameIssue.Issue;
+import pala.libs.generic.JavaTools;
 import pala.libs.generic.strings.StringTools;
 
 /**
@@ -24,6 +26,91 @@ public class Utilities {
 
 	public static String[] getControlCharacters() {
 		return Arrays.copyOf(controlCharacters, controlCharacters.length);
+	}
+
+	/**
+	 * <h1>Overview</h1>
+	 * <p>
+	 * Determines if a provided username is valid in accordance with the username
+	 * specification at <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>.
+	 * </p>
+	 * <p>
+	 * This method returns <code>null</code> if the provided username is valid.
+	 * Otherwise it returns a {@link UsernameIssue}, describing why the username is
+	 * not valid.
+	 * </p>
+	 * <h2>Implementation Notes</h2>
+	 * <p>
+	 * The returned {@link UsernameIssue} returns the value <code>-1</code> when
+	 * {@link UsernameIssue#getCharpos()} is invoked, <i>unless</i> the value
+	 * returned by {@link UsernameIssue#getIssue()} is
+	 * {@link Issue#CONTAINED_ILLEGAL_CHARACTER}, in which case the
+	 * {@link UsernameIssue#getCharpos()} is the index of the <i>first</i> erroneous
+	 * character found from the beginning of the string. When an invalid username is
+	 * provided:
+	 * </p>
+	 * <ol>
+	 * <li>If the username is fewer than <code>3</code> characters in length, this
+	 * method returns a {@link UsernameIssue} indicative of
+	 * {@link Issue#TOO_SHORT};</li>
+	 * <li>Otherwise, if the username is more than <code>20</code> characters in
+	 * length, this method returns a {@link UsernameIssue} indicative of
+	 * {@link Issue#TOO_LONG}.</li>
+	 * <li>Otherwise, this method iterates over every character in the provided
+	 * {@link String}, from the beginning, and in doing so, upon encountering an
+	 * illegal character (one of {@link #getControlCharacters()}), returns a new
+	 * {@link UsernameIssue} whose {@link UsernameIssue#getCharpos()} method
+	 * reflects the index of that character in the {@link String}. If no illegal
+	 * character is found, the method returns <code>null</code>.</li>
+	 * </ol>
+	 * 
+	 * @param username The username to check the validity of.
+	 * @return <code>null</code> if the username is valid or, if not valid, a
+	 *         {@link UsernameIssue} describing why.
+	 */
+	public static UsernameIssue checkUsernameValidity(String username) {
+		if (username.length() < 3)
+			return new UsernameIssue(-1, Issue.TOO_SHORT);
+		else if (username.length() > 20)
+			return new UsernameIssue(-1, Issue.TOO_LONG);
+		else
+			for (int i = 0, j; i < username.length(); i++)
+				if ((j = JavaTools.indexOf(String.valueOf(username.charAt(i)), getControlCharacters())) != -1)
+					return new UsernameIssue(j, Issue.CONTAINED_ILLEGAL_CHARACTER);
+		return null;
+	}
+
+	public static Object checkEmailValidity(String email) {
+		// TODO Implement
+		return null;
+	}
+
+	public static Object checkPhoneNumberValidity(String phoneNumber) {
+		// TODO Implement
+		return null;
+	}
+
+	public static class UsernameIssue {
+		private final int charpos;
+		private final Issue issue;
+
+		public Issue getIssue() {
+			return issue;
+		}
+
+		public int getCharpos() {
+			return charpos;
+		}
+
+		private UsernameIssue(int charpos, Issue issue) {
+			this.charpos = charpos;
+			this.issue = issue;
+		}
+
+		public enum Issue {
+			CONTAINED_ILLEGAL_CHARACTER, TOO_SHORT, TOO_LONG;
+		}
 	}
 
 	public static boolean isValidPhoneNumber_Jan_2021(String number) {

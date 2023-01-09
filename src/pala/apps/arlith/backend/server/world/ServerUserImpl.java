@@ -20,6 +20,7 @@ import pala.apps.arlith.backend.server.contracts.media.MediaUpload;
 import pala.apps.arlith.backend.server.contracts.world.ServerCommunity;
 import pala.apps.arlith.backend.server.contracts.world.ServerDirectThread;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
+import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.streams.InputStream;
@@ -167,9 +168,12 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 	}
 
 	@Override
-	public void changeEmail(final String newEmail) {
+	public boolean changeEmail(final String newEmail) {
 		// If the emails are the same, do nothing.
 		if (!Objects.equals(email, newEmail)) {
+			// Check for syntax and already-in-use emails.
+			if (Utilities.checkEmailValidity(newEmail) != null || getWorld().checkIfEmailTaken(newEmail))
+				return false;
 			// If the previous email was not null, we need to unregister the email->user
 			// mapping in the world.
 			if (email != null)
@@ -180,6 +184,7 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 				getWorld().usersByEmail.put(email = newEmail, this);
 			save();
 		}
+		return true;
 	}
 
 	@Override
@@ -207,20 +212,26 @@ final class ServerUserImpl extends ServerObjectImpl implements ServerUser, Asset
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void changePhone(final String newPhone) {
+	public boolean changePhone(final String newPhone) {
 		if (!Objects.equals(phone, newPhone)) {
+			if (Utilities.checkPhoneNumberValidity(newPhone) != null || getWorld().checkIfPhoneTaken(newPhone))
+				return false;
 			if (phone != null)
 				getWorld().usersByPhone.remove(phone);
 			if (newPhone != null)
 				getWorld().usersByPhone.put(phone = newPhone, this);
 			save();
 		}
+		return true;
 	}
 
 	@Override
 	public String changeUsername(final String newUsername) {
 		if (newUsername.equals(username))
-			return discriminator;
+			return null;
+		if (Utilities.checkUsernameValidity(newUsername) != null)
+			return null;
+
 		final Map<String, ServerUserImpl> usersByDisc = getWorld().usersByUsername.get(username);
 		usersByDisc.remove(discriminator);// Remove this user from the username pool.
 

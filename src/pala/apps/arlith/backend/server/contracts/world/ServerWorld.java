@@ -5,6 +5,7 @@ import java.util.Collection;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.server.ArlithServer;
+import pala.apps.arlith.libraries.Utilities;
 
 public interface ServerWorld {
 
@@ -59,9 +60,9 @@ public interface ServerWorld {
 
 	/**
 	 * <p>
-	 * Creates a new Application user with the provided username, password, and email,
-	 * if the email is not already taken. The account will have no registered phone
-	 * number. A discriminator will be allocated for the user automatically.
+	 * Creates a new Application user with the provided username, password, and
+	 * email, if the email is not already taken. The account will have no registered
+	 * phone number. A discriminator will be allocated for the user automatically.
 	 * </p>
 	 * <p>
 	 * If the provided email is already in use, this method returns
@@ -83,34 +84,104 @@ public interface ServerWorld {
 	 * <p>
 	 * Creates a new {@link ServerUser} with the provided username, password hash,
 	 * email, and phone number. If either of the email or phone is already in use,
-	 * the user is not created and this method returns <code>null</code>.
+	 * the user is not created and this method returns <code>null</code>. If the
+	 * provided phone number is <code>null</code>, creation will succeed, but the
+	 * created user account will not have an associated phone number. If the
+	 * username, email, or phone number are syntactically incorrect, this method
+	 * will fail and return <code>null</code>.
 	 * </p>
 	 * <p>
-	 * If either the provided email or provided phone number is already in use, the
-	 * user is not created and this method returns <code>null</code>. If either the
-	 * provided email or provided phone number is <code>null</code>, the user is
-	 * made without the parameter.
+	 * This method will succeed even if the provided username is already in use, but
+	 * this method will not return a {@link ServerUser} with a non-unique <b>tag</b>
+	 * (username and discriminator pair). The tag of the created user will be
+	 * obtainable via {@link ServerUser#getTag()} after the object is returned.
+	 * </p>
+	 * <h2>Argument Syntax</h2>
+	 * <p>
+	 * Each non-<code>null</code> argument must follow syntactical restrictions as
+	 * specified <a href="https://arlith.net/user-accounts">here</a>.
+	 * </p>
+	 * <h2>Implementation</h2>
+	 * <p>
+	 * This method relies on the {@link Utilities} class to verify the validity of
+	 * arguments. In particular:
+	 * </p>
+	 * <ul>
+	 * <li>The <code>username</code> is verified via
+	 * {@link Utilities#checkUsernameValidity(String)},</li>
+	 * <li>the <code>email</code> is verified via
+	 * {@link Utilities#checkEmailValidity(String)}, and</li>
+	 * <li>the <code>phone number</code> is verified via
+	 * {@link Utilities#checkPhoneNumberValidity(String)}.</li>
+	 * </ul>
+	 * <p>
+	 * If any of the checks fails, this method returns <code>null</code> and the
+	 * user is not created. If the verifications succeed, this method returns the
+	 * result of calling
+	 * {@link #createUserWithEmailAndPhoneUnchecked(String, HexHashValue, String, String)},
+	 * with the same arguments.
 	 * </p>
 	 *
 	 * @param username    The user's username.
 	 * @param password    The user's hashed password.
-	 * @param email       The user's email. Can be <code>null</code>, in which case
-	 *                    the {@link ServerUser} is created without an email.
+	 * @param email       The user's email.
 	 * @param phoneNumber The user's phone number. Can be <code>null</code>, in
-	 *                    which case the {@link ServerUser} is created without a phone
-	 *                    number.
+	 *                    which case the {@link ServerUser} is created without a
+	 *                    phone number.
 	 * @return A new {@link ServerUser}, or <code>null</code> if either the provided
 	 *         username or email are taken.
 	 */
-	ServerUser createUserWithEmailAndPhone(String username, HexHashValue password, String email, String phoneNumber);
+	default ServerUser createUserWithEmailAndPhone(String username, HexHashValue password, String email,
+			String phoneNumber) {
+		return Utilities.checkUsernameValidity(username) == null && Utilities.checkEmailValidity(email) == null
+				&& (phoneNumber == null || Utilities.checkPhoneNumberValidity(phoneNumber) == null)
+						? createUserWithEmailAndPhoneUnchecked(username, password, email, phoneNumber)
+						: null;
+	}
 
 	/**
 	 * <p>
-	 * Creates a new {@link ServerUser} with the provided username, password hash, and
-	 * phone number. If the phone number is <code>null</code>, the {@link ServerUser} is
-	 * created without a phone number. If the provided phone number is not
-	 * <code>null</code> and is taken, the user is not created and this method
+	 * This method creates a user account with the specified username, password,
+	 * email address, and phone number. This method does not make any checks to
+	 * verify the <i>syntacitcal validity</i> of arguments (see <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a> for
+	 * information on syntax). This method is designed to be invoked by
+	 * {@link #createUserWithEmailAndPhone(String, HexHashValue, String, String)}
+	 * (and indirectly by {@link #createUser(String, HexHashValue)},
+	 * {@link #createUserWithEmail(String, HexHashValue, String)}, and
+	 * {@link #createUserWithPhone(String, HexHashValue, String)}) after arguments
+	 * have been checked for syntactic validity. It can, however, be safely invoked
+	 * by external code which has verified the syntactic validity of arguments in
+	 * accordance with the restrictions set forth by <a href=
+	 * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>.
+	 * </p>
+	 * <p>
+	 * Like its checked-variant methods, if either the email address or the phone
+	 * number is already in use, the user account is not created and this method
 	 * returns <code>null</code>.
+	 * </p>
+	 * 
+	 * 
+	 * @param username    The user's username.
+	 * @param password    The user's password hash.
+	 * @param email       The user's email address.
+	 * @param phoneNumber The user's phone number. This can optionally be
+	 *                    <code>null</code>, in which case the method will create
+	 *                    the user account without an associated phone number.
+	 * @return The newly created {@link ServerUser} object representing the new user
+	 *         account, or <code>null</code> if either the email address or phone
+	 *         number is already in use.
+	 */
+	ServerUser createUserWithEmailAndPhoneUnchecked(String username, HexHashValue password, String email,
+			String phoneNumber);
+
+	/**
+	 * <p>
+	 * Creates a new {@link ServerUser} with the provided username, password hash,
+	 * and phone number. If the phone number is <code>null</code>, the
+	 * {@link ServerUser} is created without a phone number. If the provided phone
+	 * number is not <code>null</code> and is taken, the user is not created and
+	 * this method returns <code>null</code>.
 	 * </p>
 	 *
 	 * @param username    The user's username.
@@ -118,10 +189,11 @@ public interface ServerWorld {
 	 * @param phoneNumber The user's phone number. Can be <code>null</code>, in
 	 *                    which case the user will not have a registered phone
 	 *                    number.
-	 * @return The {@link ServerUser}, or <code>null</code> if the provided phone number
-	 *         is taken.
+	 * @return The {@link ServerUser}, or <code>null</code> if the provided phone
+	 *         number is taken.
 	 */
-	default ServerUser createUserWithPhone(final String username, final HexHashValue password, final String phoneNumber) {
+	default ServerUser createUserWithPhone(final String username, final HexHashValue password,
+			final String phoneNumber) {
 		return createUserWithEmailAndPhone(username, password, null, phoneNumber);
 	}
 
@@ -184,8 +256,8 @@ public interface ServerWorld {
 	 * Gets a user by its {@link GID}.
 	 * 
 	 * @param id The {@link GID} of the user to get.
-	 * @return The {@link ServerUser} or <code>null</code> if none with the specified
-	 *         {@link GID} was found.
+	 * @return The {@link ServerUser} or <code>null</code> if none with the
+	 *         specified {@link GID} was found.
 	 */
 	ServerUser getUserByID(GID id);
 
