@@ -38,8 +38,21 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML BorderPane root;
 	public @FXML VBox logInBox, inputsBox;
 	public @FXML Text title;
-	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
-	private final NiceLookingButton logInButton = new NiceLookingButton("Log In");
+	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true),
+			usernamePrompt = new SilverTextBox(), emailPrompt = new SilverTextBox(),
+			phoneNumberPrompt = new SilverTextBox();
+	private final NiceLookingButton logInButton = new NiceLookingButton("Log In"),
+			createAccountButton = new NiceLookingButton("Create Account");
+
+	private void showLogInUI() {
+		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
+		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
+	}
+
+	private void showCreateAccountUI() {
+		inputsBox.getChildren().setAll(usernamePrompt, emailPrompt, phoneNumberPrompt, passwordPrompt,
+				createAccountButton);
+	}
 
 	private @FXML void initialize() {
 		root.setOnMouseClicked(a -> root.requestFocus());
@@ -52,13 +65,17 @@ public class LogInPresentationImpl implements LogInPresentation {
 						new RadialGradient(-30, -.1, .2, .9, 1, true, CycleMethod.NO_CYCLE,
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
-		inputsBox.getChildren().addAll(logInIdentPrompt, passwordPrompt, logInButton);
-		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
+
+		showLogInUI();
+
 		logInIdentPrompt.setNecessary(true);
 		passwordPrompt.getPrompt().setText("Password");
 		passwordPrompt.setNecessary(true);
 		logInIdentPrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
+		usernamePrompt.setPrefWidth(300);
+		emailPrompt.setPrefWidth(300);
+		phoneNumberPrompt.setPrefWidth(300);
 
 		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
 		createAccountHyperlink.setTextFill(Color.BLUE);
@@ -69,9 +86,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 						createAccountHyperlink.armedProperty(), createAccountHyperlink.visitedProperty()));
 		createAccountHyperlink.setBorder(null);
 		passwordPrompt.getChildren().add(createAccountHyperlink);
-		createAccountHyperlink.setOnAction(a -> {
-
-		});
+		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
 
 		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
 		logInIdentPrompt.getInput().setOnAction(submitHandler);
