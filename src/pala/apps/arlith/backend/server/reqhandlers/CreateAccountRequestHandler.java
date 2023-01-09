@@ -30,7 +30,7 @@ public final class CreateAccountRequestHandler extends SimpleRequestHandler<Crea
 				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_EM));
 				return;
 			}
-			if (r.phoneNumber() != null && client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
+			if (r.hasPhoneNumber() && client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
 				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_PH));
 				return;
 			}
