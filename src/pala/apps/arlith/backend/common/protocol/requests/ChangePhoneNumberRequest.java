@@ -43,7 +43,8 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 	 * resulting {@link ChangePhoneNumberRequest} would represent a request to
 	 * remove the registered phone number associated with the logged-in user.
 	 * 
-	 * @param phoneNumber
+	 * @param phoneNumber The phone number as a {@link TextValue} object, or
+	 *                    <code>null</code>.
 	 */
 	public ChangePhoneNumberRequest(TextValue phoneNumber) {
 		super(REQUEST_NAME);
