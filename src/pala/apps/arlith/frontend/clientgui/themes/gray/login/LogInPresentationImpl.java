@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -59,6 +60,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 		passwordPrompt.setNecessary(true);
 		usernamePrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
+
+		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
+		usernamePrompt.getChildren().add(createAccountHyperlink);
+		createAccountHyperlink.setOnAction(a -> {
+
+		});
 
 		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
 		usernamePrompt.getInput().setOnAction(submitHandler);
