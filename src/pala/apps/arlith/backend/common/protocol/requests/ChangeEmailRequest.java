@@ -22,13 +22,14 @@ import pala.libs.generic.json.JSONValue;
  * invocation of this request, the email address associated with the user
  * invoking the request will be the specified {@link #getEmail()}.
  * </p>
+ * <p>
+ * This request requires the requesting connection to be <i>authorized</i>.
+ * </p>
  * <h2>Request Structure</h2>
  * <p>
  * This request has the following parameters:
  * </p>
- * <style> table, th, td { border: solid 1px currentcolor; border-collapse:
- * collapse; } th, td { padding: 0.3em; } </style>
- * <table>
+ * <table class="parameters">
  * <tr>
  * <th>Parameter Name</th>
  * <th>Type</th>
@@ -45,7 +46,7 @@ import pala.libs.generic.json.JSONValue;
  * <p>
  * This request can result in the following errors:
  * </p>
- * <table>
+ * <table class="errors">
  * <tr>
  * <th>Error Name</th>
  * <th>Formal Type</th>
