@@ -5,20 +5,37 @@ import pala.apps.arlith.frontend.clientgui.Presentation;
 
 public interface LogInPresentation extends Presentation<LogInLogic> {
 	/**
-	 * Retrieves the username from the user. Called by the interface's logic while
-	 * attempting to log the user in.
+	 * Retrieves the log in identifier that the user has entered to attempt to log
+	 * in. This can be either a tag, an email, or a phone number.
 	 * 
-	 * @return The {@link String} username from the user.
+	 * @return The log in identifier that the user has entered; this is used by the
+	 *         user to log in and should be either a tag, an email, or a phone
+	 *         number.
 	 */
 	String getLogInIdentifier();
 
 	/**
 	 * Retrieves the password from the user. Called by the interface's logic while
-	 * attempting to log the user in.
+	 * attempting to log the user in <b>or</b> create an account.
 	 * 
 	 * @return The {@link String} password from the user.
 	 */
 	String getPassword();
+
+	/**
+	 * Retrieves the email from the user for the purposes of creating an account.
+	 * 
+	 * @return The user's email address.
+	 */
+	String getEmail();
+
+	/**
+	 * Retrieves the phone number from the user for the purposes of creating an
+	 * account.
+	 * 
+	 * @return
+	 */
+	String getPhoneNumber();
 
 	/**
 	 * Indicates to the user that the specified type of problem arose while
