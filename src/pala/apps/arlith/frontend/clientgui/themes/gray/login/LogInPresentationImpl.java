@@ -39,7 +39,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML VBox logInBox, inputsBox;
 	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
 	public @FXML Text title;
-	private final SilverTextBox usernamePrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
+	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In");
 
 	private @FXML void initialize() {
@@ -53,22 +53,22 @@ public class LogInPresentationImpl implements LogInPresentation {
 						new RadialGradient(-30, -.1, .2, .9, 1, true, CycleMethod.NO_CYCLE,
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
-		inputsBox.getChildren().addAll(usernamePrompt, passwordPrompt, logInButton);
-		usernamePrompt.getPrompt().setText("Account Tag/Email/Phone");
-		usernamePrompt.setNecessary(true);
+		inputsBox.getChildren().addAll(logInIdentPrompt, passwordPrompt, logInButton);
+		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
+		logInIdentPrompt.setNecessary(true);
 		passwordPrompt.getPrompt().setText("Password");
 		passwordPrompt.setNecessary(true);
-		usernamePrompt.setPrefWidth(300);
+		logInIdentPrompt.setPrefWidth(300);
 		passwordPrompt.setPrefWidth(300);
 
 		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
-		usernamePrompt.getChildren().add(createAccountHyperlink);
+		logInIdentPrompt.getChildren().add(createAccountHyperlink);
 		createAccountHyperlink.setOnAction(a -> {
 
 		});
 
 		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
-		usernamePrompt.getInput().setOnAction(submitHandler);
+		logInIdentPrompt.getInput().setOnAction(submitHandler);
 		passwordPrompt.getInput().setOnAction(submitHandler);
 		logInButton.setOnAction(submitHandler);
 
@@ -110,12 +110,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public String getLogInIdentifier() {
-		return usernamePrompt.getInput().getText();
+		return logInIdentPrompt.getInput().getText();
 	}
 
 	@Override
 	public String getPassword() {
-		return usernamePrompt.getInput().getText();
+		return logInIdentPrompt.getInput().getText();
 	}
 
 	@Override
