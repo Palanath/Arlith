@@ -2,6 +2,7 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import java.io.IOException;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,7 +15,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -37,7 +37,6 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	public @FXML BorderPane root;
 	public @FXML VBox logInBox, inputsBox;
-	public @FXML HBox usernamePromptTextSection, passwordPromptTextSection;
 	public @FXML Text title;
 	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true);
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In");
@@ -62,7 +61,14 @@ public class LogInPresentationImpl implements LogInPresentation {
 		passwordPrompt.setPrefWidth(300);
 
 		Hyperlink createAccountHyperlink = new Hyperlink("Create Account...");
-		logInIdentPrompt.getChildren().add(createAccountHyperlink);
+		createAccountHyperlink.setTextFill(Color.BLUE);
+		createAccountHyperlink.textFillProperty()
+				.bind(Bindings.createObjectBinding(
+						() -> createAccountHyperlink.isArmed() ? Color.RED
+								: createAccountHyperlink.isVisited() ? Color.gray(.18) : Color.BLUE,
+						createAccountHyperlink.armedProperty(), createAccountHyperlink.visitedProperty()));
+		createAccountHyperlink.setBorder(null);
+		passwordPrompt.getChildren().add(createAccountHyperlink);
 		createAccountHyperlink.setOnAction(a -> {
 
 		});
