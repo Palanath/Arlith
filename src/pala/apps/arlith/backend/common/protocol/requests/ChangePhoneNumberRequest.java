@@ -52,7 +52,8 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 
 	public ChangePhoneNumberRequest(JSONObject properties) throws CommunicationProtocolConstructionError {
 		super(REQUEST_NAME, properties);
-		phoneNumber = new TextValue(properties.get(PHONE_NUMBER_KEY));
+		if (properties.containsKey(PHONE_NUMBER_KEY))
+			phoneNumber = new TextValue(properties.get(PHONE_NUMBER_KEY));
 	}
 
 	@Override
