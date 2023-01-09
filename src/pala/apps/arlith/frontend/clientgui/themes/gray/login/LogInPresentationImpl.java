@@ -134,4 +134,16 @@ public class LogInPresentationImpl implements LogInPresentation {
 		logInBox.setDisable(false);
 	}
 
+	@Override
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPhoneNumber() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
