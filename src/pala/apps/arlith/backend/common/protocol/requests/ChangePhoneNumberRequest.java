@@ -73,7 +73,7 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 	 * @return The phone number, as a string, or <code>null</code>.
 	 */
 	public String phoneNumber() {
-		return phoneNumber.getValue();
+		return phoneNumber == null ? null : phoneNumber.getValue();
 	}
 
 	/**
