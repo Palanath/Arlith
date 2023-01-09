@@ -102,7 +102,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public String getUsername() {
+	public String getLogInIdentifier() {
 		return usernamePrompt.getInput().getText();
 	}
 

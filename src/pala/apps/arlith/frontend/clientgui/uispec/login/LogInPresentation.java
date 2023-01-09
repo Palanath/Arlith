@@ -10,7 +10,7 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	 * 
 	 * @return The {@link String} username from the user.
 	 */
-	String getUsername();
+	String getLogInIdentifier();
 
 	/**
 	 * Retrieves the password from the user. Called by the interface's logic while
