@@ -57,7 +57,7 @@ public class CreateAccountRequest extends SimpleCommunicationProtocolRequest<Aut
 	}
 
 	public String phoneNumber() {
-		return getPhoneNumber().getValue();
+		return hasPhoneNumber() ? getPhoneNumber().getValue() : null;
 	}
 
 	public TextValue getEmailAddress() {
@@ -85,8 +85,8 @@ public class CreateAccountRequest extends SimpleCommunicationProtocolRequest<Aut
 			phoneNumber = new TextValue(properties.get(PHONE_NUMBER_KEY));
 	}
 
-	public CreateAccountRequest(TextValue username, TextValue emailAddress, TextValue phoneNumber, HexHashValue password)
-			throws CommunicationProtocolConstructionError {
+	public CreateAccountRequest(TextValue username, TextValue emailAddress, TextValue phoneNumber,
+			HexHashValue password) throws CommunicationProtocolConstructionError {
 		super(REQUEST_NAME);
 		this.username = username;
 		this.emailAddress = emailAddress;
