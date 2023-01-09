@@ -59,7 +59,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public String getUsername() {
+	public String getLogInIdentifier() {
 		return usernamePromptText.getText();
 	}
 
@@ -152,5 +152,17 @@ public class LogInPresentationImpl implements LogInPresentation {
 			throw new WindowLoadFailureException(e);
 		}
 		return scene = new Scene(parent);
+	}
+
+	@Override
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPhoneNumber() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
