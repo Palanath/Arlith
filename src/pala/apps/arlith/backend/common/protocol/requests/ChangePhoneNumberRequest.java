@@ -58,7 +58,8 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 
 	@Override
 	protected void build(JSONObject object) {
-		object.put(PHONE_NUMBER_KEY, phoneNumber.json());
+		if (phoneNumber != null)
+			object.put(PHONE_NUMBER_KEY, phoneNumber.json());
 	}
 
 	public TextValue getPhoneNumber() {
