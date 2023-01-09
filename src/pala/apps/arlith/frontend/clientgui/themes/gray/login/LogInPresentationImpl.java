@@ -2,7 +2,6 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import java.io.IOException;
 
-import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -52,6 +51,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
 		inputsBox.setSpacing(40);
 		passwordPrompt.getChildren().set(2, createAccountHyperlink);
+		passwordPrompt.getInput().setOnAction(a -> logic.triggerLogIn());
 	}
 
 	private void showCreateAccountUI() {
@@ -59,6 +59,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 				createAccountButton);
 		inputsBox.setSpacing(30);
 		passwordPrompt.getChildren().set(2, backToLogInHyperlink);
+		passwordPrompt.getInput().setOnAction(a -> logic.triggerCreateAccount());
 	}
 
 	private @FXML void initialize() {
@@ -93,10 +94,15 @@ public class LogInPresentationImpl implements LogInPresentation {
 		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
 		backToLogInHyperlink.setOnAction(a -> showLogInUI());
 
-		EventHandler<ActionEvent> submitHandler = a -> logic.triggerLogIn();
-		logInIdentPrompt.getInput().setOnAction(submitHandler);
-		passwordPrompt.getInput().setOnAction(submitHandler);
-		logInButton.setOnAction(submitHandler);
+		EventHandler<ActionEvent> logInSubmitHandler = a -> logic.triggerLogIn(),
+				createAccountSubmitHandler = a -> logic.triggerCreateAccount();
+		logInIdentPrompt.getInput().setOnAction(logInSubmitHandler);
+		logInButton.setOnAction(logInSubmitHandler);
+
+		createAccountButton.setOnAction(createAccountSubmitHandler);
+		usernamePrompt.getInput().setOnAction(createAccountSubmitHandler);
+		emailPrompt.getInput().setOnAction(createAccountSubmitHandler);
+		phoneNumberPrompt.getInput().setOnAction(createAccountSubmitHandler);
 
 		logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		logInButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
@@ -162,14 +168,17 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
+		return emailPrompt.getInput().getText();
 	}
 
 	@Override
 	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
+		return phoneNumberPrompt.getInput().getText();
+	}
+
+	@Override
+	public String getUsername() {
+		return usernamePrompt.getInput().getText();
 	}
 
 }
