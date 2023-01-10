@@ -24,7 +24,17 @@ import pala.libs.generic.util.Gateway;
 
 public class SilverTextBox extends VBox {
 
-	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.hsb(0, 0, .7));
+	private static final Color DEFAULT_BOX_COLOR = Color.hsb(0, 0, .7);
+
+	public static Color getDefaultBoxColor() {
+		return DEFAULT_BOX_COLOR;
+	}
+
+	public void resetColor() {
+		setColor(DEFAULT_BOX_COLOR);
+	}
+
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_BOX_COLOR);
 	private final DoubleProperty hue = new SimpleDoubleProperty(0);
 	{
 		BindingTools.bindBidirectional(color, Gateway.from(a -> Color.hsb(a.doubleValue(), .2, .7), a -> a.getHue()),
