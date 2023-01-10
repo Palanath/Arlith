@@ -2,6 +2,7 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -11,6 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -51,21 +53,33 @@ public class SilverTextBox extends VBox {
 		return c.deriveColor(0, 3.4, 1.25, 1);
 	}
 
-	private final Text prompt = new Text(), asterisk = new Text("*");
+	private final Text prompt = new Text(), asterisk = new Text("*"), information = new Text("");
+	private final StackPane informationBox = new StackPane(information);
 	private final HBox promptBox = new HBox(2, prompt);
 	private final TextField input;
 	private final Line line = new Line();
 
-	private final BooleanProperty necessary = new SimpleBooleanProperty();
+	private final BooleanProperty necessary = new SimpleBooleanProperty(),
+			showInformation = new SimpleBooleanProperty();
 	{
 		asterisk.setFill(Color.ORANGERED);
 		asterisk.setFont(Font.font(null, FontWeight.BOLD, -1));
-		necessary.addListener((observable, oldValue, newValue) -> {
-			if (newValue)
-				promptBox.getChildren().setAll(prompt, asterisk);
+		InvalidationListener extraTextsListener = a -> {
+			if (necessary.get())
+				if (showInformation.get())
+					promptBox.getChildren().setAll(prompt, asterisk, informationBox);
+				else
+					promptBox.getChildren().setAll(prompt, asterisk);
+			else if (showInformation.get())
+				promptBox.getChildren().setAll(prompt, informationBox);
 			else
 				promptBox.getChildren().setAll(prompt);
-		});
+		};
+		necessary.addListener(extraTextsListener);
+		showInformation.addListener(extraTextsListener);
+
+		information.fillProperty()
+				.bind(Bindings.createObjectBinding(() -> Color.hsb(getHue(), 1, getColor().getBrightness()), color));
 	}
 
 	public boolean isNecessary() {
