@@ -63,6 +63,11 @@ public class SilverTextBox extends VBox {
 
 	private final BooleanProperty necessary = new SimpleBooleanProperty(),
 			showInformation = new SimpleBooleanProperty();
+
+	public Text getInformationText() {
+		return information;
+	}
+
 	{
 		asterisk.setFill(Color.ORANGERED);
 		asterisk.setFont(Font.font(null, FontWeight.BOLD, -1));
@@ -189,6 +194,18 @@ public class SilverTextBox extends VBox {
 
 	public final void setHue(final double hue) {
 		this.hueProperty().set(hue);
+	}
+
+	public final BooleanProperty showInformationProperty() {
+		return this.showInformation;
+	}
+
+	public final boolean isShowInformation() {
+		return this.showInformationProperty().get();
+	}
+
+	public final void setShowInformation(final boolean showInformation) {
+		this.showInformationProperty().set(showInformation);
 	}
 
 }
