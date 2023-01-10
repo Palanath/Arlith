@@ -9,9 +9,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -77,6 +79,9 @@ public class SilverTextBox extends VBox {
 		};
 		necessary.addListener(extraTextsListener);
 		showInformation.addListener(extraTextsListener);
+
+		HBox.setHgrow(informationBox, Priority.ALWAYS);
+		StackPane.setAlignment(information, Pos.CENTER_RIGHT);
 
 		information.fillProperty()
 				.bind(Bindings.createObjectBinding(() -> Color.hsb(getHue(), 1, getColor().getBrightness()), color));
