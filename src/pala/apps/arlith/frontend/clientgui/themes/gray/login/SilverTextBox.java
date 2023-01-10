@@ -55,6 +55,14 @@ public class SilverTextBox extends VBox {
 		return c.deriveColor(0, 3.4, 1.25, 1);
 	}
 
+	public void showInformation() {
+		setShowInformation(true);
+	}
+
+	public void hideInformation() {
+		setShowInformation(false);
+	}
+
 	private final Text prompt = new Text(), asterisk = new Text("*"), information = new Text("");
 	private final StackPane informationBox = new StackPane(information);
 	private final HBox promptBox = new HBox(2, prompt);
