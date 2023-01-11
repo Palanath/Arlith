@@ -152,8 +152,62 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public void showLoginProblem(LoginProblemValue problem) {
-		// TODO Auto-generated method stub
-
+		SilverTextBox prompt;
+		switch (problem) {
+		case ILLEGAL_EM:
+			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Email");
+			break;
+		case ILLEGAL_PH:
+			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Phone #");
+			break;
+		case ILLEGAL_PW:
+			(prompt = passwordPrompt).getInformationText().setText("Illegal Password");
+			break;
+		case ILLEGAL_UN:
+			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Tag");
+			break;
+		case INVALID_EM:
+			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Email");
+			break;
+		case INVALID_PH:
+			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Phone #");
+			break;
+		case INVALID_PW:
+			(prompt = passwordPrompt).getInformationText().setText("Invalid Password");
+			break;
+		case INVALID_UN:
+			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Username");
+			break;
+		case LONG_EM:
+			(prompt = logInIdentPrompt).getInformationText().setText("Email too long");
+			break;
+		case LONG_PH:
+			(prompt = logInIdentPrompt).getInformationText().setText("Phone # too long");
+			break;
+		case LONG_PW:
+			(prompt = passwordPrompt).getInformationText().setText("Password too long");
+			break;
+		case LONG_UN:
+			(prompt = logInIdentPrompt).getInformationText().setText("Username too long");
+			break;
+		case SHORT_EM:
+			(prompt = logInIdentPrompt).getInformationText().setText("Email too short");
+			break;
+		case SHORT_PH:
+			(prompt = logInIdentPrompt).getInformationText().setText("Phone # too short");
+			break;
+		case SHORT_PW:
+			(prompt = passwordPrompt).getInformationText().setText("Password too short");
+			break;
+		case SHORT_UN:
+			(prompt = logInIdentPrompt).getInformationText().setText("Username too short");
+			break;
+		default:
+			return;
+		}
+		prompt.showInformation();
+		prompt.setHue(360);
+		prompt.setHue(0);
 	}
 
 	@Override
