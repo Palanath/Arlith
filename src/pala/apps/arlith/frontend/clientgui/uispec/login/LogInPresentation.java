@@ -82,8 +82,13 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	String getPhoneNumber();
 
 	/**
+	 * <p>
 	 * Indicates to the user that the specified type of problem arose while
 	 * attempting to log the user in.
+	 * </p>
+	 * <p>
+	 * This method must be called on the JavaFX thread.
+	 * </p>
 	 * 
 	 * @param problem The type of problem that occurred.
 	 */
