@@ -49,7 +49,7 @@ public class LogInLogicImpl implements LogInLogic {
 				try {
 					client = builder.login();
 				} catch (LoginError e) {
-					Platform.runLater(() -> presentation.showLoginProblem(e.getLoginError()));
+					presentation.showLoginProblem(e.getLoginError());
 					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
 					return;
 				} catch (LoginFailureException | MalformedServerResponseException e) {

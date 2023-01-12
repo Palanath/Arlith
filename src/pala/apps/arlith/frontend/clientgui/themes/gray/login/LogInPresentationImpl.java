@@ -2,6 +2,7 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -152,6 +153,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public void showLoginProblem(LoginProblemValue problem) {
+		if (!Platform.isFxApplicationThread()) {
+			Platform.runLater(() -> showLoginProblem(problem));
+			return;
+		}
 		SilverTextBox prompt;
 		switch (problem) {
 		case ILLEGAL_EM:
