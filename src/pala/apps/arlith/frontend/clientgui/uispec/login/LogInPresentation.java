@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui.uispec.login;
 
+import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.Presentation;
 
@@ -93,6 +94,20 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	 * @param problem The type of problem that occurred.
 	 */
 	void showLoginProblem(LoginProblemValue problem);
+
+	/**
+	 * <p>
+	 * Shows to the user that a log in attempt failed. This is invoked not because
+	 * the server actually rejected the log in but because something actually went
+	 * wrong during the connection to the server. It is also called whenever the
+	 * client does not understand the response from the server, however (which can
+	 * occur in cases of a version mismatch or similar). When this is called, the
+	 * typical approach is to allow the user to try to log in again, which would
+	 * cause the logic to try and reconnect to the server.
+	 * 
+	 * @param error The specific error that occurred.
+	 */
+	void showLogInFailure(LoginFailureException error);
 
 	/**
 	 * Prevents the user from triggering a <code>log-in</code> (via
