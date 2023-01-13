@@ -1,6 +1,5 @@
 package pala.apps.arlith.frontend.clientgui.logic.login;
 
-import javafx.application.Platform;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.backend.client.LoginFailureException;
@@ -52,7 +51,10 @@ public class LogInLogicImpl implements LogInLogic {
 					presentation.showLoginProblem(e.getLoginError());
 					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
 					return;
-				} catch (LoginFailureException | MalformedServerResponseException e) {
+				} catch (LoginFailureException e) {
+					presentation.showLogInFailure(e);
+					return;
+				} catch (MalformedServerResponseException e) {
 					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error; " + e.getLocalizedMessage());
 					ArlithFrontend.getGuiLogger().err(e);
 					return;

@@ -20,7 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
@@ -38,6 +41,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public @FXML BorderPane root;
 	public @FXML VBox logInBox, inputsBox;
 	public @FXML Text title;
+	private final Text infoMessage = new Text();
+	{
+		infoMessage.setWrappingWidth(300);
+		infoMessage.setFont(Font.font(13));
+		infoMessage.setTextAlignment(TextAlignment.CENTER);
+	}
 	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true),
 			usernamePrompt = new SilverTextBox(), emailPrompt = new SilverTextBox(),
 			phoneNumberPrompt = new SilverTextBox();
@@ -47,12 +56,37 @@ public class LogInPresentationImpl implements LogInPresentation {
 	private final Hyperlink createAccountHyperlink = new StyledHyperlink("Create Account..."),
 			backToLogInHyperlink = new StyledHyperlink("Back to Log In");
 
+	private void informUserOfError(String text) {
+		infoMessage.setText(text);
+		infoMessage.setFill(Color.hsb(0, 0.7, 0.8));
+	}
+
+	private void informUser(String text) {
+		infoMessage.setText(text);
+		infoMessage.setFill(Color.hsb(240, 0.7, 1));
+	}
+
+	private void hideInformationMessage() {
+		infoMessage.setText("");
+	}
+
+	private void attemptToLogIn() {
+		informUser("Attempting to log in...");
+		logic.triggerLogIn();
+	}
+
+	private void attemptToCreateAccount() {
+		informUser("Attempting to create an account...");
+		logic.triggerCreateAccount();
+	}
+
 	private void showLogInUI() {
 		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
 		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
 		inputsBox.setSpacing(40);
 		passwordPrompt.getChildren().set(2, createAccountHyperlink);
 		passwordPrompt.getInput().setOnAction(a -> logic.triggerLogIn());
+		hideInformationMessage();
 	}
 
 	private void showCreateAccountUI() {
@@ -61,6 +95,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 		inputsBox.setSpacing(30);
 		passwordPrompt.getChildren().set(2, backToLogInHyperlink);
 		passwordPrompt.getInput().setOnAction(a -> logic.triggerCreateAccount());
+		hideInformationMessage();
 	}
 
 	private @FXML void initialize() {
@@ -76,6 +111,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 						CornerRadii.EMPTY, Insets.EMPTY)));
 
 		showLogInUI();
+		logInBox.getChildren().add(1, infoMessage);
 
 		logInIdentPrompt.setNecessary(true);
 		passwordPrompt.getPrompt().setText("Password");
@@ -95,8 +131,8 @@ public class LogInPresentationImpl implements LogInPresentation {
 		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
 		backToLogInHyperlink.setOnAction(a -> showLogInUI());
 
-		EventHandler<ActionEvent> logInSubmitHandler = a -> logic.triggerLogIn(),
-				createAccountSubmitHandler = a -> logic.triggerCreateAccount();
+		EventHandler<ActionEvent> logInSubmitHandler = a -> attemptToLogIn(),
+				createAccountSubmitHandler = a -> attemptToCreateAccount();
 		logInIdentPrompt.getInput().setOnAction(logInSubmitHandler);
 		logInButton.setOnAction(logInSubmitHandler);
 
@@ -157,6 +193,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 			Platform.runLater(() -> showLoginProblem(problem));
 			return;
 		}
+		informUserOfError("The server rejected your log in information.");
 		SilverTextBox prompt;
 		switch (problem) {
 		case ILLEGAL_EM:
@@ -211,8 +248,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 			return;
 		}
 		prompt.showInformation();
-		prompt.setHue(360);
-		prompt.setHue(0);
+		prompt.setColor(Color.FIREBRICK);
 	}
 
 	@Override
@@ -238,6 +274,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 	@Override
 	public String getUsername() {
 		return usernamePrompt.getInput().getText();
+	}
+
+	@Override
+	public void showLogInFailure(LoginFailureException error) {
+		informUserOfError(
+				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
 	}
 
 }

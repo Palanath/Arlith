@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
@@ -175,5 +176,11 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void showLogInFailure(LoginFailureException error) {
+		// TODO Auto-generated method stub
+
 	}
 }
