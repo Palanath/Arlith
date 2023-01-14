@@ -2,10 +2,10 @@ package pala.apps.arlith.backend.server.reqhandlers;
 
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblemValue;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
-import pala.apps.arlith.backend.common.protocol.types.CreateAccountProblemValue;
 import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
