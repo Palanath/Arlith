@@ -1,6 +1,5 @@
 package pala.apps.arlith.backend.common.protocol.types;
 
-import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblemValue;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.libs.generic.json.JSONConstant;
 import pala.libs.generic.json.JSONNumber;

@@ -1,7 +1,7 @@
 package pala.apps.arlith.backend.server.reqhandlers;
 
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
-import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblemValue;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangePhoneNumberRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
@@ -20,10 +20,10 @@ public final class ChangePhoneNumberRequestHandler extends SimpleRequestHandler<
 		else {
 			if (r.getPhoneNumber() != null)
 				if (Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
-					client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_PH));
+					client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_PH));
 					return;
 				} else if (client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
-					client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_PH));
+					client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_PH));
 					return;
 				}
 			client.getUser().changePhone(r.phoneNumber());

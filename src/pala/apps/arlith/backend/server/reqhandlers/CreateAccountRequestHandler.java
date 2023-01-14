@@ -2,7 +2,7 @@ package pala.apps.arlith.backend.server.reqhandlers;
 
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
-import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblemValue;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
@@ -27,24 +27,24 @@ public final class CreateAccountRequestHandler extends SimpleRequestHandler<Crea
 			ServerUser user;
 			// Check to see if email or phone are taken.
 			if (client.getWorld().checkIfEmailTaken(r.emailAddress())) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_EM));
 				return;
 			}
 			if (r.hasPhoneNumber() && client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_PH));
 				return;
 			}
 			// Check to make sure arguments are valid.
 			if (Utilities.checkUsernameValidity(r.username()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_UN));
+				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_UN));
 				return;
 			}
 			if (Utilities.checkEmailValidity(r.emailAddress()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_EM));
 				return;
 			}
 			if (r.phoneNumber() != null && Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_PH));
 				return;
 			}
 			// "Unchecked" creation; we've already verified the validity of arguments.
