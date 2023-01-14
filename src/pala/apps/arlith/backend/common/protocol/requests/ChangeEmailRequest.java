@@ -1,6 +1,7 @@
 package pala.apps.arlith.backend.common.protocol.requests;
 
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.ChangeEmailError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
@@ -152,10 +153,10 @@ public class ChangeEmailRequest extends SimpleCommunicationProtocolRequest<Compl
 
 	@Override
 	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws RateLimitError, SyntaxError, ServerError, CreateAccountError, IllegalCommunicationProtocolException {
+			throws RateLimitError, SyntaxError, ServerError, ChangeEmailError, IllegalCommunicationProtocolException {
 		try {
 			return super.receiveResponse(client);
-		} catch (RateLimitError | SyntaxError | ServerError | CreateAccountError e) {
+		} catch (RateLimitError | SyntaxError | ServerError | ChangeEmailError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);
