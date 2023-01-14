@@ -6,8 +6,30 @@ import pala.libs.generic.json.JSONObject;
 public class CreateAccountError extends CommunicationProtocolError {
 
 	public enum CreateAccountProblem {
-		ILLEGAL_UN, SHORT_UN, LONG_UN, TAKEN_UN, ILLEGAL_EM, LONG_EM, TAKEN_EM, ILLEGAL_PW, SHORT_PW, LONG_PW,
-		ILLEGAL_PH, SHORT_PH, LONG_PH, TAKEN_PH;
+		/**
+		 * Indicates that the username is not syntactically valid.
+		 */
+		USERNAME_SYNTACTICALLY_INVALID,
+		/**
+		 * Indicates that the email address is not syntactically valid.
+		 */
+		EMAIL_SYNTACTICALLY_INVALID,
+		/**
+		 * Indicates that the email address is already associated with another account.
+		 */
+		EMAIL_ALREADY_IN_USE,
+		/**
+		 * Indicates that the password is not syntactically valid.
+		 */
+		PASSWORD_SYNTACTICALLY_INVALID,
+		/**
+		 * Indicates that the phone number is not syntactically valid.
+		 */
+		PHONE_NUMBER_SYNTACTICALLY_INVALID,
+		/**
+		 * Indicates that the phone number is already associated with another account.
+		 */
+		PHONE_NUMBER_ALREADY_IN_USE;
 	}
 
 	/**
