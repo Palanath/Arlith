@@ -27,24 +27,24 @@ public final class CreateAccountRequestHandler extends SimpleRequestHandler<Crea
 			ServerUser user;
 			// Check to see if email or phone are taken.
 			if (client.getWorld().checkIfEmailTaken(r.emailAddress())) {
-				client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.EMAIL_ALREADY_IN_USE));
 				return;
 			}
 			if (r.hasPhoneNumber() && client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
-				client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_ALREADY_IN_USE));
 				return;
 			}
 			// Check to make sure arguments are valid.
 			if (Utilities.checkUsernameValidity(r.username()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_UN));
+				client.sendError(new CreateAccountError(CreateAccountProblem.USERNAME_SYNTACTICALLY_INVALID));
 				return;
 			}
 			if (Utilities.checkEmailValidity(r.emailAddress()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.EMAIL_SYNTACTICALLY_INVALID));
 				return;
 			}
 			if (r.phoneNumber() != null && Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_SYNTACTICALLY_INVALID));
 				return;
 			}
 			// "Unchecked" creation; we've already verified the validity of arguments.

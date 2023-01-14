@@ -1,7 +1,7 @@
 package pala.apps.arlith.backend.server.reqhandlers;
 
-import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
-import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
+import pala.apps.arlith.backend.common.protocol.errors.ChangeEmailError;
+import pala.apps.arlith.backend.common.protocol.errors.ChangeEmailError.ErrorType;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeEmailRequest;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
@@ -31,9 +31,9 @@ public final class ChangeEmailRequestHandler extends SimpleRequestHandler<Change
 		if (!client.isAuthorized())
 			client.sendError(new RestrictedError());
 		else if (client.getWorld().checkIfEmailTaken(r.email()))
-			client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_EM));
+			client.sendError(new ChangeEmailError(ErrorType.EMAIL_ALREADY_IN_USE));
 		else if (Utilities.checkEmailValidity(r.email()) != null) {
-			client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_UN));
+			client.sendError(new ChangeEmailError(ErrorType.EMAIL_SYNTACTICALLY_INVALID));
 		} else {
 			client.getUser().changeEmail(r.email());
 			client.sendResult(new CompletionValue());

@@ -19,7 +19,7 @@ public final class ChangeUsernameRequestHandler extends SimpleRequestHandler<Cha
 			client.sendError(new RestrictedError());
 		else // Check to make sure username valid.
 		if (Utilities.checkUsernameValidity(r.getName().getValue()) != null)
-			client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_UN));
+			client.sendError(new CreateAccountError(CreateAccountProblem.USERNAME_SYNTACTICALLY_INVALID));
 		else
 			client.sendResult(new TextValue(client.getUser().changeUsername(r.getName().getValue())));
 	}

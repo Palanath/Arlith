@@ -20,10 +20,10 @@ public final class ChangePhoneNumberRequestHandler extends SimpleRequestHandler<
 		else {
 			if (r.getPhoneNumber() != null)
 				if (Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
-					client.sendError(new CreateAccountError(CreateAccountProblem.ILLEGAL_PH));
+					client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_SYNTACTICALLY_INVALID));
 					return;
 				} else if (client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
-					client.sendError(new CreateAccountError(CreateAccountProblem.TAKEN_PH));
+					client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_ALREADY_IN_USE));
 					return;
 				}
 			client.getUser().changePhone(r.phoneNumber());
