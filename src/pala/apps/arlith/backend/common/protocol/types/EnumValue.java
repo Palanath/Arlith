@@ -42,4 +42,8 @@ public class EnumValue<E extends Enum<E>> implements CommunicationProtocolType {
 		return value == JSONConstant.NULL ? null : new EnumValue<>(value, enumType);
 	}
 
+	public E get() {
+		return e;
+	}
+
 }
