@@ -1,58 +1,13 @@
 package pala.apps.arlith.backend.common.protocol.errors;
 
-import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
-import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
-import pala.libs.generic.json.JSONConstant;
-import pala.libs.generic.json.JSONNumber;
+import pala.apps.arlith.backend.common.protocol.types.EnumValue;
 import pala.libs.generic.json.JSONObject;
-import pala.libs.generic.json.JSONString;
-import pala.libs.generic.json.JSONValue;
 
 public class CreateAccountError extends CommunicationProtocolError {
 
-	public enum CreateAccountProblemValue implements CommunicationProtocolType {
+	public enum CreateAccountProblem {
 		ILLEGAL_UN, SHORT_UN, LONG_UN, TAKEN_UN, ILLEGAL_EM, LONG_EM, TAKEN_EM, ILLEGAL_PW, SHORT_PW, LONG_PW,
 		ILLEGAL_PH, SHORT_PH, LONG_PH, TAKEN_PH;
-
-		private static final CreateAccountProblemValue[] VALUES = values();
-
-		public static CreateAccountProblemValue fromJSON(JSONValue json) {
-			if (!(json instanceof JSONNumber))
-				throw new CommunicationProtocolConstructionError(
-						"Value is not of the correct JSON type for a CreateAccountProblem.", json);
-			return VALUES[((JSONNumber) json).intValue()];
-		}
-
-		public static @Deprecated CreateAccountProblemValue fromJSONString(JSONString string) {
-			try {
-				return valueOf(string.getValue());
-			} catch (IllegalArgumentException e) {
-				throw new CommunicationProtocolConstructionError(e, string);
-			}
-		}
-
-		@Override
-		public JSONValue json() {
-			return new JSONNumber(ordinal());
-		}
-
-		/**
-		 * Returns a {@link CreateAccountProblemValue} representing the provided
-		 * argument if the provided argument is not {@link JSONConstant#NULL},
-		 * otherwise, returns <code>null</code>. This is essentially the
-		 * "<code>null</code>-safe" <code>from</code> method for
-		 * {@link CreateAccountProblemValue}s.
-		 * 
-		 * @param value The {@link JSONValue} to get the
-		 *              {@link CreateAccountProblemValue} from, which may represent
-		 *              <code>null</code> (by being {@link JSONConstant#NULL}).
-		 * @return <code>null</code> or a {@link CreateAccountProblemValue}, whichever
-		 *         represents the provided argument.
-		 */
-		public static CreateAccountProblemValue fromNullable(JSONValue value) {
-			return value == JSONConstant.NULL ? null : fromJSON(value);
-		}
-
 	}
 
 	/**
@@ -62,25 +17,25 @@ public class CreateAccountError extends CommunicationProtocolError {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public CreateAccountProblemValue getType() {
+	public EnumValue<CreateAccountProblem> getType() {
 		return type;
 	}
 
-	public void setType(CreateAccountProblemValue type) {
+	public void setType(EnumValue<CreateAccountProblem> type) {
 		this.type = type;
 	}
 
 	public CreateAccountError(JSONObject error) {
 		super(ERROR_TYPE, error);
-		type = CreateAccountProblemValue.fromJSON(error.get(TYPE_KEY));
+		type = new EnumValue<>(error.get(TYPE_KEY), CreateAccountProblem.class);
 	}
 
-	public CreateAccountError(CreateAccountProblemValue type, String message) {
+	public CreateAccountError(EnumValue<CreateAccountProblem> type, String message) {
 		super(ERROR_TYPE, message);
 		this.type = type;
 	}
 
-	public CreateAccountError(CreateAccountProblemValue type) {
+	public CreateAccountError(EnumValue<CreateAccountProblem> type) {
 		super(ERROR_TYPE);
 		this.type = type;
 	}
@@ -88,7 +43,7 @@ public class CreateAccountError extends CommunicationProtocolError {
 	public static final String ERROR_TYPE = "create-account";
 	private static final String TYPE_KEY = "type";
 
-	private CreateAccountProblemValue type;
+	private EnumValue<CreateAccountProblem> type;
 
 	@Override
 	protected void build(JSONObject object) {
