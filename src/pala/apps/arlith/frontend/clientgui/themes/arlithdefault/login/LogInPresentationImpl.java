@@ -2,6 +2,7 @@ package pala.apps.arlith.frontend.clientgui.themes.arlithdefault.login;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
@@ -59,7 +61,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public String getUsername() {
+	public String getLogInIdentifier() {
 		return usernamePromptText.getText();
 	}
 
@@ -70,6 +72,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	@Override
 	public void showLoginProblem(LoginProblemValue problem) {
+		if (!Platform.isFxApplicationThread()) {
+			Platform.runLater(() -> showLoginProblem(problem));
+			return;
+		}
 		switch (problem) {
 		case ILLEGAL_EM:
 			loginErrorText.setText("That email address is not allowed.");
@@ -152,5 +158,29 @@ public class LogInPresentationImpl implements LogInPresentation {
 			throw new WindowLoadFailureException(e);
 		}
 		return scene = new Scene(parent);
+	}
+
+	@Override
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPhoneNumber() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void showLogInFailure(LoginFailureException error) {
+		// TODO Auto-generated method stub
+
 	}
 }

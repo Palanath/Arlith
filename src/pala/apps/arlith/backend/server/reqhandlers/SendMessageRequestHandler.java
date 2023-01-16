@@ -7,7 +7,6 @@ import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.requests.SendMessageRequest;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.MessageValue;
-import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerMessage;
 import pala.apps.arlith.backend.server.contracts.world.ServerThread;

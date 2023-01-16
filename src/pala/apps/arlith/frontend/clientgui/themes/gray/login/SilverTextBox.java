@@ -2,15 +2,19 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -24,7 +28,17 @@ import pala.libs.generic.util.Gateway;
 
 public class SilverTextBox extends VBox {
 
-	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.hsb(0, 0, .7));
+	private static final Color DEFAULT_BOX_COLOR = Color.hsb(0, 0, .7);
+
+	public static Color getDefaultBoxColor() {
+		return DEFAULT_BOX_COLOR;
+	}
+
+	public void resetColor() {
+		setColor(DEFAULT_BOX_COLOR);
+	}
+
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_BOX_COLOR);
 	private final DoubleProperty hue = new SimpleDoubleProperty(0);
 	{
 		BindingTools.bindBidirectional(color, Gateway.from(a -> Color.hsb(a.doubleValue(), .2, .7), a -> a.getHue()),
@@ -41,21 +55,49 @@ public class SilverTextBox extends VBox {
 		return c.deriveColor(0, 3.4, 1.25, 1);
 	}
 
-	private final Text prompt = new Text(), asterisk = new Text("*");
+	public void showInformation() {
+		setShowInformation(true);
+	}
+
+	public void hideInformation() {
+		setShowInformation(false);
+	}
+
+	private final Text prompt = new Text(), asterisk = new Text("*"), information = new Text("");
+	private final StackPane informationBox = new StackPane(information);
 	private final HBox promptBox = new HBox(2, prompt);
 	private final TextField input;
 	private final Line line = new Line();
 
-	private final BooleanProperty necessary = new SimpleBooleanProperty();
+	private final BooleanProperty necessary = new SimpleBooleanProperty(),
+			showInformation = new SimpleBooleanProperty();
+
+	public Text getInformationText() {
+		return information;
+	}
+
 	{
 		asterisk.setFill(Color.ORANGERED);
 		asterisk.setFont(Font.font(null, FontWeight.BOLD, -1));
-		necessary.addListener((observable, oldValue, newValue) -> {
-			if (newValue)
-				promptBox.getChildren().setAll(prompt, asterisk);
+		InvalidationListener extraTextsListener = a -> {
+			if (necessary.get())
+				if (showInformation.get())
+					promptBox.getChildren().setAll(prompt, asterisk, informationBox);
+				else
+					promptBox.getChildren().setAll(prompt, asterisk);
+			else if (showInformation.get())
+				promptBox.getChildren().setAll(prompt, informationBox);
 			else
 				promptBox.getChildren().setAll(prompt);
-		});
+		};
+		necessary.addListener(extraTextsListener);
+		showInformation.addListener(extraTextsListener);
+
+		HBox.setHgrow(informationBox, Priority.ALWAYS);
+		StackPane.setAlignment(information, Pos.CENTER_RIGHT);
+
+		information.fillProperty()
+				.bind(Bindings.createObjectBinding(() -> Color.hsb(getHue(), 1, getColor().getBrightness()), color));
 	}
 
 	public boolean isNecessary() {
@@ -160,6 +202,18 @@ public class SilverTextBox extends VBox {
 
 	public final void setHue(final double hue) {
 		this.hueProperty().set(hue);
+	}
+
+	public final BooleanProperty showInformationProperty() {
+		return this.showInformation;
+	}
+
+	public final boolean isShowInformation() {
+		return this.showInformationProperty().get();
+	}
+
+	public final void setShowInformation(final boolean showInformation) {
+		this.showInformationProperty().set(showInformation);
 	}
 
 }
