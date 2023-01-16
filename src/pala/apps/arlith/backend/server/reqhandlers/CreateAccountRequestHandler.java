@@ -2,10 +2,10 @@ package pala.apps.arlith.backend.server.reqhandlers;
 
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
-import pala.apps.arlith.backend.common.protocol.types.CreateAccountProblemValue;
 import pala.apps.arlith.backend.server.ArlithServer;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.backend.server.contracts.world.ServerUser;
@@ -27,24 +27,24 @@ public final class CreateAccountRequestHandler extends SimpleRequestHandler<Crea
 			ServerUser user;
 			// Check to see if email or phone are taken.
 			if (client.getWorld().checkIfEmailTaken(r.emailAddress())) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.EMAIL_ALREADY_IN_USE));
 				return;
 			}
 			if (r.hasPhoneNumber() && client.getWorld().checkIfPhoneTaken(r.phoneNumber())) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.TAKEN_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_ALREADY_IN_USE));
 				return;
 			}
 			// Check to make sure arguments are valid.
 			if (Utilities.checkUsernameValidity(r.username()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_UN));
+				client.sendError(new CreateAccountError(CreateAccountProblem.USERNAME_SYNTACTICALLY_INVALID));
 				return;
 			}
 			if (Utilities.checkEmailValidity(r.emailAddress()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_EM));
+				client.sendError(new CreateAccountError(CreateAccountProblem.EMAIL_SYNTACTICALLY_INVALID));
 				return;
 			}
 			if (r.phoneNumber() != null && Utilities.checkPhoneNumberValidity(r.phoneNumber()) != null) {
-				client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_PH));
+				client.sendError(new CreateAccountError(CreateAccountProblem.PHONE_NUMBER_SYNTACTICALLY_INVALID));
 				return;
 			}
 			// "Unchecked" creation; we've already verified the validity of arguments.

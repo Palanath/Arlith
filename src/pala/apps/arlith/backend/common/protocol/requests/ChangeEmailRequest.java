@@ -1,15 +1,16 @@
 package pala.apps.arlith.backend.common.protocol.requests;
 
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.ChangeEmailError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
-import pala.apps.arlith.backend.common.protocol.types.CreateAccountProblemValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
@@ -97,10 +98,10 @@ import pala.libs.generic.json.JSONValue;
  * <li>If the provided email address is not syntactically valid as per <a href=
  * "https://arlith.net/user-accounts/">https://arlith.net/user-accounts/</a>,
  * this request will result in a {@link CreateAccountError} with
- * {@link CreateAccountProblemValue#ILLEGAL_EM}.</li>
+ * {@link CreateAccountProblem#ILLEGAL_EM}.</li>
  * <li>If the provided email address is already in use by another account, this
  * request will result in a {@link CreateAccountError} with
- * {@link CreateAccountProblemValue#TAKEN_EM}.</li>
+ * {@link CreateAccountProblem#TAKEN_EM}.</li>
  * </ul>
  * <p>
  * The result type of this request is a {@link CompletionValue}, which indicates
@@ -152,10 +153,10 @@ public class ChangeEmailRequest extends SimpleCommunicationProtocolRequest<Compl
 
 	@Override
 	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws RateLimitError, SyntaxError, ServerError, CreateAccountError, IllegalCommunicationProtocolException {
+			throws RateLimitError, SyntaxError, ServerError, ChangeEmailError, IllegalCommunicationProtocolException {
 		try {
 			return super.receiveResponse(client);
-		} catch (RateLimitError | SyntaxError | ServerError | CreateAccountError e) {
+		} catch (RateLimitError | SyntaxError | ServerError | ChangeEmailError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);

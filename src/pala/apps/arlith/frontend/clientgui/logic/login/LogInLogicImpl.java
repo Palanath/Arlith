@@ -11,8 +11,8 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 
 /**
- * This class represents the log in scene for the client GUI frontend. This
- * class instantiates the
+ * This class represents the logic for the initial scene shown to the user of
+ * the Client GUI frontend.
  * 
  * @author Palanath
  *
@@ -34,11 +34,13 @@ public class LogInLogicImpl implements LogInLogic {
 
 	@Override
 	public void triggerLogIn() {
+		ArlithFrontend.getGuiLogger().dbg("Attempting to log in...");
 		presentation.lockUIForLoggingIn();
+		ArlithFrontend.getGuiLogger().dbg("(1) GUI Locked");
 		Thread t = new Thread(() -> {
 			try {
-				String un = presentation.getUsername(), pw = presentation.getPassword();
-				ArlithFrontend.getGuiLogger().dbg("Log in with username=" + un + ", password=" + pw);
+				String un = presentation.getLogInIdentifier(), pw = presentation.getPassword();
+				ArlithFrontend.getGuiLogger().dbg("(2) Using Identifier: " + un);
 
 				builder.setUsername(un);
 				builder.setPassword(pw);
@@ -47,8 +49,15 @@ public class LogInLogicImpl implements LogInLogic {
 					client = builder.login();
 				} catch (LoginError e) {
 					presentation.showLoginProblem(e.getLoginError());
-				} catch (LoginFailureException | MalformedServerResponseException e) {
+					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
+					return;
+				} catch (LoginFailureException e) {
+					presentation.showLogInFailure(e);
+					return;
+				} catch (MalformedServerResponseException e) {
+					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error; " + e.getLocalizedMessage());
 					ArlithFrontend.getGuiLogger().err(e);
+					return;
 				}
 
 //				Platform.runLater(new Runnable() {
@@ -66,9 +75,16 @@ public class LogInLogicImpl implements LogInLogic {
 				// Once the above Platform.runLater(...) call is uncommented, the following line
 				// will need to be reconsidered.
 				presentation.unlockUIForLoggingIn();
+				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
 			}
 		});
 		t.start();
+	}
+
+	@Override
+	public void triggerCreateAccount() {
+		ArlithFrontend.getGuiLogger().dbg("Attempting to create an account...");
+		ArlithFrontend.getGuiLogger().dbg("(1) Using username: " + presentation.getUsername());
 	}
 
 }
