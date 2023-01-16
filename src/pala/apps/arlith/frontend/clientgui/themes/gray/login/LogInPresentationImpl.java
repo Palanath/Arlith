@@ -58,7 +58,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 
 	private void informUserOfError(String text) {
 		infoMessage.setText(text);
-		infoMessage.setFill(Color.hsb(0, 0.7, 0.8));
+		infoMessage.setFill(Color.hsb(0, 0.9, 0.6));
 	}
 
 	private void informUser(String text) {
