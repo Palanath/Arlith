@@ -3,7 +3,9 @@ package pala.apps.arlith.libraries;
 import static pala.apps.arlith.libraries.Utilities.EmailIssue.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.strings.StringTools;
@@ -90,7 +92,7 @@ public class Utilities {
 		if (email.isEmpty())
 			return new EmailIssue(EmailIssue.Issue.EMPTY_EMAIL, "", "");
 		else {
-			int nextchar;
+			int nextcharpos;
 			StringBuilder lp = new StringBuilder();
 			if (email.startsWith("\"")) {
 				boolean escaped = false;
@@ -110,7 +112,7 @@ public class Utilities {
 						if (i + 1 == email.length())
 							return new EmailIssue(EmailIssue.Issue.END_OF_STRING_FOUND_BEFORE_AT, email, "");
 						else {
-							nextchar = i + 1;
+							nextcharpos = i + 1;
 							break;
 						}
 					else {
@@ -163,22 +165,63 @@ public class Utilities {
 							if (hitdot)
 								return new EmailIssue(i - 1, EmailIssue.Issue.LOCAL_PART_ENDS_WITH_PERIOD,
 										email.substring(0, i), null);
-							nextchar = i;
+							nextcharpos = i;
 							break LOOP;
 						default:
 							return new EmailIssue(i, EmailIssue.Issue.ILLEGAL_CHARACTER, null, null);
 						}
 			}
-			if (email.charAt(nextchar) != '@')
-				return new EmailIssue(nextchar, EmailIssue.Issue.LOCAL_PART_NOT_FOLLOWED_BY_AT,
-						email.substring(0, nextchar), null);
+			if (email.charAt(nextcharpos) != '@')
+				return new EmailIssue(nextcharpos, EmailIssue.Issue.LOCAL_PART_NOT_FOLLOWED_BY_AT,
+						email.substring(0, nextcharpos), null);
 			else
-				nextchar++;
-			String localpart = email.substring(0, nextchar), domain = email.substring(nextchar + 1);
+				nextcharpos++;
+			String localpart = email.substring(0, nextcharpos), domain = email.substring(nextcharpos + 1);
 			// Parse domain name.
-			
+
+			if (domain.startsWith("[")) {
+				// TODO Parse IP(v4) Address
+			} else {
+				List<String> parts = new ArrayList<>();
+				int previousDot = -1;// Used to determine where each part lies. Conceptually, the "first dot" is
+										// "before" the start of the domain name (this is for the sake of parsing and
+										// checking hyphens).
+				for (int nextchar = domain.charAt(nextcharpos = 0);; nextchar = ++nextcharpos >= domain.length() ? -1
+						: domain.charAt(nextcharpos)) {
+					if (nextchar >= 'A' && nextchar <= 'Z' || nextchar >= 'a' && nextchar <= 'z'
+							|| nextchar >= '0' && nextchar <= '9') {
+						if (nextcharpos - previousDot > 63)
+							// Too many octets.
+							return new EmailIssue(nextcharpos, EmailIssue.Issue.TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL,
+									localpart, domain);
+					} else if (nextchar == '-') {
+						// Make sure that we're not at the beginning of the part. This is the case if
+						// nextcharpos is immediately after the "previous dot." For example, if
+						// nextcharpos is 5 and previousDot is 4, then there is a period at position 4
+						// and, since we're in this if statement, there is a hyphen character at
+						// position 5. This means that the domain label we're parsing begins with a
+						// hyphen, which is not allowed.
+						///// (Note that previousDot starts with value -1.)
+						if (previousDot == nextcharpos - 1)
+							return new EmailIssue(nextcharpos, EmailIssue.Issue.DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN,
+									localpart, domain);
+					} else if (nextchar == '.') {
+						// We just hit (another) dot. We need to check for a few cases. Firstly, this
+						// dot should not immediately follow the previous dot. If it does, we have an
+						// issue (empty domain label). Second, this dot should not immediately follow a
+						// hyphen. If it does, then we have a domain_name_label_ends_with_hyphen issue.
+						// Then, we need to (1) take the current part we just parsed (everything AFTER
+						// the previous dot up until, but NOT INCLUDING, this dot) and add it to the
+						// parts list and (2) change the value of previousDot to be this dot.
+					} else if (nextchar == -1) {
+						// End of str reached. We're done. Break out of the loop.
+						break;
+					}
+				}
+				// TODO Check the number of parts and make sure it's not just 1 (or 0).
+				return null;
+			}
 		}
-		return null;
 	}
 
 	public static Object checkPhoneNumberValidity(String phoneNumber) {
@@ -406,7 +449,41 @@ public class Utilities {
 			 * <li>{@link EmailIssue#getDomain()} returns <code>null</code>.</li>
 			 * </ul>
 			 */
-			ILLEGAL_CHARACTER;
+			ILLEGAL_CHARACTER,
+			/**
+			 * <p>
+			 * Indicates that there were too many octets inside a label in the domain name.
+			 * This happens when the domain name is not an IP address.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the 64th character
+			 * in the offending domain name label. Note that domain name labels can be a
+			 * maximum of 63 characters in length.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL,
+			/**
+			 * <p>
+			 * Indicates that a label in a domain name starts with a hyphen.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the offending
+			 * hyphen character in the offending domain name label.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN;
 		}
 
 		private final int pos;
