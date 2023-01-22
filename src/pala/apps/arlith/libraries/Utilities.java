@@ -125,11 +125,12 @@ public class Utilities {
 						lp.append((char) ch);
 					}
 			} else {
-				boolean hitdot = false;
+				boolean prevCharWasDot = false;
 				LOOP: for (int i = 0, ch = email.charAt(i);; ch = ++i < email.length() ? email.charAt(i) : -1)
-					if (ch <= 'Z' && ch >= 'A' || ch <= 'z' && ch >= 'a' || ch <= '9' && ch >= '0')
+					if (ch <= 'Z' && ch >= 'A' || ch <= 'z' && ch >= 'a' || ch <= '9' && ch >= '0') {
 						lp.append((char) ch);
-					else
+						prevCharWasDot = false;
+					} else
 						switch (ch) {
 						case '!':
 						case '#':
@@ -149,6 +150,7 @@ public class Utilities {
 						case '{':
 						case '|':
 						case '~':
+							prevCharWasDot = false;
 							lp.append((char) ch);
 							break;
 						case -1:
@@ -156,13 +158,13 @@ public class Utilities {
 						case '.':
 							if (i == 0)
 								return new EmailIssue(EmailIssue.Issue.LOCAL_PART_BEGINS_WITH_PERIOD, ".", null);
-							else if (hitdot)
-								return new EmailIssue(i, EmailIssue.Issue.TOUCHING_DOTS, null, null);
+							else if (prevCharWasDot)
+								return new EmailIssue(i, EmailIssue.Issue.TOUCHING_DOTS_IN_LOCAL_PART, null, null);
 							lp.append('.');
-							hitdot = true;
+							prevCharWasDot = true;
 							break;
 						case '@':
-							if (hitdot)
+							if (prevCharWasDot)
 								return new EmailIssue(i - 1, EmailIssue.Issue.LOCAL_PART_ENDS_WITH_PERIOD,
 										email.substring(0, i), null);
 							nextcharpos = i;
@@ -174,14 +176,86 @@ public class Utilities {
 			if (email.charAt(nextcharpos) != '@')
 				return new EmailIssue(nextcharpos, EmailIssue.Issue.LOCAL_PART_NOT_FOLLOWED_BY_AT,
 						email.substring(0, nextcharpos), null);
-			else
-				nextcharpos++;
 			String localpart = email.substring(0, nextcharpos), domain = email.substring(nextcharpos + 1);
 			// Parse domain name.
 
-			if (domain.startsWith("[")) {
-				// TODO Parse IP(v4) Address
-			} else {
+			if (domain.startsWith("["))
+				if (!domain.endsWith("]"))
+					return new EmailIssue(EmailIssue.Issue.DOMAIN_HAS_NO_CLOSING_BRACKET, localpart, domain);
+				else {
+					String ipaddrStr = domain.substring(1, domain.length() - 1);// Str between brackets.
+					if (ipaddrStr.isEmpty())
+						// The position is the opening bracket.
+						return new EmailIssue(localpart.length() + 1, EmailIssue.Issue.DOMAIN_USED_BRACKETS_BUT_NO_IP,
+								localpart, domain);
+					else if (ipaddrStr.toLowerCase().startsWith("ipv6::"))
+						return new EmailIssue(EmailIssue.Issue.IPV6_USED, localpart, domain);
+					else {
+						// IPv4
+						String[] pieces = StringTools.split(ipaddrStr, ".");
+						if (pieces.length == 1)
+							// The character at position localpart.length() is the @ symbol (because it
+							// immediately follows the local-part).
+							// The character after that is the opening bracket we already checked for. And
+							// the character after that is the start of what should be the IP.
+							return new EmailIssue(localpart.length() + 2,
+									EmailIssue.Issue.DOMAIN_USED_BRACKETS_BUT_INVALID_IP, localpart, domain);
+						else if (pieces.length != 4)
+							return new EmailIssue(EmailIssue.Issue.DOMAIN_IPV4_HAS_INVALID_NUMBER_OF_OCTETS, localpart,
+									domain);
+						else
+							// runningPos stores exactly how many characters in the parts we've parsed past
+							// already. When the body of the loop runs for the third octet of the email:
+							// pala@[192.168.1.1], runningPos will equal "192.".length() + "168.".length().
+							for (int i = 0, runningPos = 0; i < pieces.length; runningPos += pieces[i++].length() + 1) {
+								// Parse decimal IPv4 Addresses.
+								// Make sure it's the right number of characters. (We don't allow prefixing with
+								// 0 for octal or with 0x for hex).
+								if (pieces[i].length() > 3 || pieces[i].isEmpty())
+									return new EmailIssue(localpart.length() + 2 + runningPos,
+											EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+								else // Validate that piece is a number from 0 to 255.
+								if (pieces[i].length() == 1) {// If octet is 1 char long.
+									// Can be any number from 0 to 9.
+									if (pieces[i].charAt(0) < '0' || pieces[i].charAt(0) > '9')
+										return new EmailIssue(localpart.length() + 2 + runningPos,
+												EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+								} else if (pieces[i].length() == 2) {
+									// First char can be any number from 1-9. Seconds can be any from 0-9
+									if (pieces[i].charAt(0) < '1' || pieces[i].charAt(0) > '9')
+										return new EmailIssue(localpart.length() + 2 + runningPos,
+												EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+									else if (pieces[i].charAt(1) < '0' || pieces[i].charAt(0) > '9')
+										return new EmailIssue(localpart.length() + 2 + runningPos,
+												EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+								} else if (pieces[i].length() == 3)
+									if (pieces[i].charAt(0) == '1') {
+										// Second and third chars can go from 0-9
+										if (pieces[i].charAt(1) < '0' || pieces[i].charAt(1) > '9'
+												|| pieces[i].charAt(2) < '0' || pieces[i].charAt(2) > '9')
+											return new EmailIssue(localpart.length() + 2 + runningPos,
+													EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+									} else if (pieces[i].charAt(0) == '2') {
+										if (pieces[i].charAt(1) == '5') {
+											// Third char can be from 0-5
+											if (pieces[i].charAt(2) < '0' || pieces[i].charAt(2) > '5')
+												return new EmailIssue(localpart.length() + 2 + runningPos,
+														EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+										} else // Second char can be from 0-4 and third can be from 0-9
+										if (pieces[i].charAt(1) < '0' || pieces[i].charAt(1) > '4'
+												|| pieces[i].charAt(2) < '0' || pieces[i].charAt(2) > '9')
+											return new EmailIssue(localpart.length() + 2 + runningPos,
+													EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+									} else
+										return new EmailIssue(localpart.length() + 2 + runningPos,
+												EmailIssue.Issue.DOMAIN_IPV4_INVALID_OCTET, localpart, domain);
+							}
+						return null;
+					}
+				}
+			else if (domain.isEmpty())
+				return new EmailIssue(EmailIssue.Issue.DOMAIN_EMPTY, localpart, "");
+			else {
 				List<String> parts = new ArrayList<>();
 				int previousDot = -1;// Used to determine where each part lies. Conceptually, the "first dot" is
 										// "before" the start of the domain name (this is for the sake of parsing and
@@ -192,8 +266,8 @@ public class Utilities {
 							|| nextchar >= '0' && nextchar <= '9') {
 						if (nextcharpos - previousDot > 63)
 							// Too many octets.
-							return new EmailIssue(nextcharpos, EmailIssue.Issue.TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL,
-									localpart, domain);
+							return new EmailIssue(nextcharpos + localpart.length() + 1,
+									EmailIssue.Issue.TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL, localpart, domain);
 					} else if (nextchar == '-') {
 						// Make sure that we're not at the beginning of the part. This is the case if
 						// nextcharpos is immediately after the "previous dot." For example, if
@@ -203,9 +277,9 @@ public class Utilities {
 						// hyphen, which is not allowed.
 						///// (Note that previousDot starts with value -1.)
 						if (previousDot == nextcharpos - 1)
-							return new EmailIssue(nextcharpos, EmailIssue.Issue.DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN,
-									localpart, domain);
-					} else if (nextchar == '.') {
+							return new EmailIssue(nextcharpos + localpart.length() + 1,
+									EmailIssue.Issue.DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN, localpart, domain);
+					} else if (nextchar == '.')
 						// We just hit (another) dot. We need to check for a few cases. Firstly, this
 						// dot should not immediately follow the previous dot. If it does, we have an
 						// issue (empty domain label). Second, this dot should not immediately follow a
@@ -213,12 +287,61 @@ public class Utilities {
 						// Then, we need to (1) take the current part we just parsed (everything AFTER
 						// the previous dot up until, but NOT INCLUDING, this dot) and add it to the
 						// parts list and (2) change the value of previousDot to be this dot.
-					} else if (nextchar == -1) {
-						// End of str reached. We're done. Break out of the loop.
-						break;
-					}
+						if (previousDot == nextcharpos - 1) {// Case 1: A domain name label begins with a dot (either
+																// there is a dot at the beginning of the domain or
+																// there is a dot immediately following another dot).
+							// Examples offending emails:
+							// pala@.arlith.com
+							// pala@arlith..com
+							// pala@pala.arlith.co..uk
+
+							return new EmailIssue(nextcharpos + localpart.length() + 1,
+									EmailIssue.Issue.DOMAIN_LABEL_BEGINS_WITH_DOT, localpart, domain);
+						} else if (domain.charAt(nextcharpos - 1) == '-') {
+							// Previous character was a hyphen. (charAt won't throw an
+							// IndexOutOfBoundsException because we know we're past the first character due
+							// to the first if.)
+							return new EmailIssue(nextcharpos + localpart.length(),
+									EmailIssue.Issue.DOMAIN_LABEL_ENDS_IN_HYPHEN, localpart, domain);
+						} else {
+							// Valid dot! Perform steps (1) and (2) mentioned above.
+							// The substring method grabs the string from (including) the character AFTER
+							// the previous dot, to (not including) the dot we just parsed.
+							parts.add(domain.substring(previousDot + 1, previousDot = nextcharpos));
+						}
+					else if (nextchar == -1)
+						// End of str reached. We're done parsing the domain.
+						// A few things we have to check. We need to make sure that (1) the label we
+						// just parsed did not end in a hyphen, then we need to make sure that
+						// (2) we didn't just parse a dot (so that there is no empty label sitting at
+						// the end of the domain).
+						//
+						// (We don't need to check that there was a label to parse, because we've
+						// already checked to make sure that the domain string is not empty in an
+						// else-if above.
+
+						// First, check (2)
+						if (previousDot == nextcharpos - 1)
+							return new EmailIssue(EmailIssue.Issue.DOMAIN_ENDS_IN_DOT, localpart, domain);
+						else if (domain.charAt(nextcharpos - 1) == '-')
+							return new EmailIssue(EmailIssue.Issue.DOMAIN_LABEL_ENDS_IN_HYPHEN, localpart, domain);
+						else {
+							parts.add(domain.substring(previousDot + 1, nextcharpos));
+							break;
+						}
+					else
+						// Arbitrary, not-allowed character encountered.
+						return new EmailIssue(nextcharpos, EmailIssue.Issue.ILLEGAL_CHARACTER_IN_DOMAIN, localpart,
+								domain);
 				}
-				// TODO Check the number of parts and make sure it's not just 1 (or 0).
+				// Check total size:
+				int total = parts.get(0).length();
+				if (parts.size() < 2)
+					return new EmailIssue(EmailIssue.Issue.DOMAIN_NAME_HAS_TOO_FEW_PARTS, localpart, domain);
+				for (String s : parts)
+					total += 1 + s.length();
+				if (total > 253)
+					return new EmailIssue(EmailIssue.Issue.DOMAIN_TOO_BIG, localpart, domain);
 				return null;
 			}
 		}
@@ -433,7 +556,7 @@ public class Utilities {
 			 * <li>{@link EmailIssue#getDomain()} returns <code>null</code>.</li>
 			 * </ul>
 			 */
-			TOUCHING_DOTS,
+			TOUCHING_DOTS_IN_LOCAL_PART,
 			/**
 			 * Indicates that a character was encountered that should not exist in the email
 			 * address. If this value is the {@link EmailIssue#getIssue() issue of an
@@ -461,7 +584,9 @@ public class Utilities {
 			 * <ul>
 			 * <li>{@link EmailIssue#position()} returns the position of the 64th character
 			 * in the offending domain name label. Note that domain name labels can be a
-			 * maximum of 63 characters in length.</li>
+			 * maximum of 63 characters in length. (The position is indexed from the
+			 * beginning of the provided email string, so the first character of the local
+			 * part of the provided email is at index 0.)</li>
 			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
 			 * <li>{@link EmailIssue#getDomain()} returns everything after the
 			 * <code>@</code> symbol which follows the parsed local part.</li>
@@ -477,13 +602,268 @@ public class Utilities {
 			 * </p>
 			 * <ul>
 			 * <li>{@link EmailIssue#position()} returns the position of the offending
-			 * hyphen character in the offending domain name label.</li>
+			 * hyphen character in the offending domain name label. (The position is the
+			 * position of the hyphen indexed from the beginning of the provided email
+			 * string, so the first character of the local part of the provided email is at
+			 * index 0.)</li>
 			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
 			 * <li>{@link EmailIssue#getDomain()} returns everything after the
 			 * <code>@</code> symbol which follows the parsed local part.</li>
 			 * </ul>
 			 */
-			DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN;
+			DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN,
+			/**
+			 * <p>
+			 * Indicates that one of the labels in the domain was found to begin with a dot.
+			 * This problem occurs as one instance of two cases, either:
+			 * </p>
+			 * <ul>
+			 * <li>A dot is encountered at the very beginning of the domain, e.g. in
+			 * 
+			 * <pre>
+			 * <code>pala@.arlith.org</code>
+			 * </pre>
+			 * 
+			 * or,</li>
+			 * <li>A dot is encountered immediately after another dot, as in:
+			 * 
+			 * <pre>
+			 * <code>pala@arlith..org</code>
+			 * </pre>
+			 * 
+			 * </li>
+			 * </ul>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>If the domain itself begins with a dot,
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the dot (at the
+			 * beginning of the domain),</li>
+			 * <li><i>otherwise</i>, if the domain itself does not begin with a dot,
+			 * {@link EmailIssue#position()} returns the position of the dot at the
+			 * beginning of the offending domain label, (i.e., the <i>second</i> of the two
+			 * touching dots).</li>
+			 * </ul>
+			 * (The position is indexed from the beginning of the provided email string, so
+			 * the first character of the local part of the provided email is at index 0.)
+			 * </li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_LABEL_BEGINS_WITH_DOT,
+			/**
+			 * <p>
+			 * Indicates that one of the labels in the domain was found to end in a hyphen.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the offending
+			 * hyphen character in the offending domain name label. (The position is the
+			 * position of the hyphen indexed from the beginning of the provided email
+			 * string, so the first character of the local part of the provided email is at
+			 * index 0.)</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_LABEL_ENDS_IN_HYPHEN,
+			/**
+			 * <p>
+			 * Indicates that an illegal character was found in the domain of the provided
+			 * email.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the illegal
+			 * character. (The position of the character is indexed from the beginning of
+			 * the provided email string, so the first character of the local part of the
+			 * provided email is at index 0.)</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			ILLEGAL_CHARACTER_IN_DOMAIN,
+			/**
+			 * <p>
+			 * Indicates that the domain of the email ended in a dot. The position of the
+			 * dot is the very end of the string and is the very end of the value returned
+			 * by {@link EmailIssue#getDomain()}.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_ENDS_IN_DOT,
+			/**
+			 * <p>
+			 * Indicates that the domain of the email is too large. The domain of an email
+			 * is restricted to being 253 characters in length at max.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_TOO_BIG,
+			/**
+			 * <p>
+			 * Indicates that the domain of the email string provided is empty. This occurs
+			 * when the provided string ends in the <code>@</code> symbol that immediately
+			 * follows the local-part.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns the empty string.</li>
+			 * </ul>
+			 */
+			DOMAIN_EMPTY,
+			/**
+			 * <p>
+			 * Indicates that the domain part of the email denotes an IP address, but
+			 * there's no closing bracket at the end of the IP address. If this issue is
+			 * raised, the algorithm has determined that the domain is an IP address by its
+			 * beginning with an opening bracket. The closing bracket should have been found
+			 * at the end of the string.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns the empty string.</li>
+			 * </ul>
+			 */
+			DOMAIN_HAS_NO_CLOSING_BRACKET,
+			/**
+			 * <p>
+			 * Indicates that an IPv4 address was being used as the domain, but the IP
+			 * address does not have the correct number of octets. Each IPv4 address should
+			 * have exactly 4 octets, each separated by a period.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_IPV4_HAS_INVALID_NUMBER_OF_OCTETS,
+			/**
+			 * <p>
+			 * Indicates that the domain of the email address used brackets, but did not
+			 * seem to be an IP address (specifically, it did not contain periods).
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the first character
+			 * after the opening bracket for what should be the IP address.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_USED_BRACKETS_BUT_INVALID_IP,
+			/**
+			 * <p>
+			 * Indicates that the domain of the email address used brackets, but that those
+			 * brackets did not contain any characters between them.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the opening bracket
+			 * in the domain portion of the email.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_USED_BRACKETS_BUT_NO_IP,
+			/**
+			 * <p>
+			 * Indicates that one of the octets of the IPv4 address is not valid. This can
+			 * either be because it has too many characters (as the second octet in
+			 * <code>192.00132.4.0</code>), is empty (as third octet in
+			 * <code>192.132..0</code>), is composed of characters that are not decimal
+			 * numbers (as the second octet in <code>192.abc.4.0</code>), or is for some
+			 * other reason, is malformed.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns the position of the first character
+			 * of the octet, or the character where it was expected (if it is empty).</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_IPV4_INVALID_OCTET,
+			/**
+			 * <p>
+			 * Indicates that the domain name provided has too few labels, (specifically
+			 * that it has fewer than 2 labels).
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			DOMAIN_NAME_HAS_TOO_FEW_PARTS,
+			/**
+			 * <p>
+			 * Indicates that an IPv6 address was used for the domain. IPv6 is not currently
+			 * supported by this implementation.
+			 * </p>
+			 * <p>
+			 * If this issue is the case of an {@link EmailIssue},
+			 * </p>
+			 * <ul>
+			 * <li>{@link EmailIssue#position()} returns -1.</li>
+			 * <li>{@link EmailIssue#getLocalPart()} returns the parsed local part.</li>
+			 * <li>{@link EmailIssue#getDomain()} returns everything after the
+			 * <code>@</code> symbol which follows the parsed local part.</li>
+			 * </ul>
+			 */
+			IPV6_USED;
 		}
 
 		private final int pos;
