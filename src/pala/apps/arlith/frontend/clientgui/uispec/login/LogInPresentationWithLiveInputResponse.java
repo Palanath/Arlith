@@ -41,7 +41,49 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 	 * @author Palanath
 	 *
 	 */
-	interface Issue {
+	class Issue {
+
+		private final Severity severity;
+		private final String message;
+		private final int charpos;
+
+		/**
+		 * <p>
+		 * Constructs a new {@link Issue} given a {@link Severity}, a
+		 * <code>message</code>, and an integer <code>charpos</code> that describes the
+		 * position of the character or substring, in the input string, that caused the
+		 * {@link Issue}.
+		 * </p>
+		 * <p>
+		 * The <code>message</code> should be short and descriptive, and can be no more
+		 * than 127 characters in length.
+		 * </p>
+		 * <p>
+		 * The <code>charpos</code> should:
+		 * </p>
+		 * <ul>
+		 * <li>Be <code>-1</code> if a position cannot be obtained or is not being
+		 * reported for some other reason,</li>
+		 * <li>be the position of the character in the original input {@link String}
+		 * that caused this {@link Issue}, or should
+		 * <li>
+		 * <li>be the position of the first character of the substring of the original
+		 * input {@link String} that caused this {@link Issue}.</li>
+		 * </ul>
+		 * 
+		 * @param severity The {@link Severity} of the {@link Issue}.
+		 * @param message  The concise message to describe the {@link Issue} to the
+		 *                 user.
+		 * @param charpos  The position of the {@link Issue} in the original input
+		 *                 string, or <code>-1</code> if such is not being reported in
+		 *                 this {@link Issue}.
+		 */
+		public Issue(Severity severity, String message, int charpos) {
+			this.severity = severity;
+			this.message = message;
+			this.charpos = charpos;
+		}
+
 		/**
 		 * Indicates the {@link Severity} of the {@link Issue}. The {@link Severity} has
 		 * effects as to how the {@link Presentation} should treat the issue. For
@@ -53,7 +95,9 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 		 * 
 		 * @return The {@link Issue}'s {@link Severity}.
 		 */
-		Severity getSeverity();
+		public Severity getSeverity() {
+			return severity;
+		}
 
 		/**
 		 * <p>
@@ -68,7 +112,9 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 		 * @return A short, descriptive {@link String} describing what the issue is. The
 		 *         message is always fewer than 128 characters in length.
 		 */
-		String message();
+		public String message() {
+			return message;
+		}
 
 		/**
 		 * <p>
@@ -91,7 +137,9 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 		 * @return The (starting) position of the offending substring in the input that
 		 *         this {@link Issue} corresponds to.
 		 */
-		int charpos();
+		public int charpos() {
+			return charpos;
+		}
 	}
 
 	/**
