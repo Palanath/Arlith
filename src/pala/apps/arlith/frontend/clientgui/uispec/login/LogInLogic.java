@@ -27,10 +27,23 @@ public interface LogInLogic extends Logic<LogInPresentation> {
 	 */
 	void triggerCreateAccount();
 
+	/**
+	 * Called by {@link LogInPresentationWithLiveInputResponse} to validate the
+	 * syntax of the username being input by the user, live. This method will invoke
+	 */
 	@Optional(type = LogInPresentationWithLiveInputResponse.class)
 	void triggerCheckUsername();
 
 	@Optional(type = LogInPresentationWithLiveInputResponse.class)
 	void triggerCheckLogInIdentifier();
+
+	@Optional(type = LogInPresentationWithLiveInputResponse.class)
+	void triggerCheckPassword();
+
+	@Optional(type = LogInPresentationWithLiveInputResponse.class)
+	void triggerCheckEmail();
+
+	@Optional(type = LogInPresentationWithLiveInputResponse.class)
+	void triggerCheckPhoneNumber();
 
 }
