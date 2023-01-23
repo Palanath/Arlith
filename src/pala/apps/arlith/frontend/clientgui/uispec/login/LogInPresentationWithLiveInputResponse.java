@@ -95,13 +95,34 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 	}
 
 	/**
-	 * Shows the provided {@link Issue} to the user. The {@link Issue} represents a
-	 * problem with the {@link LogInPresentation#getLogInIdentifier()} input. The
+	 * <p>
+	 * Shows the provided {@link Issue} to the user, or indicates to the user that
+	 * the log in identifier input is valid if this method is provided
+	 * <code>null</code>. The {@link Issue} provided, if any, represents a problem
+	 * with the {@link LogInPresentation#getLogInIdentifier()} input. The
 	 * {@link Issue} should be shown to the user in the context of that input.
+	 * </p>
 	 * 
-	 * @param issue An object containing details about the issue with the input.
+	 * @param issue An object containing details about the issue with the input, or
+	 *              <code>null</code> if the input is valid.
 	 */
 	void showLogInIdentifierError(Issue issue);
+
+	/**
+	 * <p>
+	 * Shows the provided {@link Issue} to the user in the context of the username
+	 * input or conveys to the user that the input is not invalid if the
+	 * {@link Issue} parameter is <code>null</code>. The {@link Issue} provided, if
+	 * any, represents a problem with the {@link LogInPresentation#getUsername()}
+	 * input.
+	 * </p>
+	 * 
+	 * @param issue An object containing details about the issue with the input, or
+	 *              <code>null</code> if the input is valid.
+	 */
+	void showUsernameError(Issue issue);
+
+	// TODO Fill out remaining methods.
 
 	/**
 	 * Indicates the {@link Severity} of an {@link Issue}. {@link Issue}s with
