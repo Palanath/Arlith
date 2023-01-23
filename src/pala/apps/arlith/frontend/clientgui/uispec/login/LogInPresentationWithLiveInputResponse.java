@@ -270,11 +270,17 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 	 * The default presentation implementation for Arlith implements this method by
 	 * changing the color of the input prompt and providing {@link Issue#message()}
 	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter and on
-	 * the {@link Severity} of the {@link Issue} if it is not <code>null</code>.
+	 * assigned based on the nullity of the provided {@link Issue} parameter, on the
+	 * {@link Severity} of the {@link Issue} if it is not <code>null</code>, and, if
+	 * it is <code>null</code>, on whether or not the phone number {@link String} in
+	 * the user input prompt is empty.
 	 * </p>
 	 * <ul>
-	 * <li>If the {@link Issue} is <code>null</code>, the prompt becomes
+	 * <li>If the user has entered nothing, then this method will be called with
+	 * <code>null</code>, since phone numbers are not required. In such a case, the
+	 * prompt's color and styling reverts to its default (before anything was typed
+	 * into it).</li>
+	 * <li>Otherwise, if the {@link Issue} is <code>null</code>, the prompt becomes
 	 * <span style="color: green;">green</span>.</li>
 	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
 	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
