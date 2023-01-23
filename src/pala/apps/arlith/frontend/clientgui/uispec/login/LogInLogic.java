@@ -1,6 +1,7 @@
 package pala.apps.arlith.frontend.clientgui.uispec.login;
 
 import pala.apps.arlith.frontend.clientgui.Logic;
+import pala.apps.arlith.frontend.clientgui.Optional;
 
 public interface LogInLogic extends Logic<LogInPresentation> {
 	/**
@@ -25,4 +26,11 @@ public interface LogInLogic extends Logic<LogInPresentation> {
 	 * </p>
 	 */
 	void triggerCreateAccount();
+
+	@Optional(type = LogInPresentationWithLiveInputResponse.class)
+	void triggerCheckUsername();
+
+	@Optional(type = LogInPresentationWithLiveInputResponse.class)
+	void triggerCheckLogInIdentifier();
+
 }
