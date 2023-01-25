@@ -27,10 +27,11 @@ import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 import pala.libs.generic.javafx.FXTools;
 
-public class LogInPresentationImpl implements LogInPresentation {
+public class LogInPresentationImpl implements LogInPresentationWithLiveInputResponse {
 	private final LogInLogic logic;
 	private Scene scene;
 
@@ -84,7 +85,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
 		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
 		inputsBox.setSpacing(40);
-		passwordPrompt.getChildren().set(2, createAccountHyperlink);
+		if (passwordPrompt.getChildren().size() == 3)
+			passwordPrompt.getChildren().add(3, createAccountHyperlink);
+		else
+			passwordPrompt.getChildren().set(3, createAccountHyperlink);
 		passwordPrompt.getInput().setOnAction(a -> logic.triggerLogIn());
 		hideInformationMessage();
 	}
@@ -93,7 +97,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 		inputsBox.getChildren().setAll(usernamePrompt, emailPrompt, phoneNumberPrompt, passwordPrompt,
 				createAccountButton);
 		inputsBox.setSpacing(30);
-		passwordPrompt.getChildren().set(2, backToLogInHyperlink);
+		if (passwordPrompt.getChildren().size() == 3)
+			passwordPrompt.getChildren().add(3, backToLogInHyperlink);
+		else
+			passwordPrompt.getChildren().set(3, backToLogInHyperlink);
 		passwordPrompt.getInput().setOnAction(a -> logic.triggerCreateAccount());
 		hideInformationMessage();
 	}
@@ -280,6 +287,43 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public void showLogInFailure(LoginFailureException error) {
 		informUserOfError(
 				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
+	}
+
+	@Override
+	public void showLogInIdentifierError(Issue issue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showUsernameError(Issue issue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showPasswordError(Issue issue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showEmailError(Issue issue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showPhoneNumberError(Issue issue) {
+		// TODO Auto-generated method stub
+		if (issue == null) {
+			if (getPhoneNumber().isEmpty()) {
+
+			} else {
+				phoneNumberPrompt.setColor(Color.GREEN);
+			}
+		}
+
 	}
 
 }
