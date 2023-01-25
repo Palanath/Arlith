@@ -125,7 +125,16 @@ public class LogInLogicImpl implements LogInLogic {
 
 	@Override
 	public void triggerCheckPassword() {
-		// TODO Auto-generated method stub
+		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
+		String pass = presentation.getPassword();
+		if (pass.length() < 9)
+			presentation.showPasswordError(
+					new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING, "Short password", -1));
+		else if (pass.isEmpty())
+			presentation.showPasswordError(
+					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Password can't be empty", -1));
+		else
+			presentation.showPasswordError(null);
 
 	}
 
@@ -139,10 +148,13 @@ public class LogInLogicImpl implements LogInLogic {
 		else {
 			String message;
 			switch (validationIssue.getIssue()) {
-			case ARBITRARY_ESCAPE:
-				presentation.showEmailError(new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING,
-						"Unnecessary escape character (\"\\\")", 0));
-				return;
+			// Showing this as only a warning allows the user to submit broken emails, as a
+			// more serious error may occur after the illegal character but will not be
+			// reported.
+//			case ARBITRARY_ESCAPE:
+//				presentation.showEmailError(new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING,
+//						"Unnecessary escape character (\"\\\")", 0));
+//				return;
 			case DOMAIN_EMPTY:
 				message = "Domain cannot be empty";
 				break;
