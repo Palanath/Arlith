@@ -68,6 +68,12 @@ public class SilverTextBox extends VBox {
 	private final HBox promptBox = new HBox(2, prompt);
 	private final TextField input;
 	private final Line line = new Line();
+	{
+		color.addListener((a, b, newColor) -> {
+			if (!line.getStroke().equals(Color.TRANSPARENT))
+				line.setStroke(getFocusedLineColor());
+		});
+	}
 
 	private final BooleanProperty necessary = new SimpleBooleanProperty(),
 			showInformation = new SimpleBooleanProperty();
