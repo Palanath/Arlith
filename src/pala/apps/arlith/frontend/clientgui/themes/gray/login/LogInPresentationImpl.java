@@ -135,6 +135,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		emailPrompt.setNecessary(true);
 		phoneNumberPrompt.getPrompt().setText("Phone Number");
 
+		// Attach triggers for logic.
+		logInIdentPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckLogInIdentifier());
+		passwordPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckPassword());
+		usernamePrompt.getInput().textProperty().addListener(a -> logic.triggerCheckUsername());
+		emailPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckEmail());
+		phoneNumberPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckPhoneNumber());
+
 		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
 		backToLogInHyperlink.setOnAction(a -> showLogInUI());
 
