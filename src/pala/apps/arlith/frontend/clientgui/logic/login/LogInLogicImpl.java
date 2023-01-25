@@ -250,13 +250,15 @@ public class LogInLogicImpl implements LogInLogic {
 		else if (phone.length() > 15)
 			presentation.showPhoneNumberError(
 					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Phone # too long.", -1));
-		else
+		else {
 			for (int i = 0; i < phone.length(); i++)
 				if (!Character.isDigit(phone.charAt(i))) {
 					presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
 							"'" + phone.charAt(i) + "' is not a digit.", i));
 					return;
 				}
+			presentation.showPhoneNumberError(null);
+		}
 	}
 
 }
