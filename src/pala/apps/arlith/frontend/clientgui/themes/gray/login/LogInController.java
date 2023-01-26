@@ -28,6 +28,10 @@ public class LogInController {
 	{
 		passwordContainer.setFillWidth(true);
 		hyperlinkContainer.setAlignment(Pos.CENTER_LEFT);
+		logInIdentifierPrompt.getPrompt().setText("Account Tag/Email/Phone");
+		logInIdentifierPrompt.setPrefWidth(300);
+		passwordPrompt.getPrompt().setText("Password");
+		passwordPrompt.setPrefWidth(300);
 	}
 	private final VBox container = new VBox(40, logInIdentifierPrompt, passwordContainer);
 
