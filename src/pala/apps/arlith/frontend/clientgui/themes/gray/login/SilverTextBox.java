@@ -3,11 +3,10 @@ package pala.apps.arlith.frontend.clientgui.themes.gray.login;
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -26,27 +25,26 @@ import pala.libs.generic.javafx.FXTools;
 public class SilverTextBox extends VBox {
 
 	private static final double DEFAULT_HUE = 0, DEFAULT_SATURATION = 0, DEFAULT_BRIGHTNESS = 1;
+	private static final Color DEFAULT_COLOR = Color.hsb(DEFAULT_HUE, DEFAULT_SATURATION, DEFAULT_BRIGHTNESS);
 
 	public void resetColor() {
-		setHue(DEFAULT_HUE);
-		setSaturation(DEFAULT_SATURATION);
-		setBrightness(DEFAULT_BRIGHTNESS);
+		setColor(DEFAULT_COLOR);
 	}
 
-	private final DoubleProperty hue = new SimpleDoubleProperty(DEFAULT_HUE),
-			saturation = new SimpleDoubleProperty(DEFAULT_SATURATION),
-			brightness = new SimpleDoubleProperty(DEFAULT_BRIGHTNESS);
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_COLOR);
 
 	private Color getLineColor() {
-		return Color.hsb(hue.get(), saturation.get(), brightness.get());
+		return color.get();
 	}
 
 	private Color getActiveBackgroundColor() {
-		return Color.hsb(hue.get(), .4 * saturation.get(), .75 * brightness.get());
+		Color color = getLineColor();
+		return Color.hsb(color.getHue(), .4 * color.getSaturation(), .75 * color.getBrightness());
 	}
 
 	private Color getUnfocusedBackgroundColor() {
-		return Color.hsb(hue.get(), .3 * saturation.get(), .65 * brightness.get());
+		Color color = getLineColor();
+		return Color.hsb(color.getHue(), .3 * color.getSaturation(), .65 * color.getBrightness());
 	}
 
 	public void showInformation() {
@@ -90,10 +88,8 @@ public class SilverTextBox extends VBox {
 		HBox.setHgrow(informationBox, Priority.ALWAYS);
 		StackPane.setAlignment(information, Pos.CENTER_RIGHT);
 
-		ObjectBinding<Color> colorBinding = Bindings.createObjectBinding(() -> getLineColor(), hue, saturation,
-				brightness);
-		information.fillProperty().bind(colorBinding);
-		line.strokeProperty().bind(colorBinding);
+		information.fillProperty().bind(color);
+		line.strokeProperty().bind(color);
 	}
 
 	public boolean isNecessary() {
@@ -137,7 +133,7 @@ public class SilverTextBox extends VBox {
 		input.backgroundProperty().bind(Bindings.createObjectBinding(() -> {
 			return FXTools.getBackgroundFromColor(
 					input.isFocused() ? getActiveBackgroundColor() : getUnfocusedBackgroundColor());
-		}, hue, brightness, saturation, input.focusedProperty()));
+		}, color, input.focusedProperty()));
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
 				line.setOpacity(0);
@@ -182,14 +178,6 @@ public class SilverTextBox extends VBox {
 		line.setOpacity(0);
 	}
 
-	public final DoubleProperty hueProperty() {
-		return this.hue;
-	}
-
-	public final double getHue() {
-		return this.hueProperty().get();
-	}
-
 	/**
 	 * <p>
 	 * Sets the color of this {@link SilverTextBox} via hue. This method sets the
@@ -200,12 +188,7 @@ public class SilverTextBox extends VBox {
 	 * @param hue The that the text box will be colored as.
 	 */
 	public final void colorTextBox(double hue) {
-		setHue(hue);
-		setSaturation(1);
-	}
-
-	public void setHue(double hue) {
-		hueProperty().set(hue);
+		setColor(Color.hsb(hue, 1, getColor().getBrightness()));
 	}
 
 	public final BooleanProperty showInformationProperty() {
@@ -220,28 +203,16 @@ public class SilverTextBox extends VBox {
 		this.showInformationProperty().set(showInformation);
 	}
 
-	public final DoubleProperty brightnessProperty() {
-		return this.brightness;
+	public final ObjectProperty<Color> colorProperty() {
+		return this.color;
 	}
 
-	public final double getBrightness() {
-		return this.brightnessProperty().get();
+	public final Color getColor() {
+		return this.colorProperty().get();
 	}
 
-	public final void setBrightness(final double brightness) {
-		this.brightnessProperty().set(brightness);
-	}
-
-	public final DoubleProperty saturationProperty() {
-		return this.saturation;
-	}
-
-	public final double getSaturation() {
-		return this.saturationProperty().get();
-	}
-
-	public final void setSaturation(final double saturation) {
-		this.saturationProperty().set(saturation);
+	public final void setColor(final Color color) {
+		this.colorProperty().set(color);
 	}
 
 }
