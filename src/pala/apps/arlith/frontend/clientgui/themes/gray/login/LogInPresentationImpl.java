@@ -10,11 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -38,23 +38,26 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		this.logic = logic;
 	}
 
+	private final LogInController loginUI = new LogInController();
+	private final CreateAccountController createAccountUI = new CreateAccountController();
+
 	public @FXML BorderPane root;
-	public @FXML VBox logInBox, inputsBox;
+	public @FXML VBox logInBox;
 	public @FXML Text title;
 	private final Text infoMessage = new Text();
+	private final StackPane infoMessageContainer = new StackPane(infoMessage);
 	{
+		infoMessageContainer.setMinHeight(70);
 		infoMessage.setWrappingWidth(300);
 		infoMessage.setFont(Font.font(13));
 		infoMessage.setTextAlignment(TextAlignment.CENTER);
+		loginUI.getPasswordPrompt().getInput().textProperty()
+				.bindBidirectional(createAccountUI.getPasswordPrompt().getInput().textProperty());
+		loginUI.getPasswordPrompt().colorProperty()
+				.bindBidirectional(createAccountUI.getPasswordPrompt().colorProperty());
 	}
-	private final SilverTextBox logInIdentPrompt = new SilverTextBox(), passwordPrompt = new SilverTextBox(true),
-			usernamePrompt = new SilverTextBox(), emailPrompt = new SilverTextBox(),
-			phoneNumberPrompt = new SilverTextBox();
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In"),
 			createAccountButton = new NiceLookingButton("Create Account");
-
-	private final Hyperlink createAccountHyperlink = new StyledHyperlink("Create Account..."),
-			backToLogInHyperlink = new StyledHyperlink("Back to Log In");
 
 	private void informUserOfError(String text) {
 		infoMessage.setText(text);
@@ -81,26 +84,16 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void showLogInUI() {
-		inputsBox.getChildren().setAll(logInIdentPrompt, passwordPrompt, logInButton);
-		logInIdentPrompt.getPrompt().setText("Account Tag/Email/Phone");
-		inputsBox.setSpacing(40);
-		if (passwordPrompt.getChildren().size() == 3)
-			passwordPrompt.getChildren().add(3, createAccountHyperlink);
-		else
-			passwordPrompt.getChildren().set(3, createAccountHyperlink);
-		passwordPrompt.getInput().setOnAction(a -> logic.triggerLogIn());
+		logInBox.getChildren().set(2, loginUI.getContainer());
+		title.setText("Log In");
+		logInButton.setText("Log In");
 		hideInformationMessage();
 	}
 
 	private void showCreateAccountUI() {
-		inputsBox.getChildren().setAll(usernamePrompt, emailPrompt, phoneNumberPrompt, passwordPrompt,
-				createAccountButton);
-		inputsBox.setSpacing(30);
-		if (passwordPrompt.getChildren().size() == 3)
-			passwordPrompt.getChildren().add(3, backToLogInHyperlink);
-		else
-			passwordPrompt.getChildren().set(3, backToLogInHyperlink);
-		passwordPrompt.getInput().setOnAction(a -> logic.triggerCreateAccount());
+		logInBox.getChildren().set(2, createAccountUI.getContainer());
+		title.setText("Create Account");
+		logInButton.setText("Create Account");
 		hideInformationMessage();
 	}
 
@@ -115,44 +108,29 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 						new RadialGradient(-30, -.1, .2, .9, 1, true, CycleMethod.NO_CYCLE,
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
-
-		showLogInUI();
-		logInBox.getChildren().add(1, infoMessage);
-
-		logInIdentPrompt.setNecessary(true);
-		passwordPrompt.getPrompt().setText("Password");
-		passwordPrompt.setNecessary(true);
-		logInIdentPrompt.setPrefWidth(300);
-		passwordPrompt.setPrefWidth(300);
-
-		usernamePrompt.setPrefWidth(300);
-		emailPrompt.setPrefWidth(300);
-		phoneNumberPrompt.setPrefWidth(300);
-		usernamePrompt.getPrompt().setText("Username");
-		usernamePrompt.setNecessary(true);
-		emailPrompt.getPrompt().setText("Email");
-		emailPrompt.setNecessary(true);
-		phoneNumberPrompt.getPrompt().setText("Phone Number");
+		logInBox.getChildren().addAll(infoMessageContainer, loginUI.getContainer(), logInButton);
 
 		// Attach triggers for logic.
-		logInIdentPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckLogInIdentifier());
-		passwordPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckPassword());
-		usernamePrompt.getInput().textProperty().addListener(a -> logic.triggerCheckUsername());
-		emailPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckEmail());
-		phoneNumberPrompt.getInput().textProperty().addListener(a -> logic.triggerCheckPhoneNumber());
+		loginUI.getLogInIdentifierPrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckLogInIdentifier());
+		loginUI.getPasswordPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckPassword());
+		createAccountUI.getUsernamePrompt().getInput().textProperty().addListener(a -> logic.triggerCheckUsername());
+		createAccountUI.getEmailPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckEmail());
+		createAccountUI.getPhoneNumberPrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckPhoneNumber());
 
-		createAccountHyperlink.setOnAction(a -> showCreateAccountUI());
-		backToLogInHyperlink.setOnAction(a -> showLogInUI());
+		loginUI.getCreateAccountHyperlink().setOnAction(a -> showCreateAccountUI());
+		createAccountUI.getBackToLogInHyperlink().setOnAction(a -> showLogInUI());
 
 		EventHandler<ActionEvent> logInSubmitHandler = a -> attemptToLogIn(),
 				createAccountSubmitHandler = a -> attemptToCreateAccount();
-		logInIdentPrompt.getInput().setOnAction(logInSubmitHandler);
+		loginUI.getLogInIdentifierPrompt().getInput().setOnAction(logInSubmitHandler);
 		logInButton.setOnAction(logInSubmitHandler);
 
 		createAccountButton.setOnAction(createAccountSubmitHandler);
-		usernamePrompt.getInput().setOnAction(createAccountSubmitHandler);
-		emailPrompt.getInput().setOnAction(createAccountSubmitHandler);
-		phoneNumberPrompt.getInput().setOnAction(createAccountSubmitHandler);
+		createAccountUI.getUsernamePrompt().getInput().setOnAction(createAccountSubmitHandler);
+		createAccountUI.getEmailPrompt().getInput().setOnAction(createAccountSubmitHandler);
+		createAccountUI.getPhoneNumberPrompt().getInput().setOnAction(createAccountSubmitHandler);
 
 		logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		logInButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
@@ -192,12 +170,12 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public String getLogInIdentifier() {
-		return logInIdentPrompt.getInput().getText();
+		return loginUI.getLogInIdentifierPrompt().getInput().getText();
 	}
 
 	@Override
 	public String getPassword() {
-		return logInIdentPrompt.getInput().getText();
+		return loginUI.getPasswordPrompt().getInput().getText();
 	}
 
 	@Override
@@ -210,52 +188,52 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		SilverTextBox prompt;
 		switch (problem) {
 		case ILLEGAL_EM:
-			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Email");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Illegal Email");
 			break;
 		case ILLEGAL_PH:
-			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Phone #");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Illegal Phone #");
 			break;
 		case ILLEGAL_PW:
-			(prompt = passwordPrompt).getInformationText().setText("Illegal Password");
+			(prompt = loginUI.getPasswordPrompt()).getInformationText().setText("Illegal Password");
 			break;
 		case ILLEGAL_UN:
-			(prompt = logInIdentPrompt).getInformationText().setText("Illegal Tag");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Illegal Tag");
 			break;
 		case INVALID_EM:
-			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Email");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Invalid Email");
 			break;
 		case INVALID_PH:
-			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Phone #");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Invalid Phone #");
 			break;
 		case INVALID_PW:
-			(prompt = passwordPrompt).getInformationText().setText("Invalid Password");
+			(prompt = loginUI.getPasswordPrompt()).getInformationText().setText("Invalid Password");
 			break;
 		case INVALID_UN:
-			(prompt = logInIdentPrompt).getInformationText().setText("Invalid Username");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Invalid Username");
 			break;
 		case LONG_EM:
-			(prompt = logInIdentPrompt).getInformationText().setText("Email too long");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Email too long");
 			break;
 		case LONG_PH:
-			(prompt = logInIdentPrompt).getInformationText().setText("Phone # too long");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Phone # too long");
 			break;
 		case LONG_PW:
-			(prompt = passwordPrompt).getInformationText().setText("Password too long");
+			(prompt = loginUI.getPasswordPrompt()).getInformationText().setText("Password too long");
 			break;
 		case LONG_UN:
-			(prompt = logInIdentPrompt).getInformationText().setText("Username too long");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Username too long");
 			break;
 		case SHORT_EM:
-			(prompt = logInIdentPrompt).getInformationText().setText("Email too short");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Email too short");
 			break;
 		case SHORT_PH:
-			(prompt = logInIdentPrompt).getInformationText().setText("Phone # too short");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Phone # too short");
 			break;
 		case SHORT_PW:
-			(prompt = passwordPrompt).getInformationText().setText("Password too short");
+			(prompt = loginUI.getPasswordPrompt()).getInformationText().setText("Password too short");
 			break;
 		case SHORT_UN:
-			(prompt = logInIdentPrompt).getInformationText().setText("Username too short");
+			(prompt = loginUI.getLogInIdentifierPrompt()).getInformationText().setText("Username too short");
 			break;
 		default:
 			return;
@@ -276,17 +254,17 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public String getEmail() {
-		return emailPrompt.getInput().getText();
+		return createAccountUI.getEmailPrompt().getInput().getText();
 	}
 
 	@Override
 	public String getPhoneNumber() {
-		return phoneNumberPrompt.getInput().getText();
+		return createAccountUI.getPhoneNumberPrompt().getInput().getText();
 	}
 
 	@Override
 	public String getUsername() {
-		return usernamePrompt.getInput().getText();
+		return createAccountUI.getUsernamePrompt().getInput().getText();
 	}
 
 	@Override
@@ -294,8 +272,6 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		informUserOfError(
 				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
 	}
-
-	private boolean loginIdentifierValid, usernameValid, passwordValid, emailValid, phoneNumberValid = true;
 
 	@Override
 	public void showLogInIdentifierError(Issue issue) {
@@ -325,18 +301,15 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	public void showPhoneNumberError(Issue issue) {
 		if (issue == null)
 			if (getPhoneNumber().isEmpty())
-				phoneNumberPrompt.resetColor();
+				createAccountUI.getPhoneNumberPrompt().resetColor();
 			else
-				phoneNumberPrompt.colorTextBox(120);
+				createAccountUI.getPhoneNumberPrompt().colorTextBox(120);
 		else if (issue.getSeverity() == Severity.ERROR) {
-			phoneNumberPrompt.colorTextBox(0);
+			createAccountUI.getPhoneNumberPrompt().colorTextBox(0);
 			// As long as there is an error, disable the input.
-			phoneNumberValid = false;
 			return;
 		} else if (issue.getSeverity() == Severity.WARNING)
-			phoneNumberPrompt.colorTextBox(60);
-		phoneNumberValid = true;
-
+			createAccountUI.getPhoneNumberPrompt().colorTextBox(60);
 	}
 
 }
