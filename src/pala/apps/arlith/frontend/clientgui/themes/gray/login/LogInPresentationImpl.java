@@ -26,7 +26,6 @@ import javafx.scene.text.TextAlignment;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
-import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 import pala.libs.generic.javafx.FXTools;
@@ -296,6 +295,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
 	}
 
+	private boolean loginIdentifierValid, usernameValid, passwordValid, emailValid, phoneNumberValid = true;
+
 	@Override
 	public void showLogInIdentifierError(Issue issue) {
 		// TODO Auto-generated method stub
@@ -322,14 +323,19 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showPhoneNumberError(Issue issue) {
-		// TODO Auto-generated method stub
-		if (issue == null) {
-			if (getPhoneNumber().isEmpty()) {
-
-			} else {
-				phoneNumberPrompt.setColor(Color.GREEN);
-			}
-		}
+		if (issue == null)
+			if (getPhoneNumber().isEmpty())
+				phoneNumberPrompt.resetColor();
+			else
+				phoneNumberPrompt.colorTextBox(120);
+		else if (issue.getSeverity() == Severity.ERROR) {
+			phoneNumberPrompt.colorTextBox(0);
+			// As long as there is an error, disable the input.
+			phoneNumberValid = false;
+			return;
+		} else if (issue.getSeverity() == Severity.WARNING)
+			phoneNumberPrompt.colorTextBox(60);
+		phoneNumberValid = true;
 
 	}
 

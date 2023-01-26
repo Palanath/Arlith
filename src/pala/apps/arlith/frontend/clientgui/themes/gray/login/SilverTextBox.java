@@ -206,8 +206,36 @@ public class SilverTextBox extends VBox {
 		return this.hueProperty().get();
 	}
 
-	public final void setHue(final double hue) {
-		this.hueProperty().set(hue);
+	/**
+	 * <p>
+	 * Sets the color of this {@link SilverTextBox} via hue. This method sets the
+	 * {@link #hueProperty()} of this {@link SilverTextBox} to the specified value,
+	 * unless the specified value is equal to the property's current value. If the
+	 * specified hue is the same as the current hue, this method will set the
+	 * property's value to be the specified value plus <code>360</code>.
+	 * </p>
+	 * <p>
+	 * The reason for this method's doing this is that this text box is normally all
+	 * white, and the brightness of the textbox's {@link #colorProperty()} is only
+	 * updated automatically when {@link #hueProperty()} <i>changes</i>.
+	 * </p>
+	 * <p>
+	 * This method is designed to <i>color</i> the text box by changing the hue. To
+	 * directly assign a value to the hue property, use {@link #setHue(double)}.
+	 * </p>
+	 * 
+	 * @param hue The that the text box will be colored as.
+	 */
+	public final void colorTextBox(double hue) {
+		if (hue == getHue())
+			hue += 360; // Fixes issue where hue does not change when assigning 0, causing the
+						// brightness to stay maxed (and hence the box to appear white instead of
+						// colored).
+		setHue(hue);
+	}
+
+	public void setHue(double hue) {
+		hueProperty().set(hue);
 	}
 
 	public final BooleanProperty showInformationProperty() {
