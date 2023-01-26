@@ -33,20 +33,6 @@ public class SilverTextBox extends VBox {
 
 	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_COLOR);
 
-	private Color getLineColor() {
-		return color.get();
-	}
-
-	private Color getActiveBackgroundColor() {
-		Color color = getLineColor();
-		return Color.hsb(color.getHue(), .4 * color.getSaturation(), .75 * color.getBrightness());
-	}
-
-	private Color getUnfocusedBackgroundColor() {
-		Color color = getLineColor();
-		return Color.hsb(color.getHue(), .3 * color.getSaturation(), .65 * color.getBrightness());
-	}
-
 	public void showInformation() {
 		setShowInformation(true);
 	}
@@ -131,8 +117,10 @@ public class SilverTextBox extends VBox {
 			}
 		};
 		input.backgroundProperty().bind(Bindings.createObjectBinding(() -> {
-			return FXTools.getBackgroundFromColor(
-					input.isFocused() ? getActiveBackgroundColor() : getUnfocusedBackgroundColor());
+			Color color = getColor();
+			return FXTools.getBackgroundFromColor(input.isFocused()
+					? Color.hsb(color.getHue(), .4 * color.getSaturation(), .75 * color.getBrightness())
+					: Color.hsb(color.getHue(), .3 * color.getSaturation(), .65 * color.getBrightness()));
 		}, color, input.focusedProperty()));
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
@@ -213,6 +201,18 @@ public class SilverTextBox extends VBox {
 
 	public final void setColor(final Color color) {
 		this.colorProperty().set(color);
+	}
+
+	public final void setHue(double hue) {
+		setColor(Color.hsb(hue, getColor().getSaturation(), getColor().getBrightness()));
+	}
+
+	public final void setSaturation(double saturation) {
+		setColor(Color.hsb(getColor().getHue(), saturation, getColor().getBrightness()));
+	}
+
+	public final void setBrightness(double brightness) {
+		setColor(Color.hsb(getColor().getHue(), getColor().getSaturation(), brightness));
 	}
 
 }
