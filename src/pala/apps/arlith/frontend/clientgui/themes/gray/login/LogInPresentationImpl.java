@@ -47,7 +47,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private final Text infoMessage = new Text();
 	private final StackPane infoMessageContainer = new StackPane(infoMessage);
 	{
-		infoMessageContainer.setMinHeight(70);
+		infoMessageContainer.setMinHeight(50);
 		infoMessage.setWrappingWidth(300);
 		infoMessage.setFont(Font.font(13));
 		infoMessage.setTextAlignment(TextAlignment.CENTER);
@@ -239,7 +239,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 			return;
 		}
 		prompt.showInformation();
-		prompt.setColor(Color.FIREBRICK);
+		prompt.setHue(0);
+		prompt.setSaturation(1);
 	}
 
 	@Override
