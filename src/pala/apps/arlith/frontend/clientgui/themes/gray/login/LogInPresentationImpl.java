@@ -160,7 +160,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 		// This prompt is not "necessary," so an empty input is valid. Therefore, we set
 		// it to "valid" by default.
-		setValid(createAccountUI.getPhoneNumberPrompt(), true);
+		setState(createAccountUI.getPhoneNumberPrompt(), null);
 		calcLogInDisabled();// Disable inputs accordingly.
 		calcCreateAccountDisabled();
 	}
@@ -361,11 +361,29 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		return box.getProperties().containsKey(LogInPresentationImpl.class);
 	}
 
-	private void setValid(SilverTextBox box, boolean valid) {
-		if (valid)
+	/**
+	 * <p>
+	 * Sets the validity and color of the specified {@link SilverTextBox}. The color
+	 * is derived from the validity, so this method sets both. If the input is valid
+	 * (i.e. <code>severity</code> is <code>null</code>), this method also checks to
+	 * see if it is empty. If the input box is both valid and empty, its color is
+	 * reset, rather than set to {@link Color#GREEN}.
+	 * </p>
+	 * 
+	 * @param box      The input box.
+	 * @param severity The {@link Severity} of the issue that occurred (used to
+	 *                 determine the validity of the input box and its color), or
+	 *                 <code>null</code> if there was no issue.
+	 */
+	private void setState(SilverTextBox box, Severity severity) {
+		if (severity == Severity.ERROR) {// Issue preventing data submission.
 			box.getProperties().put(LogInPresentationImpl.class, null);
-		else
+			box.setColor(Color.FIREBRICK);
+		} else {// No issue or WARNING; the data can be submit.
 			box.getProperties().remove(LogInPresentationImpl.class);
+			box.setColor(severity == Severity.WARNING ? Color.color(.8, .7, 0, 1)
+					: box.getInput().getText().isEmpty() ? null : Color.GREEN);
+		}
 	}
 
 	/**
