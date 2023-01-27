@@ -136,7 +136,7 @@ public class SilverTextBox extends VBox {
 				trans.play();
 			}
 		});
-		input.styleProperty().bind(Bindings.createObjectBinding(
+		input.styleProperty().bind(Bindings.createStringBinding(
 				() -> "-fx-text-fill: " + (getColor().getBrightness() < 0.5 ? "white" : "black") + ';', color));
 	}
 
