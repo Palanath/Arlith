@@ -10,7 +10,7 @@ public class CreateAccountController {
 	private final StyledHyperlink backToLogInHyperlink = new StyledHyperlink("Back To Log In");
 	private final StackPane hyperlinkContainer = new StackPane(backToLogInHyperlink);
 	private final VBox passwordContainer = new VBox(10, passwordPrompt, hyperlinkContainer);
-	private final VBox container = new VBox(40, usernamePrompt, emailPrompt, phoneNumberPrompt, passwordContainer);
+	private final VBox container = new VBox(20, usernamePrompt, emailPrompt, phoneNumberPrompt, passwordContainer);
 	{
 		usernamePrompt.setPrefWidth(350);
 		emailPrompt.setPrefWidth(350);
