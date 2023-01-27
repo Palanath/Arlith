@@ -33,6 +33,17 @@ public class SilverTextBox extends VBox {
 
 	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_COLOR);
 
+	/**
+	 * Shorthand method to call {@link #showInformation()} and set
+	 * {@link #getInformationText()}'s {@link Text#setText(String) text value}.
+	 * 
+	 * @param information The text to show when the information becomes visible.
+	 */
+	public void showInformation(String information) {
+		showInformation();
+		getInformationText().setText(information);
+	}
+
 	public void showInformation() {
 		setShowInformation(true);
 	}
