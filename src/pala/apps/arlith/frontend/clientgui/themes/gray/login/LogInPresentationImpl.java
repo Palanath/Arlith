@@ -34,14 +34,11 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private final LogInLogic logic;
 	private Scene scene;
 
-	public LogInPresentationImpl(LogInLogic logic) {
-		this.logic = logic;
-	}
-
 	private final LogInController loginUI = new LogInController();
-	private final CreateAccountController createAccountUI = new CreateAccountController();
 
+	private final CreateAccountController createAccountUI = new CreateAccountController();
 	public @FXML BorderPane root;
+
 	public @FXML VBox logInBox;
 	public @FXML Text title;
 	private final Text infoMessage = new Text();
@@ -76,25 +73,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In"),
 			createAccountButton = new NiceLookingButton("Create Account");
 
-	private void informUserOfError(String text) {
-		infoMessage.setText(text);
-		infoMessage.setFill(Color.hsb(0, 0.9, 0.6));
-	}
-
-	private void informUser(String text) {
-		infoMessage.setText(text);
-		infoMessage.setFill(Color.hsb(240, 0.7, 1));
-	}
-
-	private void hideInformationMessage() {
-		infoMessage.setText("");
-	}
-
-	private void attemptToLogIn() {
-		if (logInButton.isDisable())
-			return;// Don't execute if inputs not valid.
-		informUser("Attempting to log in...");
-		logic.triggerLogIn();
+	public LogInPresentationImpl(final LogInLogic logic) {
+		this.logic = logic;
 	}
 
 	private void attemptToCreateAccount() {
@@ -104,18 +84,117 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		logic.triggerCreateAccount();
 	}
 
-	private void showLogInUI() {
-		logInBox.getChildren().set(2, loginUI.getContainer());
-		title.setText("Log In");
-		logInButton.setText("Log In");
-		hideInformationMessage();
+	private void attemptToLogIn() {
+		if (logInButton.isDisable())
+			return;// Don't execute if inputs not valid.
+		informUser("Attempting to log in...");
+		logic.triggerLogIn();
 	}
 
-	private void showCreateAccountUI() {
-		logInBox.getChildren().set(2, createAccountUI.getContainer());
-		title.setText("Create Account");
-		logInButton.setText("Create Account");
-		hideInformationMessage();
+	private void calcCreateAccountDisabled() {
+		createAccountButton.setDisable(
+				(!checkValid(createAccountUI.getEmailPrompt()) || !checkValid(createAccountUI.getPhoneNumberPrompt()) || !checkValid(createAccountUI.getUsernamePrompt()) || !checkValid(loginUI.getPasswordPrompt())));
+	}
+
+	/**
+	 * Determines whether all of the necessary inputs for logging in have
+	 * syntactically correct input (using {@link #checkValid(SilverTextBox)}) and if
+	 * the unnecessary inputs that have values are syntactically correct, and
+	 * updates the {@link #loginUI}'s {@link LogInController#}
+	 */
+	private void calcLogInDisabled() {
+		logInButton.setDisable(
+				(!checkValid(loginUI.getLogInIdentifierPrompt()) || !checkValid(loginUI.getPasswordPrompt())));
+	}
+
+	/**
+	 * <p>
+	 * Determines whether the content of a {@link SilverTextBox} is valid or not by
+	 * querying its <code>valid</code> property. The <code>valid</code> property is
+	 * stored in the {@link SilverTextBox#getProperties()} map, and is meant to be
+	 * accessed and set only by {@link #checkValid(SilverTextBox)} and
+	 * {@link #setValid(SilverTextBox)}, respectively.
+	 * </p>
+	 * <p>
+	 * The validity of one of the {@link SilverTextBox} inputs tracked by this
+	 * {@link LogInPresentationImpl} determines whether the user data entered in the
+	 * prompt is valid. This check is only made once every time the user changes the
+	 * data they've entered in an input, so that live user feedback may be given.
+	 * </p>
+	 * <p>
+	 * If the input value is syntactically invalid (with {@link Severity#ERROR}),
+	 * the {@link LogInPresentationImpl} should not be submitable. To facilitate
+	 * implementing this UI requirement, this class keeps track of each
+	 * {@link SilverTextBox} that currently has valid user input in it, and
+	 * recalculates whether the submit buttons should be disabled whenever a user
+	 * input is updated.
+	 * </p>
+	 * <p>
+	 * By default, all {@link SilverTextBox}es that are
+	 * {@link SilverTextBox#isNecessary() necessary} are set to invalid (since they
+	 * begin empty). Apart from this, setting the validity of the input boxes is up
+	 * to the presentation class.
+	 * </p>
+	 *
+	 * @param box The input box to check the validity of.
+	 * @return <code>true</code> if valid, <code>false</code> otherwise.
+	 */
+	private boolean checkValid(final SilverTextBox box) {
+		return box.getProperties().containsKey(LogInPresentationImpl.class);
+	}
+
+	@Override
+	public String getEmail() {
+		return createAccountUI.getEmailPrompt().getInput().getText();
+	}
+
+	@Override
+	public String getLogInIdentifier() {
+		return loginUI.getLogInIdentifierPrompt().getInput().getText();
+	}
+
+	@Override
+	public String getPassword() {
+		return loginUI.getPasswordPrompt().getInput().getText();
+	}
+
+	@Override
+	public String getPhoneNumber() {
+		return createAccountUI.getPhoneNumberPrompt().getInput().getText();
+	}
+
+	@Override
+	public Scene getScene() throws WindowLoadFailureException {
+		if (scene != null)
+			return scene;
+		final FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
+		loader.setController(this);
+		Parent parent;
+		try {
+			parent = loader.load();
+		} catch (final IOException e) {
+			throw new WindowLoadFailureException(e);
+		}
+		return scene = new Scene(parent);
+	}
+
+	@Override
+	public String getUsername() {
+		return createAccountUI.getUsernamePrompt().getInput().getText();
+	}
+
+	private void hideInformationMessage() {
+		infoMessage.setText("");
+	}
+
+	private void informUser(final String text) {
+		infoMessage.setText(text);
+		infoMessage.setFill(Color.hsb(240, 0.7, 1));
+	}
+
+	private void informUserOfError(final String text) {
+		infoMessage.setText(text);
+		infoMessage.setFill(Color.hsb(0, 0.9, 0.6));
 	}
 
 	private @FXML void initialize() {
@@ -145,7 +224,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		loginUI.getCreateAccountHyperlink().setOnAction(a -> showCreateAccountUI());
 		createAccountUI.getBackToLogInHyperlink().setOnAction(a -> showLogInUI());
 
-		EventHandler<ActionEvent> logInSubmitHandler = a -> attemptToLogIn(),
+		final EventHandler<ActionEvent> logInSubmitHandler = a -> attemptToLogIn(),
 				createAccountSubmitHandler = a -> attemptToCreateAccount();
 		loginUI.getLogInIdentifierPrompt().getInput().setOnAction(logInSubmitHandler);
 		loginUI.getPasswordPrompt().getInput().setOnAction(logInSubmitHandler);
@@ -185,32 +264,62 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public Scene getScene() throws WindowLoadFailureException {
-		if (scene != null)
-			return scene;
-		FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
-		loader.setController(this);
-		Parent parent;
-		try {
-			parent = loader.load();
-		} catch (IOException e) {
-			throw new WindowLoadFailureException(e);
+	public void lockUIForLoggingIn() {
+		logInBox.setDisable(true);
+	}
+
+	/**
+	 * <p>
+	 * Sets the validity and color of the specified {@link SilverTextBox}. The color
+	 * is derived from the validity, so this method sets both. If the input is valid
+	 * (i.e. <code>severity</code> is <code>null</code>), this method also checks to
+	 * see if it is empty. If the input box is both valid and empty, its color is
+	 * reset, rather than set to {@link Color#GREEN}.
+	 * </p>
+	 *
+	 * @param box      The input box.
+	 * @param severity The {@link Severity} of the issue that occurred (used to
+	 *                 determine the validity of the input box and its color), or
+	 *                 <code>null</code> if there was no issue.
+	 */
+	private void setState(final SilverTextBox box, final Severity severity) {
+		if (severity == Severity.ERROR) {// Issue preventing data submission.
+			box.getProperties().put(LogInPresentationImpl.class, null);
+			box.setColor(Color.RED);
+		} else {// No issue or WARNING; the data can be submit.
+			box.getProperties().remove(LogInPresentationImpl.class);
+			box.setColor(severity == Severity.WARNING ? Color.color(.8, .7, 0, 1)
+					: box.getInput().getText().isEmpty() ? null : Color.hsb(120, .6, .93));
 		}
-		return scene = new Scene(parent);
+	}
+
+	private void showCreateAccountUI() {
+		logInBox.getChildren().set(2, createAccountUI.getContainer());
+		title.setText("Create Account");
+		logInButton.setText("Create Account");
+		hideInformationMessage();
 	}
 
 	@Override
-	public String getLogInIdentifier() {
-		return loginUI.getLogInIdentifierPrompt().getInput().getText();
+	public void showEmailError(final Issue issue) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public String getPassword() {
-		return loginUI.getPasswordPrompt().getInput().getText();
+	public void showLogInFailure(final LoginFailureException error) {
+		informUserOfError(
+				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
 	}
 
 	@Override
-	public void showLoginProblem(LoginProblemValue problem) {
+	public void showLogInIdentifierError(final Issue issue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showLoginProblem(final LoginProblemValue problem) {
 		if (!Platform.isFxApplicationThread()) {
 			Platform.runLater(() -> showLoginProblem(problem));
 			return;
@@ -274,64 +383,21 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		prompt.setSaturation(1);
 	}
 
-	@Override
-	public void lockUIForLoggingIn() {
-		logInBox.setDisable(true);
+	private void showLogInUI() {
+		logInBox.getChildren().set(2, loginUI.getContainer());
+		title.setText("Log In");
+		logInButton.setText("Log In");
+		hideInformationMessage();
 	}
 
 	@Override
-	public void unlockUIForLoggingIn() {
-		logInBox.setDisable(false);
-	}
-
-	@Override
-	public String getEmail() {
-		return createAccountUI.getEmailPrompt().getInput().getText();
-	}
-
-	@Override
-	public String getPhoneNumber() {
-		return createAccountUI.getPhoneNumberPrompt().getInput().getText();
-	}
-
-	@Override
-	public String getUsername() {
-		return createAccountUI.getUsernamePrompt().getInput().getText();
-	}
-
-	@Override
-	public void showLogInFailure(LoginFailureException error) {
-		informUserOfError(
-				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
-	}
-
-	@Override
-	public void showLogInIdentifierError(Issue issue) {
+	public void showPasswordError(final Issue issue) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void showUsernameError(Issue issue) {
-		// TODO Auto-generated method stub
-		// Both password prompts share the same value and are bound together. Because of
-		// this, when one updates, the other updates, and
-	}
-
-	@Override
-	public void showPasswordError(Issue issue) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showEmailError(Issue issue) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showPhoneNumberError(Issue issue) {
+	public void showPhoneNumberError(final Issue issue) {
 		if (issue == null) {
 			setState(createAccountUI.getPhoneNumberPrompt(), null);
 			createAccountUI.getPhoneNumberPrompt().hideInformation();
@@ -341,83 +407,16 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		}
 	}
 
-	/**
-	 * <p>
-	 * Determines whether the content of a {@link SilverTextBox} is valid or not by
-	 * querying its <code>valid</code> property. The <code>valid</code> property is
-	 * stored in the {@link SilverTextBox#getProperties()} map, and is meant to be
-	 * accessed and set only by {@link #checkValid(SilverTextBox)} and
-	 * {@link #setValid(SilverTextBox)}, respectively.
-	 * </p>
-	 * <p>
-	 * The validity of one of the {@link SilverTextBox} inputs tracked by this
-	 * {@link LogInPresentationImpl} determines whether the user data entered in the
-	 * prompt is valid. This check is only made once every time the user changes the
-	 * data they've entered in an input, so that live user feedback may be given.
-	 * </p>
-	 * <p>
-	 * If the input value is syntactically invalid (with {@link Severity#ERROR}),
-	 * the {@link LogInPresentationImpl} should not be submitable. To facilitate
-	 * implementing this UI requirement, this class keeps track of each
-	 * {@link SilverTextBox} that currently has valid user input in it, and
-	 * recalculates whether the submit buttons should be disabled whenever a user
-	 * input is updated.
-	 * </p>
-	 * <p>
-	 * By default, all {@link SilverTextBox}es that are
-	 * {@link SilverTextBox#isNecessary() necessary} are set to invalid (since they
-	 * begin empty). Apart from this, setting the validity of the input boxes is up
-	 * to the presentation class.
-	 * </p>
-	 * 
-	 * @param box The input box to check the validity of.
-	 * @return <code>true</code> if valid, <code>false</code> otherwise.
-	 */
-	private boolean checkValid(SilverTextBox box) {
-		return box.getProperties().containsKey(LogInPresentationImpl.class);
+	@Override
+	public void showUsernameError(final Issue issue) {
+		// TODO Auto-generated method stub
+		// Both password prompts share the same value and are bound together. Because of
+		// this, when one updates, the other updates, and
 	}
 
-	/**
-	 * <p>
-	 * Sets the validity and color of the specified {@link SilverTextBox}. The color
-	 * is derived from the validity, so this method sets both. If the input is valid
-	 * (i.e. <code>severity</code> is <code>null</code>), this method also checks to
-	 * see if it is empty. If the input box is both valid and empty, its color is
-	 * reset, rather than set to {@link Color#GREEN}.
-	 * </p>
-	 * 
-	 * @param box      The input box.
-	 * @param severity The {@link Severity} of the issue that occurred (used to
-	 *                 determine the validity of the input box and its color), or
-	 *                 <code>null</code> if there was no issue.
-	 */
-	private void setState(SilverTextBox box, Severity severity) {
-		if (severity == Severity.ERROR) {// Issue preventing data submission.
-			box.getProperties().put(LogInPresentationImpl.class, null);
-			box.setColor(Color.RED);
-		} else {// No issue or WARNING; the data can be submit.
-			box.getProperties().remove(LogInPresentationImpl.class);
-			box.setColor(severity == Severity.WARNING ? Color.color(.8, .7, 0, 1)
-					: box.getInput().getText().isEmpty() ? null : Color.hsb(120, .6, .93));
-		}
-	}
-
-	/**
-	 * Determines whether all of the necessary inputs for logging in have
-	 * syntactically correct input (using {@link #checkValid(SilverTextBox)}) and if
-	 * the unnecessary inputs that have values are syntactically correct, and
-	 * updates the {@link #loginUI}'s {@link LogInController#}
-	 */
-	private void calcLogInDisabled() {
-		logInButton.setDisable(
-				!(checkValid(loginUI.getLogInIdentifierPrompt()) && checkValid(loginUI.getPasswordPrompt())));
-	}
-
-	private void calcCreateAccountDisabled() {
-		createAccountButton.setDisable(
-				!(checkValid(createAccountUI.getEmailPrompt()) && checkValid(createAccountUI.getPhoneNumberPrompt())
-				// We check the loginUI's password prompt because only it stores validity.
-						&& checkValid(createAccountUI.getUsernamePrompt()) && checkValid(loginUI.getPasswordPrompt())));
+	@Override
+	public void unlockUIForLoggingIn() {
+		logInBox.setDisable(false);
 	}
 
 }
