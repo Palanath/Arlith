@@ -127,12 +127,12 @@ public class LogInLogicImpl implements LogInLogic {
 	public void triggerCheckPassword() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String pass = presentation.getPassword();
-		if (pass.length() < 9)
-			presentation.showPasswordError(
-					new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING, "Short password", -1));
-		else if (pass.isEmpty())
+		if (pass.isEmpty())
 			presentation.showPasswordError(
 					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Password can't be empty", -1));
+		else if (pass.length() < 9)
+			presentation.showPasswordError(
+					new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING, "Short password", -1));
 		else
 			presentation.showPasswordError(null);
 
