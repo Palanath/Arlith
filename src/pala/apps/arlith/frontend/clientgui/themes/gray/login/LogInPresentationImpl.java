@@ -394,11 +394,11 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private void setState(SilverTextBox box, Severity severity) {
 		if (severity == Severity.ERROR) {// Issue preventing data submission.
 			box.getProperties().put(LogInPresentationImpl.class, null);
-			box.setColor(Color.FIREBRICK);
+			box.setColor(Color.RED);
 		} else {// No issue or WARNING; the data can be submit.
 			box.getProperties().remove(LogInPresentationImpl.class);
 			box.setColor(severity == Severity.WARNING ? Color.color(.8, .7, 0, 1)
-					: box.getInput().getText().isEmpty() ? null : Color.GREEN);
+					: box.getInput().getText().isEmpty() ? null : Color.hsb(120, .6, .93));
 		}
 	}
 
