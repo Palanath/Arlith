@@ -74,11 +74,15 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void attemptToLogIn() {
+		if (logInButton.isDisable())
+			return;// Don't execute if inputs not valid.
 		informUser("Attempting to log in...");
 		logic.triggerLogIn();
 	}
 
 	private void attemptToCreateAccount() {
+		if (createAccountButton.isDisable())
+			return;// Don't execute if inputs not valid.
 		informUser("Attempting to create an account...");
 		logic.triggerCreateAccount();
 	}
@@ -153,6 +157,12 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 			else
 				logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		});
+
+		// This prompt is not "necessary," so an empty input is valid. Therefore, we set
+		// it to "valid" by default.
+		setValid(createAccountUI.getPhoneNumberPrompt(), true);
+		calcLogInDisabled();// Disable inputs accordingly.
+		calcCreateAccountDisabled();
 	}
 
 	@Override
@@ -313,6 +323,66 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 			return;
 		} else if (issue.getSeverity() == Severity.WARNING)
 			createAccountUI.getPhoneNumberPrompt().colorTextBox(60);
+	}
+
+	/**
+	 * <p>
+	 * Determines whether the content of a {@link SilverTextBox} is valid or not by
+	 * querying its <code>valid</code> property. The <code>valid</code> property is
+	 * stored in the {@link SilverTextBox#getProperties()} map, and is meant to be
+	 * accessed and set only by {@link #checkValid(SilverTextBox)} and
+	 * {@link #setValid(SilverTextBox)}, respectively.
+	 * </p>
+	 * <p>
+	 * The validity of one of the {@link SilverTextBox} inputs tracked by this
+	 * {@link LogInPresentationImpl} determines whether the user data entered in the
+	 * prompt is valid. This check is only made once every time the user changes the
+	 * data they've entered in an input, so that live user feedback may be given.
+	 * </p>
+	 * <p>
+	 * If the input value is syntactically invalid (with {@link Severity#ERROR}),
+	 * the {@link LogInPresentationImpl} should not be submitable. To facilitate
+	 * implementing this UI requirement, this class keeps track of each
+	 * {@link SilverTextBox} that currently has valid user input in it, and
+	 * recalculates whether the submit buttons should be disabled whenever a user
+	 * input is updated.
+	 * </p>
+	 * <p>
+	 * By default, all {@link SilverTextBox}es that are
+	 * {@link SilverTextBox#isNecessary() necessary} are set to invalid (since they
+	 * begin empty). Apart from this, setting the validity of the input boxes is up
+	 * to the presentation class.
+	 * </p>
+	 * 
+	 * @param box The input box to check the validity of.
+	 * @return <code>true</code> if valid, <code>false</code> otherwise.
+	 */
+	private boolean checkValid(SilverTextBox box) {
+		return box.getProperties().containsKey(LogInPresentationImpl.class);
+	}
+
+	private void setValid(SilverTextBox box, boolean valid) {
+		if (valid)
+			box.getProperties().put(LogInPresentationImpl.class, null);
+		else
+			box.getProperties().remove(LogInPresentationImpl.class);
+	}
+
+	/**
+	 * Determines whether all of the necessary inputs for logging in have
+	 * syntactically correct input (using {@link #checkValid(SilverTextBox)}) and if
+	 * the unnecessary inputs that have values are syntactically correct, and
+	 * updates the {@link #loginUI}'s {@link LogInController#}
+	 */
+	private void calcLogInDisabled() {
+		logInButton.setDisable(
+				!(checkValid(loginUI.getLogInIdentifierPrompt()) && checkValid(loginUI.getPasswordPrompt())));
+	}
+
+	private void calcCreateAccountDisabled() {
+		createAccountButton.setDisable(
+				!(checkValid(createAccountUI.getEmailPrompt()) && checkValid(createAccountUI.getPhoneNumberPrompt())
+						&& checkValid(createAccountUI.getUsernamePrompt()) && checkValid(loginUI.getPasswordPrompt())));
 	}
 
 }
