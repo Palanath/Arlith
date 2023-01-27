@@ -201,8 +201,22 @@ public class SilverTextBox extends VBox {
 		return this.colorProperty().get();
 	}
 
+	/**
+	 * Sets the {@link Color} of this {@link SilverTextBox} to that specified, or
+	 * resets the {@link Color}, by calling {@link #resetColor()}, if
+	 * <code>null</code> is provided. Note that this method is not analogous to
+	 * {@link ObjectProperty#set(Object)} in that setting the latter to
+	 * <code>null</code> will not reset the color of this {@link SilverTextBox}'s
+	 * theme.
+	 * 
+	 * @param color The color, or <code>null</code> to reset the
+	 *              {@link SilverTextBox}.
+	 */
 	public final void setColor(final Color color) {
-		this.colorProperty().set(color);
+		if (color == null)
+			resetColor();
+		else
+			this.colorProperty().set(color);
 	}
 
 	public final void setHue(double hue) {
