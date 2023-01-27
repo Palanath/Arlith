@@ -12,10 +12,10 @@ public class CreateAccountController {
 	private final VBox passwordContainer = new VBox(10, passwordPrompt, hyperlinkContainer);
 	private final VBox container = new VBox(40, usernamePrompt, emailPrompt, phoneNumberPrompt, passwordContainer);
 	{
-		usernamePrompt.setPrefWidth(300);
-		emailPrompt.setPrefWidth(300);
-		phoneNumberPrompt.setPrefWidth(300);
-		passwordPrompt.setPrefWidth(300);
+		usernamePrompt.setPrefWidth(350);
+		emailPrompt.setPrefWidth(350);
+		phoneNumberPrompt.setPrefWidth(350);
+		passwordPrompt.setPrefWidth(350);
 		usernamePrompt.getPrompt().setText("Username");
 		emailPrompt.getPrompt().setText("Email");
 		phoneNumberPrompt.getPrompt().setText("Phone Number");
