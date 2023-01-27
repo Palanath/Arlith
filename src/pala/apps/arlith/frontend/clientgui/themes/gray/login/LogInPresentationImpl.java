@@ -109,6 +109,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 								new Stop(0, Color.color(.58, .58, .58)), new Stop(.4, Color.TRANSPARENT)),
 						CornerRadii.EMPTY, Insets.EMPTY)));
 		logInBox.getChildren().addAll(infoMessageContainer, loginUI.getContainer(), logInButton);
+		loginUI.getContainer().setPadding(new Insets(0, 0, 110, 0));// Used to make window large enough to fit
+																	// createAccountUI by default.
 
 		// Attach triggers for logic.
 		loginUI.getLogInIdentifierPrompt().getInput().textProperty()
