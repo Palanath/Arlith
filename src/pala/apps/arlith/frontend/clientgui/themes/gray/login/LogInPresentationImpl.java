@@ -92,8 +92,9 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void calcCreateAccountDisabled() {
-		createAccountButton.setDisable(
-				(!checkValid(createAccountUI.getEmailPrompt()) || !checkValid(createAccountUI.getPhoneNumberPrompt()) || !checkValid(createAccountUI.getUsernamePrompt()) || !checkValid(loginUI.getPasswordPrompt())));
+		createAccountButton.setDisable((!checkValid(createAccountUI.getEmailPrompt())
+				|| !checkValid(createAccountUI.getPhoneNumberPrompt())
+				|| !checkValid(createAccountUI.getUsernamePrompt()) || !checkValid(loginUI.getPasswordPrompt())));
 	}
 
 	/**
@@ -392,8 +393,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showPasswordError(final Issue issue) {
-		// TODO Auto-generated method stub
-
+		if (issue == null) {
+			setState(loginUI.getPasswordPrompt(), null);
+			loginUI.getPasswordPrompt().hideInformation();
+		} else {
+			setState(loginUI.getPasswordPrompt(), issue.getSeverity());
+			loginUI.getPasswordPrompt().showInformation(issue.message());
+		}
 	}
 
 	@Override
