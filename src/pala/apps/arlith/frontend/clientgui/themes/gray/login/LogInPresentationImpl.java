@@ -51,10 +51,27 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		infoMessage.setWrappingWidth(300);
 		infoMessage.setFont(Font.font(13));
 		infoMessage.setTextAlignment(TextAlignment.CENTER);
+
+		// Bind password inputs' (1) text content, (2) showInfo property (whether info
+		// string is visible or not), (3) information content, (4) color.
+		//
+		// The main difference between the two prompts is that the loginUI is the only
+		// prompt that stores "validity" by the #setState(SilverTextBox, Severity) and
+		// checkValid(SilverTextBox) methods.
 		loginUI.getPasswordPrompt().getInput().textProperty()
 				.bindBidirectional(createAccountUI.getPasswordPrompt().getInput().textProperty());
+		loginUI.getPasswordPrompt().getInformationText().textProperty()
+				.bindBidirectional(createAccountUI.getPasswordPrompt().getInformationText().textProperty());
+		loginUI.getPasswordPrompt().showInformationProperty()
+				.bindBidirectional(createAccountUI.getPasswordPrompt().showInformationProperty());
 		loginUI.getPasswordPrompt().colorProperty()
 				.bindBidirectional(createAccountUI.getPasswordPrompt().colorProperty());
+		// The two password prompts are bound but still kept separate nodes because (1)
+		// if there were only one node, it would have to be swapped around between the
+		// two UI parts (that is problematic with where it is in the scene graph) and
+		// (2) when enter is pressed and they are focused, different actions take place
+		// (log in for log in UI's password prompt, and account creation for create
+		// account UI's password prompt).
 	}
 	private final NiceLookingButton logInButton = new NiceLookingButton("Log In"),
 			createAccountButton = new NiceLookingButton("Create Account");
@@ -131,12 +148,14 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		EventHandler<ActionEvent> logInSubmitHandler = a -> attemptToLogIn(),
 				createAccountSubmitHandler = a -> attemptToCreateAccount();
 		loginUI.getLogInIdentifierPrompt().getInput().setOnAction(logInSubmitHandler);
+		loginUI.getPasswordPrompt().getInput().setOnAction(logInSubmitHandler);
 		logInButton.setOnAction(logInSubmitHandler);
 
 		createAccountButton.setOnAction(createAccountSubmitHandler);
 		createAccountUI.getUsernamePrompt().getInput().setOnAction(createAccountSubmitHandler);
 		createAccountUI.getEmailPrompt().getInput().setOnAction(createAccountSubmitHandler);
 		createAccountUI.getPhoneNumberPrompt().getInput().setOnAction(createAccountSubmitHandler);
+		createAccountUI.getPasswordPrompt().getInput().setOnAction(createAccountSubmitHandler);
 
 		logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		logInButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
@@ -295,7 +314,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	@Override
 	public void showUsernameError(Issue issue) {
 		// TODO Auto-generated method stub
-
+		// Both password prompts share the same value and are bound together. Because of
+		// this, when one updates, the other updates, and
 	}
 
 	@Override
@@ -312,17 +332,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showPhoneNumberError(Issue issue) {
-		if (issue == null)
-			if (getPhoneNumber().isEmpty())
-				createAccountUI.getPhoneNumberPrompt().resetColor();
-			else
-				createAccountUI.getPhoneNumberPrompt().colorTextBox(120);
-		else if (issue.getSeverity() == Severity.ERROR) {
-			createAccountUI.getPhoneNumberPrompt().colorTextBox(0);
-			// As long as there is an error, disable the input.
-			return;
-		} else if (issue.getSeverity() == Severity.WARNING)
-			createAccountUI.getPhoneNumberPrompt().colorTextBox(60);
+		if (issue == null) {
+			setState(createAccountUI.getPhoneNumberPrompt(), null);
+			createAccountUI.getPhoneNumberPrompt().hideInformation();
+		} else {
+			setState(createAccountUI.getPhoneNumberPrompt(), issue.getSeverity());
+			createAccountUI.getPhoneNumberPrompt().showInformation(issue.message());
+		}
 	}
 
 	/**
@@ -400,6 +416,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private void calcCreateAccountDisabled() {
 		createAccountButton.setDisable(
 				!(checkValid(createAccountUI.getEmailPrompt()) && checkValid(createAccountUI.getPhoneNumberPrompt())
+				// We check the loginUI's password prompt because only it stores validity.
 						&& checkValid(createAccountUI.getUsernamePrompt()) && checkValid(loginUI.getPasswordPrompt())));
 	}
 
