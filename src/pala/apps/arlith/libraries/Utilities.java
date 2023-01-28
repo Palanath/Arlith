@@ -1,12 +1,11 @@
 package pala.apps.arlith.libraries;
 
-import static pala.apps.arlith.libraries.Utilities.EmailIssue.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Issue;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.strings.StringTools;
 
@@ -347,9 +346,108 @@ public class Utilities {
 		}
 	}
 
-	public static Object checkPhoneNumberValidity(String phoneNumber) {
-		// TODO Implement
-		return null;
+	public static PhoneNumberIssue checkPhoneNumberValidity(String phoneNumber) {
+		boolean removedPlus;
+		if (phoneNumber.isEmpty())
+			return new PhoneNumberIssue(-1, pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.EMPTY_INPUT);
+		else if (removedPlus = phoneNumber.startsWith("+")) {
+			phoneNumber = phoneNumber.substring(1);
+			if (phoneNumber.isEmpty())
+				return new PhoneNumberIssue(-1,
+						pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.NOTHING_AFTER_PLUS);
+		}
+
+		for (int i = 0; i < phoneNumber.length() && i < 15; i++)
+			if (!Character.isDigit(phoneNumber.charAt(i))) {
+				return new PhoneNumberIssue(removedPlus ? i + 1 : i, phoneNumber.charAt(i) == '+'
+						? pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.MISPLACED_PLUS_SYMBOL
+						: pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.NON_DIGIT_WHERE_DIGIT_EXPECTED);
+			}
+
+		return phoneNumber.length() > 15
+				? new PhoneNumberIssue(-1,
+						pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.PHONE_NUMBER_TOO_LONG)
+				: phoneNumber.length() < 10
+						? new PhoneNumberIssue(-1,
+								pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue.PHONE_NUMBER_TOO_SHORT)
+						: null;
+	}
+
+	public static class PhoneNumberIssue {
+		private final int charpos;
+		private final Issue issue;
+
+		private PhoneNumberIssue(int charpos, Issue issue) {
+			this.charpos = charpos;
+			this.issue = issue;
+		}
+
+		/**
+		 * Returns the position of the first character found that is responsible for the
+		 * {@link PhoneNumberIssue}, or the first character of the first substring found
+		 * that is responsible for the {@link PhoneNumberIssue}. If there is none or
+		 * none is reported, this method returns <code>-1</code>.
+		 * 
+		 * @return The position of the violation, or <code>-1</code>.
+		 */
+		public int getCharpos() {
+			return charpos;
+		}
+
+		/**
+		 * Determines the type of issue that occurred.
+		 * 
+		 * @return An {@link Issue} instance representing which {@link Issue} occurred.
+		 */
+		public Issue getIssue() {
+			return issue;
+		}
+
+		public enum Issue {
+			/**
+			 * Occurs exactly when the input string is empty.
+			 */
+			EMPTY_INPUT,
+			/**
+			 * Occurs when a <code>+</code> symbol is found that is not at the very
+			 * beginning of the input string. This will only occur if the <code>+</code>
+			 * character is at one of the first 15 positions that a digit is expected.
+			 */
+			MISPLACED_PLUS_SYMBOL,
+			/**
+			 * Occurs when a non-digit character is found, excluding the <code>+</code>
+			 * symbol. The <code>+</code> symbol is allowed at the beginning of the phone
+			 * number to denote an international phone number, and anywhere else in the
+			 * string, the more specific, {@link #MISPLACED_PLUS_SYMBOL} {@link Issue} type
+			 * is reported. This will only occur if the character is at one of the first 15
+			 * positions that a digit is expected.
+			 */
+			NON_DIGIT_WHERE_DIGIT_EXPECTED,
+			/**
+			 * This issue denotes that the <code>+1</code> symbol was provided to denote the
+			 * international form of the input phone number, but nothin was provided after
+			 * the <code>+</code>. This occurs when the provided input string is just a
+			 * <code>+</code> symbol.
+			 */
+			NOTHING_AFTER_PLUS,
+			/**
+			 * Indicates that the provided phone number is too many characters long. Phone
+			 * numbers can be a maximum of 15 digits if they have the <code>+</code> symbol
+			 * in front (for a total of 16 characters), and a minimum of 10
+			 * <code>digits</code> (and minimum total of 10 characters) in all cases. The
+			 * validation algorithm checks the first 15 characters that are expected to be
+			 * digits and, if any of them are not digits, produces the appropriate error.
+			 * Otherwise, if all such characters are digits, but the string does not end
+			 * after the 15<sup>th</sup> digit, this {@link Issue} occurs.
+			 */
+			PHONE_NUMBER_TOO_LONG,
+			/**
+			 * Indicates that the provided phone number is too short. The numeric part of
+			 * the phone number may not be fewer than 10 digits. If such is the case, this
+			 * {@link Issue} occurs.
+			 */
+			PHONE_NUMBER_TOO_SHORT;
+		}
 	}
 
 	public static class EmailIssue {
