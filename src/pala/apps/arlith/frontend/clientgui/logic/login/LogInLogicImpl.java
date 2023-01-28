@@ -13,6 +13,7 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiv
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Issue;
 import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.Utilities.EmailIssue;
+import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue;
 import pala.apps.arlith.libraries.Utilities.UsernameIssue;
 
 /**
@@ -234,38 +235,38 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCheckPhoneNumber() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String phone = presentation.getPhoneNumber();
-		if (phone.isEmpty()) {
+		String phoneNumber = presentation.getPhoneNumber();
+
+		PhoneNumberIssue issue = Utilities.checkPhoneNumberValidity(phoneNumber);
+		if (issue == null)
 			presentation.showPhoneNumberError(null);
-			return;
-		}
-		if (phone.startsWith("+")) {
-			phone = phone.substring(1);
-			if (phone.isEmpty()) {
-				presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-						"Enter phone # (with country code) after '+'", -1));
-				return;
-			}
-		}
-
-		for (int i = 0; i < phone.length() && i < 15; i++)
-			if (!Character.isDigit(phone.charAt(i))) {
-				presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-						"'" + phone.charAt(i) + "' is not a digit.", i));
-				return;
-			}
-
-		// Australian phone numbers can be as many as 15 digits long, apparently.
-		// Once phone numbers are actually used, this will need to be more precisely
-		// sanitized.
-		if (phone.length() > 15)
-			presentation.showPhoneNumberError(
-					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Phone # too long.", -1));
-		else if (phone.length() < 10)
-			presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-					"Phone # should be at least 10 digits.", -1));
 		else {
-			presentation.showPhoneNumberError(null);
+			String message;
+			switch (issue.getIssue()) {
+			case EMPTY_INPUT:
+				presentation.showPhoneNumberError(null);
+				return;
+			case MISPLACED_PLUS_SYMBOL:
+				message = "'+' is only allowed at the beginning.";
+				break;
+			case NON_DIGIT_WHERE_DIGIT_EXPECTED:
+				message = "'" + phoneNumber.charAt(issue.getCharpos()) + "' is not a digit.";
+				break;
+			case NOTHING_AFTER_PLUS:
+				message = "No number provided after '+'.";
+				break;
+			case PHONE_NUMBER_TOO_LONG:
+				message = "Phone # too long (max 15 digits).";
+				break;
+			case PHONE_NUMBER_TOO_SHORT:
+				message = "Phone # too short (min 10 digits).";
+				break;
+			default:
+				message = "Phone # invalid.";
+				break;
+			}
+			presentation.showPhoneNumberError(
+					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, message, issue.getCharpos()));
 		}
 	}
 
