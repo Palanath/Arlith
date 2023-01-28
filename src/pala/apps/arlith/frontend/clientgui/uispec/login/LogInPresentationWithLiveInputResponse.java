@@ -56,7 +56,7 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 		 * </p>
 		 * <p>
 		 * The <code>message</code> should be short and descriptive, and can be no more
-		 * than 127 characters in length.
+		 * than 40 characters in length.
 		 * </p>
 		 * <p>
 		 * The <code>charpos</code> should:
