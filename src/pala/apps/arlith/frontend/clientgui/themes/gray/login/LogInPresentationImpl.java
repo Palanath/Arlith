@@ -27,6 +27,7 @@ import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
+import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 import pala.libs.generic.javafx.FXTools;
 
@@ -315,8 +316,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showLogInIdentifierError(final Issue issue) {
-		// TODO Auto-generated method stub
-
+		if (issue == null) {
+			setState(loginUI.getLogInIdentifierPrompt(), null);
+			loginUI.getLogInIdentifierPrompt().hideInformation();
+		} else {
+			setState(loginUI.getLogInIdentifierPrompt(), issue.getSeverity());
+			loginUI.getLogInIdentifierPrompt().showInformation(issue.message());
+		}
 	}
 
 	@Override
@@ -415,9 +421,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showUsernameError(final Issue issue) {
-		// TODO Auto-generated method stub
-		// Both password prompts share the same value and are bound together. Because of
-		// this, when one updates, the other updates, and
+		if (issue == null) {
+			setState(createAccountUI.getUsernamePrompt(), null);
+			createAccountUI.getUsernamePrompt().hideInformation();
+		} else {
+			setState(createAccountUI.getUsernamePrompt(), issue.getSeverity());
+			createAccountUI.getUsernamePrompt().showInformation(issue.message());
+		}
 	}
 
 	@Override
