@@ -27,7 +27,7 @@ import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
-import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue.Issue;
+import pala.libs.generic.JavaTools;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 import pala.libs.generic.javafx.FXTools;
 
@@ -36,8 +36,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private Scene scene;
 
 	private final LogInController loginUI = new LogInController();
-
 	private final CreateAccountController createAccountUI = new CreateAccountController();
+
 	public @FXML BorderPane root;
 
 	public @FXML VBox logInBox;
@@ -93,9 +93,9 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void calcCreateAccountDisabled() {
-		createAccountButton.setDisable((!checkValid(createAccountUI.getEmailPrompt())
+		createAccountButton.setDisable(!checkValid(createAccountUI.getEmailPrompt())
 				|| !checkValid(createAccountUI.getPhoneNumberPrompt())
-				|| !checkValid(createAccountUI.getUsernamePrompt()) || !checkValid(loginUI.getPasswordPrompt())));
+				|| !checkValid(createAccountUI.getUsernamePrompt()) || !checkValid(loginUI.getPasswordPrompt()));
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	 */
 	private void calcLogInDisabled() {
 		logInButton.setDisable(
-				(!checkValid(loginUI.getLogInIdentifierPrompt()) || !checkValid(loginUI.getPasswordPrompt())));
+				!checkValid(loginUI.getLogInIdentifierPrompt()) || !checkValid(loginUI.getPasswordPrompt()));
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	 * @return <code>true</code> if valid, <code>false</code> otherwise.
 	 */
 	private boolean checkValid(final SilverTextBox box) {
-		return box.getProperties().containsKey(LogInPresentationImpl.class);
+		return !box.getProperties().containsKey(LogInPresentationImpl.class);
 	}
 
 	@Override
@@ -258,9 +258,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 				logInButton.setBackground(FXTools.getBackgroundFromColor(Color.DODGERBLUE.desaturate().desaturate()));
 		});
 
-		// This prompt is not "necessary," so an empty input is valid. Therefore, we set
-		// it to "valid" by default.
-		setState(createAccountUI.getPhoneNumberPrompt(), null);
+		// By default, every prompt is in the valid state. Over here, we invalidate the
+		// ones that are necessary.
+
+		loginUI.getLogInIdentifierPrompt().getProperties().put(LogInPresentationImpl.class, null);
+		loginUI.getPasswordPrompt().getProperties().put(LogInPresentationImpl.class, null);
+		createAccountUI.getEmailPrompt().getProperties().put(LogInPresentationImpl.class, null);
+		createAccountUI.getUsernamePrompt().getProperties().put(LogInPresentationImpl.class, null);
 		calcLogInDisabled();// Disable inputs accordingly.
 		calcCreateAccountDisabled();
 	}
@@ -302,9 +306,9 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void showCreateAccountUI() {
-		logInBox.getChildren().set(2, createAccountUI.getContainer());
+		JavaTools.swap(logInBox.getChildren(), loginUI.getContainer(), createAccountUI.getContainer());
 		title.setText("Create Account");
-		logInButton.setText("Create Account");
+		JavaTools.swap(logInBox.getChildren(), logInButton, createAccountButton);
 		hideInformationMessage();
 	}
 
@@ -402,9 +406,9 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	private void showLogInUI() {
-		logInBox.getChildren().set(2, loginUI.getContainer());
+		JavaTools.swap(logInBox.getChildren(), createAccountUI.getContainer(), loginUI.getContainer());
 		title.setText("Log In");
-		logInButton.setText("Log In");
+		JavaTools.swap(logInBox.getChildren(), createAccountButton, logInButton);
 		hideInformationMessage();
 	}
 
