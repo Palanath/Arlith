@@ -255,6 +255,7 @@ public class LogInLogicImpl implements LogInLogic {
 				break;
 			case TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL:
 				message = "Domain label too big (>63)";
+				break;
 			case TOUCHING_DOTS_IN_LOCAL_PART:
 				message = "Local part dots cannot touch";
 				break;
