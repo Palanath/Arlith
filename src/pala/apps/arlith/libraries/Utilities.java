@@ -180,7 +180,7 @@ public class Utilities {
 
 			if (domain.startsWith("["))
 				if (!domain.endsWith("]"))
-					return new EmailIssue(EmailIssue.Issue.DOMAIN_HAS_NO_CLOSING_BRACKET, localpart, domain);
+					return new EmailIssue(EmailIssue.Issue.IP_DOES_NOT_END_IN_CLOSING_BRACKET, localpart, domain);
 				else {
 					String ipaddrStr = domain.substring(1, domain.length() - 1);// Str between brackets.
 					if (ipaddrStr.isEmpty())
@@ -849,6 +849,18 @@ public class Utilities {
 			 * at the end of the string.
 			 * </p>
 			 * <p>
+			 * <b>Note</b> that there may have been a closing bracket somewhere else in the
+			 * domain, such as in the invalid email:
+			 * </p>
+			 * 
+			 * <pre>
+			 * <code>pala@[123.45.67.89].</code>
+			 * </pre>
+			 * <p>
+			 * Notice the trailing <code>.</code> character at the end of the email, where
+			 * the <code>]</code> character is expected to be.
+			 * </p>
+			 * <p>
 			 * If this issue is the case of an {@link EmailIssue},
 			 * </p>
 			 * <ul>
@@ -857,7 +869,7 @@ public class Utilities {
 			 * <li>{@link EmailIssue#getDomain()} returns the empty string.</li>
 			 * </ul>
 			 */
-			DOMAIN_HAS_NO_CLOSING_BRACKET,
+			IP_DOES_NOT_END_IN_CLOSING_BRACKET,
 			/**
 			 * <p>
 			 * Indicates that an IPv4 address was being used as the domain, but the IP

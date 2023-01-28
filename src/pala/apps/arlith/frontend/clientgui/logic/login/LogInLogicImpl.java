@@ -196,8 +196,8 @@ public class LogInLogicImpl implements LogInLogic {
 			case DOMAIN_ENDS_IN_DOT:
 				message = "Domain not finished";
 				break;
-			case DOMAIN_HAS_NO_CLOSING_BRACKET:
-				message = "IP missing closing bracket (])";
+			case IP_DOES_NOT_END_IN_CLOSING_BRACKET:
+				message = "IP doesn't end in ']' character.";
 				break;
 			case DOMAIN_IPV4_HAS_INVALID_NUMBER_OF_OCTETS:
 				message = "IPv4, invalid # of octets";
