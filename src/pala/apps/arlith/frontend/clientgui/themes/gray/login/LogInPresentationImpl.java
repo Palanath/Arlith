@@ -285,6 +285,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	 *                 <code>null</code> if there was no issue.
 	 */
 	private void setState(final SilverTextBox box, final Severity severity) {
+		boolean swapping = box.getProperties().containsKey(LogInPresentationImpl.class) ^ severity == Severity.ERROR;
 		if (severity == Severity.ERROR) {// Issue preventing data submission.
 			box.getProperties().put(LogInPresentationImpl.class, null);
 			box.setColor(Color.RED);
@@ -292,6 +293,11 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 			box.getProperties().remove(LogInPresentationImpl.class);
 			box.setColor(severity == Severity.WARNING ? Color.color(.8, .7, 0, 1)
 					: box.getInput().getText().isEmpty() ? null : Color.hsb(120, .6, .93));
+		}
+		if (swapping) {
+			// Recalculate buttons' disabled-ness.
+			calcCreateAccountDisabled();
+			calcLogInDisabled();
 		}
 	}
 
