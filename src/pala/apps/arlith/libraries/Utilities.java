@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Issue;
+import pala.apps.arlith.libraries.Utilities.EmailIssue;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.strings.StringTools;
 
@@ -77,9 +78,9 @@ public class Utilities {
 		else if (username.length() > 20)
 			return new UsernameIssue(-1, UsernameIssue.Issue.USERNAME_TOO_LONG);
 		else
-			for (int i = 0, j; i < username.length(); i++)
-				if ((j = JavaTools.indexOf(String.valueOf(username.charAt(i)), getControlCharacters())) != -1)
-					return new UsernameIssue(j, UsernameIssue.Issue.CONTAINED_ILLEGAL_CHARACTER);
+			for (int i = 0; i < username.length(); i++)
+				if (JavaTools.indexOf(String.valueOf(username.charAt(i)), getControlCharacters()) != -1)
+					return new UsernameIssue(i, UsernameIssue.Issue.CONTAINED_ILLEGAL_CHARACTER);
 		return null;
 	}
 
