@@ -122,6 +122,40 @@ public class LogInLogicImpl implements LogInLogic {
 	public void triggerCheckLogInIdentifier() {
 		// TODO Auto-generated method stub
 
+		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
+		String ident = presentation.getLogInIdentifier();
+		
+		// This block contains clauses that check the syntax for specific types of
+		// identifiers (email, phone #, and user tag). If the input cannot be determined
+		// to be one of those types, we break out of the block.
+		HANDLE_SYNTAX_FOR_DETERMINED_TYPES: {
+			// The log in identifier can be either an email address, a phone number, or a
+			// user tag. This gives us 3 cases:
+			//
+			// The email address MUST have an @ symbol.
+			// The user tag CANNOT have an @ symbol but MUST have a #.
+			// The phone number CANNOT have an @ symbol and CANNOT have a #.
+			if (ident.contains("@")) {
+				// Email
+			} else if (ident.contains("#")) {
+				// Tag
+			} else {
+				// Treat as phone number if first character matches what a phone # could start
+				// with. Otherwise, consider type to be unknown.
+				if (ident.isEmpty())
+					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
+				char first = ident.charAt(0);
+				if (first != '+' && !Character.isDigit(first))
+					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
+
+			}
+			return;
+		}
+		// We get here if the type of identifier the user is using has not been
+		// determined.
+		presentation.showLogInIdentifierError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
+				"Tag, email, or phone # required.", -1));
+
 	}
 
 	@Override
@@ -163,16 +197,16 @@ public class LogInLogicImpl implements LogInLogic {
 				message = "Domain not finished";
 				break;
 			case DOMAIN_HAS_NO_CLOSING_BRACKET:
-				message = "IP address missing closing bracket ([)";
+				message = "IP missing closing bracket (])";
 				break;
 			case DOMAIN_IPV4_HAS_INVALID_NUMBER_OF_OCTETS:
-				message = "IPv4 invalid # of octets";
+				message = "IPv4, invalid # of octets";
 				break;
 			case DOMAIN_IPV4_INVALID_OCTET:
-				message = "IPv4 invalid octet";
+				message = "Invalid IPv4 octet";
 				break;
 			case DOMAIN_LABEL_BEGINS_WITH_DOT:
-				message = "Domain label starts with period (.)";
+				message = "Domain label starts w/ period (.)";
 				break;
 			case DOMAIN_LABEL_ENDS_IN_HYPHEN:
 				message = "Domain label ends in period (.)";
@@ -181,7 +215,7 @@ public class LogInLogicImpl implements LogInLogic {
 				message = "Domain has too few parts (labels)";
 				break;
 			case DOMAIN_NAME_LABEL_STARTS_WITH_HYPHEN:
-				message = "Domain label can't start with hyphen (-)";
+				message = "Domain label starts w/ hyphen (-)";
 				break;
 			case DOMAIN_TOO_BIG:
 				message = "Domain too large";
@@ -199,28 +233,28 @@ public class LogInLogicImpl implements LogInLogic {
 				message = "No @ symbol after local part";
 				break;
 			case ILLEGAL_CHARACTER:
-				message = "Email contains illegal character";
+				message = "Email has illegal character";
 				break;
 			case ILLEGAL_CHARACTER_IN_DOMAIN:
-				message = "Domain contains illegal character";
+				message = "Domain has illegal character";
 				break;
 			case IPV6_USED:
 				message = "IPv6 emails not yet supported";
 				break;
 			case LOCAL_PART_BEGINS_WITH_PERIOD:
-				message = "Local part can't start with period (.)";
+				message = "Local part starts w/ period (.)";
 				break;
 			case LOCAL_PART_ENDS_WITH_PERIOD:
-				message = "Local part can't end with period (.)";
+				message = "Local part ends w/ period (.)";
 				break;
 			case LOCAL_PART_NOT_FOLLOWED_BY_AT:
-				message = "Local part not followed by @ symbol";
+				message = "Local part not followed by @";
 				break;
 			case NONTERMINATED_QUOTED_LOCALPART:
 				message = "Local part quote not balanced";
 				break;
 			case TOO_MANY_OCTETS_IN_DOMAIN_NAME_LABEL:
-				message = "Domain label has more than 63 characters";
+				message = "Domain label too big (>63)";
 			case TOUCHING_DOTS_IN_LOCAL_PART:
 				message = "Local part dots cannot touch";
 				break;
@@ -247,7 +281,7 @@ public class LogInLogicImpl implements LogInLogic {
 				presentation.showPhoneNumberError(null);
 				return;
 			case MISPLACED_PLUS_SYMBOL:
-				message = "'+' is only allowed at the beginning.";
+				message = "'+' only allowed at beginning.";
 				break;
 			case NON_DIGIT_WHERE_DIGIT_EXPECTED:
 				message = "'" + phoneNumber.charAt(issue.getCharpos()) + "' is not a digit.";
