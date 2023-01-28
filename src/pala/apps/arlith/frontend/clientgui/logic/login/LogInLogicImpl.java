@@ -124,7 +124,7 @@ public class LogInLogicImpl implements LogInLogic {
 
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String ident = presentation.getLogInIdentifier();
-		
+
 		// This block contains clauses that check the syntax for specific types of
 		// identifiers (email, phone #, and user tag). If the input cannot be determined
 		// to be one of those types, we break out of the block.
@@ -135,10 +135,19 @@ public class LogInLogicImpl implements LogInLogic {
 			// The email address MUST have an @ symbol.
 			// The user tag CANNOT have an @ symbol but MUST have a #.
 			// The phone number CANNOT have an @ symbol and CANNOT have a #.
-			if (ident.contains("@")) {
-				// Email
-			} else if (ident.contains("#")) {
-				// Tag
+			if (ident.contains("@")) {// Email
+				presentation.showLogInIdentifierError(determineEmailIssue(ident));
+			} else if (ident.contains("#")) {// Tag
+				int hashind = ident.indexOf('#');
+				if (hashind == ident.length() - 1) {
+					presentation.showLogInIdentifierError(new Issue(
+							LogInPresentationWithLiveInputResponse.Severity.ERROR, "Useranme can't end in '#'.", -1));
+				} else {
+					String username = ident.substring(0, hashind);
+					String disc = ident.substring(hashind + 1);
+					// TODO Sanitize Username.
+					// TODO Sanitize Discriminator.
+				}
 			} else {
 				// Treat as phone number if first character matches what a phone # could start
 				// with. Otherwise, consider type to be unknown.
@@ -148,6 +157,7 @@ public class LogInLogicImpl implements LogInLogic {
 				if (first != '+' && !Character.isDigit(first))
 					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
 
+				//TODO Sanitize Phone #.
 			}
 			return;
 		}
@@ -173,13 +183,10 @@ public class LogInLogicImpl implements LogInLogic {
 
 	}
 
-	@Override
-	public void triggerCheckEmail() {
-		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String email = presentation.getEmail();
+	private static Issue determineEmailIssue(String email) {
 		EmailIssue validationIssue = Utilities.checkEmailValidity(email);
 		if (validationIssue == null)
-			presentation.showEmailError(null);
+			return null;
 		else {
 			String message;
 			switch (validationIssue.getIssue()) {
@@ -262,9 +269,16 @@ public class LogInLogicImpl implements LogInLogic {
 			default:
 				message = "Email not valid";
 			}
-			presentation.showEmailError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, message,
-					validationIssue.position()));
+			return new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, message,
+					validationIssue.position());
 		}
+	}
+
+	@Override
+	public void triggerCheckEmail() {
+		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
+		String email = presentation.getEmail();
+		presentation.showEmailError(determineEmailIssue(email));
 	}
 
 	@Override
