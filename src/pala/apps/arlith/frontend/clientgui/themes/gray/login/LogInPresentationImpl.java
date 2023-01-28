@@ -304,8 +304,13 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showEmailError(final Issue issue) {
-		// TODO Auto-generated method stub
-
+		if (issue == null) {
+			setState(createAccountUI.getEmailPrompt(), null);
+			createAccountUI.getEmailPrompt().hideInformation();
+		} else {
+			setState(createAccountUI.getEmailPrompt(), issue.getSeverity());
+			createAccountUI.getEmailPrompt().showInformation(issue.message());
+		}
 	}
 
 	@Override
