@@ -239,24 +239,32 @@ public class LogInLogicImpl implements LogInLogic {
 			presentation.showPhoneNumberError(null);
 			return;
 		}
-		if (phone.startsWith("+"))
+		if (phone.startsWith("+")) {
 			phone = phone.substring(1);
-		if (phone.isEmpty())
-			presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-					"Enter phone # (with country code) after '+'", -1));
+			if (phone.isEmpty()) {
+				presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
+						"Enter phone # (with country code) after '+'", -1));
+				return;
+			}
+		}
+
+		for (int i = 0; i < phone.length() && i < 15; i++)
+			if (!Character.isDigit(phone.charAt(i))) {
+				presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
+						"'" + phone.charAt(i) + "' is not a digit.", i));
+				return;
+			}
+
 		// Australian phone numbers can be as many as 15 digits long, apparently.
 		// Once phone numbers are actually used, this will need to be more precisely
 		// sanitized.
-		else if (phone.length() > 15)
+		if (phone.length() > 15)
 			presentation.showPhoneNumberError(
 					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Phone # too long.", -1));
+		else if (phone.length() < 10)
+			presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
+					"Phone # should be at least 10 digits.", -1));
 		else {
-			for (int i = 0; i < phone.length(); i++)
-				if (!Character.isDigit(phone.charAt(i))) {
-					presentation.showPhoneNumberError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-							"'" + phone.charAt(i) + "' is not a digit.", i));
-					return;
-				}
 			presentation.showPhoneNumberError(null);
 		}
 	}
