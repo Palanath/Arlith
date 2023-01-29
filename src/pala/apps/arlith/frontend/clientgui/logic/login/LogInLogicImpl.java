@@ -11,10 +11,12 @@ import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Issue;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Severity;
 import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.Utilities.EmailIssue;
 import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue;
 import pala.apps.arlith.libraries.Utilities.UsernameIssue;
+import pala.libs.generic.JavaTools;
 
 /**
  * This class represents the logic for the initial scene shown to the user of
@@ -97,25 +99,7 @@ public class LogInLogicImpl implements LogInLogic {
 	public void triggerCheckUsername() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String username = presentation.getUsername();
-		UsernameIssue issue = Utilities.checkUsernameValidity(username);
-		if (issue == null)
-			// Make pres show "email is correct"
-			presentation.showUsernameError(null);
-		else
-			switch (issue.getIssue()) {
-			case CONTAINED_ILLEGAL_CHARACTER:
-				presentation.showUsernameError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-						"\"" + username.charAt(issue.getCharpos()) + "\" not allowed", 0));
-				break;
-			case USERNAME_TOO_LONG:
-				presentation.showUsernameError(
-						new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Username too long!", -1));
-				break;
-			case USERNAME_TOO_SHORT:
-				presentation.showUsernameError(
-						new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Username too short!", -1));
-				break;
-			}
+
 	}
 
 	@Override
@@ -139,32 +123,43 @@ public class LogInLogicImpl implements LogInLogic {
 				presentation.showLogInIdentifierError(determineEmailIssue(ident));
 			} else if (ident.contains("#")) {// Tag
 				int hashind = ident.indexOf('#');
-				if (hashind == ident.length() - 1) {
-					presentation.showLogInIdentifierError(new Issue(
-							LogInPresentationWithLiveInputResponse.Severity.ERROR, "Useranme can't end in '#'.", -1));
-				} else {
+				if (hashind == ident.length() - 1)
+					presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Useranme can't end in '#'.", -1));
+				else {
 					String username = ident.substring(0, hashind);
 					String disc = ident.substring(hashind + 1);
-					// TODO Sanitize Username.
-					// TODO Sanitize Discriminator.
+					Issue issue = determineUsernameIssue(username);
+					if (issue != null)
+						presentation.showLogInIdentifierError(issue);
+					else // Verify disc.
+					if (disc.length() < 4)
+						presentation
+								.showLogInIdentifierError(new Issue(Severity.ERROR, "Discriminator too short.", -1));
+					else {
+						for (int i = 0; i < disc.length(); i++)
+							if (!Character.isDigit(disc.charAt(i))) {
+								presentation.showLogInIdentifierError(new Issue(Severity.ERROR,
+										"'" + disc.charAt(i) + "' is not a digit.", username.length() + 1 + i));
+								return;
+							}
+						presentation.showLogInIdentifierError(null);
+					}
 				}
-			} else {
-				// Treat as phone number if first character matches what a phone # could start
-				// with. Otherwise, consider type to be unknown.
-				if (ident.isEmpty())
-					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
+			} else// Treat as phone number if first character matches what a phone # could start
+					// with. Otherwise, consider type to be unknown.
+			if (ident.isEmpty())
+				break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
+			else {
 				char first = ident.charAt(0);
 				if (first != '+' && !Character.isDigit(first))
 					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
-
-				//TODO Sanitize Phone #.
+				presentation.showLogInIdentifierError(determinePhoneNumberIssue(ident));
 			}
 			return;
 		}
 		// We get here if the type of identifier the user is using has not been
 		// determined.
-		presentation.showLogInIdentifierError(new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR,
-				"Tag, email, or phone # required.", -1));
+		presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Tag, email, or phone # required.", -1));
 
 	}
 
@@ -173,14 +168,62 @@ public class LogInLogicImpl implements LogInLogic {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String pass = presentation.getPassword();
 		if (pass.isEmpty())
-			presentation.showPasswordError(
-					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, "Password can't be empty", -1));
+			presentation.showPasswordError(new Issue(Severity.ERROR, "Password can't be empty", -1));
 		else if (pass.length() < 9)
-			presentation.showPasswordError(
-					new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING, "Short password", -1));
+			presentation.showPasswordError(new Issue(Severity.WARNING, "Short password", -1));
 		else
 			presentation.showPasswordError(null);
 
+	}
+
+	private static Issue determineUsernameIssue(String username) {
+		UsernameIssue issue = Utilities.checkUsernameValidity(username);
+		if (issue == null)
+			// Make pres show "email is correct"
+			return null;
+		else
+			switch (issue.getIssue()) {
+			case CONTAINED_ILLEGAL_CHARACTER:
+				return new Issue(Severity.ERROR, "\"" + username.charAt(issue.getCharpos()) + "\" not allowed",
+						issue.getCharpos());
+			case USERNAME_TOO_LONG:
+				return new Issue(Severity.ERROR, "Username too long!", -1);
+			case USERNAME_TOO_SHORT:
+				return new Issue(Severity.ERROR, "Username too short!", -1);
+			}
+		return new Issue(Severity.ERROR, "Invalid username.", -1);
+	}
+
+	private static Issue determinePhoneNumberIssue(String phoneNumber) {
+		PhoneNumberIssue issue = Utilities.checkPhoneNumberValidity(phoneNumber);
+		if (issue == null)
+			return null;
+		else {
+			String message;
+			switch (issue.getIssue()) {
+			case EMPTY_INPUT:
+				return null;
+			case MISPLACED_PLUS_SYMBOL:
+				message = "'+' only allowed at beginning.";
+				break;
+			case NON_DIGIT_WHERE_DIGIT_EXPECTED:
+				message = "'" + phoneNumber.charAt(issue.getCharpos()) + "' is not a digit.";
+				break;
+			case NOTHING_AFTER_PLUS:
+				message = "No number provided after '+'.";
+				break;
+			case PHONE_NUMBER_TOO_LONG:
+				message = "Phone # too long (max 15 digits).";
+				break;
+			case PHONE_NUMBER_TOO_SHORT:
+				message = "Phone # too short (min 10 digits).";
+				break;
+			default:
+				message = "Phone # invalid.";
+				break;
+			}
+			return new Issue(Severity.ERROR, message, issue.getCharpos());
+		}
 	}
 
 	private static Issue determineEmailIssue(String email) {
@@ -194,7 +237,7 @@ public class LogInLogicImpl implements LogInLogic {
 			// more serious error may occur after the illegal character but will not be
 			// reported.
 //			case ARBITRARY_ESCAPE:
-//				presentation.showEmailError(new Issue(LogInPresentationWithLiveInputResponse.Severity.WARNING,
+//				presentation.showEmailError(new Issue(Severity.WARNING,
 //						"Unnecessary escape character (\"\\\")", 0));
 //				return;
 			case DOMAIN_EMPTY:
@@ -269,8 +312,7 @@ public class LogInLogicImpl implements LogInLogic {
 			default:
 				message = "Email not valid";
 			}
-			return new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, message,
-					validationIssue.position());
+			return new Issue(Severity.ERROR, message, validationIssue.position());
 		}
 	}
 
@@ -285,38 +327,7 @@ public class LogInLogicImpl implements LogInLogic {
 	public void triggerCheckPhoneNumber() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String phoneNumber = presentation.getPhoneNumber();
-
-		PhoneNumberIssue issue = Utilities.checkPhoneNumberValidity(phoneNumber);
-		if (issue == null)
-			presentation.showPhoneNumberError(null);
-		else {
-			String message;
-			switch (issue.getIssue()) {
-			case EMPTY_INPUT:
-				presentation.showPhoneNumberError(null);
-				return;
-			case MISPLACED_PLUS_SYMBOL:
-				message = "'+' only allowed at beginning.";
-				break;
-			case NON_DIGIT_WHERE_DIGIT_EXPECTED:
-				message = "'" + phoneNumber.charAt(issue.getCharpos()) + "' is not a digit.";
-				break;
-			case NOTHING_AFTER_PLUS:
-				message = "No number provided after '+'.";
-				break;
-			case PHONE_NUMBER_TOO_LONG:
-				message = "Phone # too long (max 15 digits).";
-				break;
-			case PHONE_NUMBER_TOO_SHORT:
-				message = "Phone # too short (min 10 digits).";
-				break;
-			default:
-				message = "Phone # invalid.";
-				break;
-			}
-			presentation.showPhoneNumberError(
-					new Issue(LogInPresentationWithLiveInputResponse.Severity.ERROR, message, issue.getCharpos()));
-		}
+		presentation.showPhoneNumberError(determineEmailIssue(phoneNumber));
 	}
 
 }
