@@ -16,7 +16,6 @@ import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.Utilities.EmailIssue;
 import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue;
 import pala.apps.arlith.libraries.Utilities.UsernameIssue;
-import pala.libs.generic.JavaTools;
 
 /**
  * This class represents the logic for the initial scene shown to the user of
@@ -98,14 +97,11 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCheckUsername() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String username = presentation.getUsername();
-
+		presentation.showUsernameError(determineUsernameIssue(presentation.getUsername()));
 	}
 
 	@Override
 	public void triggerCheckLogInIdentifier() {
-		// TODO Auto-generated method stub
-
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
 		String ident = presentation.getLogInIdentifier();
 
