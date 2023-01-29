@@ -212,8 +212,8 @@ public class ServerWorldImpl implements ServerWorld {
 				return piv;
 		}
 		// If all 10K are taken, go to 10000, then 10001, 10002, etc.
-		// Note: This does NOT allocate discriminators of length 5+ that have a 0 in any
-		// digit but the last four.
+		// Note: This does NOT allocate discriminators of length 5+ that begin with a
+		// string of zeros.
 		for (pivot = 10000; usersByDisc.containsKey(String.valueOf(pivot)); pivot++)
 			;
 		return String.valueOf(pivot);
