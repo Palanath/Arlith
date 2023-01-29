@@ -248,47 +248,23 @@ public final class LogInWindow extends Window {
 				Platform.runLater(() -> {
 					ArlithFrontend.getGuiLogger()
 							.err("Failed to create account; server returned failure code: " + e3.getType() + '.');
-					switch (e3.getType()) {
-					case ILLEGAL_PW:
+					switch (e3.getType().get()) {
+					case PASSWORD_SYNTACTICALLY_INVALID:
 						ArlithFrontend.getGuiLogger().err("Illegal Password");
 						break;
-					case ILLEGAL_UN:
+					case USERNAME_SYNTACTICALLY_INVALID:
 						ArlithFrontend.getGuiLogger().err("Illegal Username");
 						break;
-					case LONG_PW:
-						ArlithFrontend.getGuiLogger().err("Password too long");
-						break;
-					case LONG_UN:
-						ArlithFrontend.getGuiLogger().err("Username too long");
-						break;
-					case SHORT_PW:
-						ArlithFrontend.getGuiLogger().err("Password too short");
-						break;
-					case SHORT_UN:
-						ArlithFrontend.getGuiLogger().err("Username too short");
-						break;
-					case ILLEGAL_EM:
+					case EMAIL_SYNTACTICALLY_INVALID:
 						ArlithFrontend.getGuiLogger().err("Illegal Email");
 						break;
-					case LONG_EM:
-						ArlithFrontend.getGuiLogger().err("Email too long");
-						break;
-					case TAKEN_EM:
+					case EMAIL_ALREADY_IN_USE:
 						ArlithFrontend.getGuiLogger().err("Email already in use");
 						break;
-					case TAKEN_UN:
-						ArlithFrontend.getGuiLogger().err("Username taken");
-						break;
-					case ILLEGAL_PH:
+					case PHONE_NUMBER_SYNTACTICALLY_INVALID:
 						ArlithFrontend.getGuiLogger().err("Illegal phone number");
 						break;
-					case LONG_PH:
-						ArlithFrontend.getGuiLogger().err("Phone number too long");
-						break;
-					case SHORT_PH:
-						ArlithFrontend.getGuiLogger().err("Phone number too short");
-						break;
-					case TAKEN_PH:
+					case PHONE_NUMBER_ALREADY_IN_USE:
 						ArlithFrontend.getGuiLogger().err("Phone number already in use");
 						break;
 					}

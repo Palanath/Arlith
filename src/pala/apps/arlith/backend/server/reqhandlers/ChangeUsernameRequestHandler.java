@@ -1,9 +1,9 @@
 package pala.apps.arlith.backend.server.reqhandlers;
 
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError.CreateAccountProblem;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeUsernameRequest;
-import pala.apps.arlith.backend.common.protocol.types.CreateAccountProblemValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.server.contracts.serversystems.RequestConnection;
 import pala.apps.arlith.libraries.Utilities;
@@ -19,7 +19,7 @@ public final class ChangeUsernameRequestHandler extends SimpleRequestHandler<Cha
 			client.sendError(new RestrictedError());
 		else // Check to make sure username valid.
 		if (Utilities.checkUsernameValidity(r.getName().getValue()) != null)
-			client.sendError(new CreateAccountError(CreateAccountProblemValue.ILLEGAL_UN));
+			client.sendError(new CreateAccountError(CreateAccountProblem.USERNAME_SYNTACTICALLY_INVALID));
 		else
 			client.sendResult(new TextValue(client.getUser().changeUsername(r.getName().getValue())));
 	}

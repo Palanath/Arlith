@@ -11,6 +11,23 @@ import pala.apps.arlith.Flags;
 import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.libraries.Utilities;
 
+/**
+ * Class for general logging utilities in Arlith. Most loggers in the
+ * application are created as an instance of {@link ConfiguredStandardLogger},
+ * usually through the {@link #getConfiguredStandardLogger(String)} function.
+ * Such loggers will automatically take into account the launch flags regarding
+ * <i>File Logging</i> and <i>Debug Mode</i>, which are retrievable
+ * {@link Flags#isFileLogging()} and {@link Flags#isDebugMode()}. That is to say
+ * that instances of {@link ConfiguredStandardLogger} will obey the file-logging
+ * flags set in {@link Arlith#getLaunchFlags() Arlith's Launch Flags} (including
+ * the {@link Flags#getLogFileLocation() log file location} and
+ * {@link Flags#isSeparateLogFiles() separate log files} flags) and the
+ * debug-mode flag, so such instances will automatically log to the appropriate
+ * files, and/or print debug messages if {@link Flags#isDebugMode()} is enabled.
+ * 
+ * @author Palanath
+ *
+ */
 public class LoggingUtilities {
 	/**
 	 * <p>
@@ -111,6 +128,7 @@ public class LoggingUtilities {
 			setWrnStream(WARN_OUT);
 			setDbgStream(DEBUG_OUT);
 			setErrStream(ERROR_OUT);
+			setLogDebugMessages(Arlith.getLaunchFlags().isDebugMode());
 		}
 
 		public ConfiguredStandardLogger(String prefix, DateTimeFormatter timestampFormatter, boolean logDebugMessages) {
