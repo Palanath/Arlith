@@ -4,10 +4,8 @@ import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
@@ -23,36 +21,27 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import pala.libs.generic.javafx.FXTools;
-import pala.libs.generic.javafx.bindings.BindingTools;
-import pala.libs.generic.util.Gateway;
 
 public class SilverTextBox extends VBox {
 
-	private static final Color DEFAULT_BOX_COLOR = Color.hsb(0, 0, .7);
-
-	public static Color getDefaultBoxColor() {
-		return DEFAULT_BOX_COLOR;
-	}
+	private static final double DEFAULT_HUE = 0, DEFAULT_SATURATION = 0, DEFAULT_BRIGHTNESS = 1;
+	private static final Color DEFAULT_COLOR = Color.hsb(DEFAULT_HUE, DEFAULT_SATURATION, DEFAULT_BRIGHTNESS);
 
 	public void resetColor() {
-		setColor(DEFAULT_BOX_COLOR);
+		setColor(DEFAULT_COLOR);
 	}
 
-	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_BOX_COLOR);
-	private final DoubleProperty hue = new SimpleDoubleProperty(0);
-	{
-		BindingTools.bindBidirectional(color, Gateway.from(a -> Color.hsb(a.doubleValue(), .2, .7), a -> a.getHue()),
-				hue);
-	}
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(DEFAULT_COLOR);
 
-	private Color getFocusedBackgroundColor() {
-		Color c = getColor();
-		return c.deriveColor(0, .9, 1.1, 1);
-	}
-
-	private Color getFocusedLineColor() {
-		Color c = getColor();
-		return c.deriveColor(0, 3.4, 1.25, 1);
+	/**
+	 * Shorthand method to call {@link #showInformation()} and set
+	 * {@link #getInformationText()}'s {@link Text#setText(String) text value}.
+	 * 
+	 * @param information The text to show when the information becomes visible.
+	 */
+	public void showInformation(String information) {
+		showInformation();
+		getInformationText().setText(information);
 	}
 
 	public void showInformation() {
@@ -96,8 +85,8 @@ public class SilverTextBox extends VBox {
 		HBox.setHgrow(informationBox, Priority.ALWAYS);
 		StackPane.setAlignment(information, Pos.CENTER_RIGHT);
 
-		information.fillProperty()
-				.bind(Bindings.createObjectBinding(() -> Color.hsb(getHue(), 1, getColor().getBrightness()), color));
+		information.fillProperty().bind(color);
+		line.strokeProperty().bind(color);
 	}
 
 	public boolean isNecessary() {
@@ -113,6 +102,15 @@ public class SilverTextBox extends VBox {
 	}
 
 	public SilverTextBox(boolean password, boolean necessary) {
+		this(null, password, necessary);
+	}
+
+	public SilverTextBox(String prompt) {
+		this(prompt, false, false);
+	}
+
+	public SilverTextBox(String prompt, boolean password, boolean necessary) {
+		this.prompt.setText(prompt);
 		input = password ? new PasswordField() : new TextField();
 		getChildren().addAll(promptBox, input, line);
 		setNecessary(necessary);
@@ -129,20 +127,19 @@ public class SilverTextBox extends VBox {
 				line.setEndX(frac * (input.getWidth() - line.getStrokeWidth() - 1) + 1);
 			}
 		};
-		InvalidationListener il = observable -> input
-				.setBackground(input.isFocused() ? FXTools.getBackgroundFromColor(getFocusedBackgroundColor())
-						: FXTools.getBackgroundFromColor(getColor()));
-		input.focusedProperty().addListener(il);
-		color.addListener(il);
-
-		input.setBackground(FXTools.getBackgroundFromColor(getColor()));
+		input.backgroundProperty().bind(Bindings.createObjectBinding(() -> {
+			Color color = getColor();
+			return FXTools.getBackgroundFromColor(input.isFocused()
+					? Color.hsb(color.getHue(), .4 * color.getSaturation(), .75 * color.getBrightness())
+					: Color.hsb(color.getHue(), .3 * color.getSaturation(), .65 * color.getBrightness()));
+		}, color, input.focusedProperty()));
 		trans.setOnFinished(event -> {
 			if (!input.isFocused())
-				line.setStroke(Color.TRANSPARENT);
+				line.setOpacity(0);
 		});
 		input.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
-				line.setStroke(getFocusedLineColor());
+				line.setOpacity(1);
 				trans.setRate(1);
 				trans.play();
 			} else {
@@ -150,6 +147,8 @@ public class SilverTextBox extends VBox {
 				trans.play();
 			}
 		});
+		input.styleProperty().bind(Bindings.createStringBinding(
+				() -> "-fx-text-fill: " + (getColor().getBrightness() < 0.5 ? "white" : "black") + ';', color));
 	}
 
 	public SilverTextBox(boolean password) {
@@ -177,31 +176,20 @@ public class SilverTextBox extends VBox {
 		line.setStrokeWidth(3);
 		line.setEndX(1);// Used to fix a resizing issue (GUI jitters by a few pixels when line has
 						// changes from non-zero to zero endX).
-		line.setStroke(Color.TRANSPARENT);
+		line.setOpacity(0);
 	}
 
-	public final ObjectProperty<Color> colorProperty() {
-		return this.color;
-	}
-
-	public final Color getColor() {
-		return this.colorProperty().get();
-	}
-
-	public final void setColor(final Color color) {
-		this.colorProperty().set(color);
-	}
-
-	public final DoubleProperty hueProperty() {
-		return this.hue;
-	}
-
-	public final double getHue() {
-		return this.hueProperty().get();
-	}
-
-	public final void setHue(final double hue) {
-		this.hueProperty().set(hue);
+	/**
+	 * <p>
+	 * Sets the color of this {@link SilverTextBox} via hue. This method sets the
+	 * {@link #hueProperty()} of this {@link SilverTextBox} to the specified value,
+	 * unless the specified value and sets the saturation to <code>1</code>.
+	 * </p>
+	 * 
+	 * @param hue The that the text box will be colored as.
+	 */
+	public final void colorTextBox(double hue) {
+		setColor(Color.hsb(hue, 1, getColor().getBrightness()));
 	}
 
 	public final BooleanProperty showInformationProperty() {
@@ -214,6 +202,44 @@ public class SilverTextBox extends VBox {
 
 	public final void setShowInformation(final boolean showInformation) {
 		this.showInformationProperty().set(showInformation);
+	}
+
+	public final ObjectProperty<Color> colorProperty() {
+		return this.color;
+	}
+
+	public final Color getColor() {
+		return this.colorProperty().get();
+	}
+
+	/**
+	 * Sets the {@link Color} of this {@link SilverTextBox} to that specified, or
+	 * resets the {@link Color}, by calling {@link #resetColor()}, if
+	 * <code>null</code> is provided. Note that this method is not analogous to
+	 * {@link ObjectProperty#set(Object)} in that setting the latter to
+	 * <code>null</code> will not reset the color of this {@link SilverTextBox}'s
+	 * theme.
+	 * 
+	 * @param color The color, or <code>null</code> to reset the
+	 *              {@link SilverTextBox}.
+	 */
+	public final void setColor(final Color color) {
+		if (color == null)
+			resetColor();
+		else
+			this.colorProperty().set(color);
+	}
+
+	public final void setHue(double hue) {
+		setColor(Color.hsb(hue, getColor().getSaturation(), getColor().getBrightness()));
+	}
+
+	public final void setSaturation(double saturation) {
+		setColor(Color.hsb(getColor().getHue(), saturation, getColor().getBrightness()));
+	}
+
+	public final void setBrightness(double brightness) {
+		setColor(Color.hsb(getColor().getHue(), getColor().getSaturation(), brightness));
 	}
 
 }
