@@ -124,7 +124,7 @@ public class LogInLogicImpl implements LogInLogic {
 			} else if (ident.contains("#")) {// Tag
 				int hashind = ident.indexOf('#');
 				if (hashind == ident.length() - 1)
-					presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Useranme can't end in '#'.", -1));
+					presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Tag can't end in '#'.", -1));
 				else {
 					String username = ident.substring(0, hashind);
 					String disc = ident.substring(hashind + 1);
