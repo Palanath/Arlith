@@ -321,7 +321,7 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCheckPhoneNumber() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		presentation.showPhoneNumberError(determineEmailIssue(presentation.getPhoneNumber()));
+		presentation.showPhoneNumberError(determinePhoneNumberIssue(presentation.getPhoneNumber()));
 	}
 
 }
