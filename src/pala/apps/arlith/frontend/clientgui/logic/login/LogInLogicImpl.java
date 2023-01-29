@@ -131,18 +131,18 @@ public class LogInLogicImpl implements LogInLogic {
 					Issue issue = determineUsernameIssue(username);
 					if (issue != null)
 						presentation.showLogInIdentifierError(issue);
-					else // Verify disc.
-					if (disc.length() < 4)
-						presentation
-								.showLogInIdentifierError(new Issue(Severity.ERROR, "Discriminator too short.", -1));
-					else {
+					else {// Verify disc.
 						for (int i = 0; i < disc.length(); i++)
 							if (!Character.isDigit(disc.charAt(i))) {
 								presentation.showLogInIdentifierError(new Issue(Severity.ERROR,
-										"'" + disc.charAt(i) + "' is not a digit.", username.length() + 1 + i));
+										"'" + disc.charAt(i) + "' not allowed after '#'.", username.length() + 1 + i));
 								return;
 							}
-						presentation.showLogInIdentifierError(null);
+						if (disc.length() < 4)
+							presentation.showLogInIdentifierError(
+									new Issue(Severity.ERROR, "Discriminator too short.", -1));
+						else
+							presentation.showLogInIdentifierError(null);
 					}
 				}
 			} else// Treat as phone number if first character matches what a phone # could start
