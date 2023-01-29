@@ -315,15 +315,13 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCheckEmail() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String email = presentation.getEmail();
-		presentation.showEmailError(determineEmailIssue(email));
+		presentation.showEmailError(determineEmailIssue(presentation.getEmail()));
 	}
 
 	@Override
 	public void triggerCheckPhoneNumber() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String phoneNumber = presentation.getPhoneNumber();
-		presentation.showPhoneNumberError(determineEmailIssue(phoneNumber));
+		presentation.showPhoneNumberError(determineEmailIssue(presentation.getPhoneNumber()));
 	}
 
 }
