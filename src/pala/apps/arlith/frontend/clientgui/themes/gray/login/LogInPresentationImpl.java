@@ -38,10 +38,10 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	private final LogInController loginUI = new LogInController();
 	private final CreateAccountController createAccountUI = new CreateAccountController();
 
-	public @FXML BorderPane root;
+	private @FXML BorderPane root;
 
-	public @FXML VBox logInBox;
-	public @FXML Text title;
+	private @FXML VBox logInBox;
+	private @FXML Text title;
 	private final Text infoMessage = new Text();
 	private final StackPane infoMessageContainer = new StackPane(infoMessage);
 	{
