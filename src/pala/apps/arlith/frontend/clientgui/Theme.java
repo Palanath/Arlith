@@ -13,10 +13,10 @@ import pala.apps.arlith.libraries.frontends.Frontend;
  * Typically the class-hierarchy&ndash;layout involving a {@link Logic} is that
  * a subclass of <code style="color: purple;">UserInterface</code> specifies a
  * corresponding <code style="color: purple;">Presentation</code>. The
- * application will, at some point, that user interface&ndash;subclass and then
- * need a presentation to expose it to the user. The application will then query
- * whatever active {@link Theme} instance is set up, expecting to receive a
- * presentation to supply the {@link Logic}.
+ * application will, at some point, instantiate that user
+ * interface&ndash;subclass and then need a presentation to expose it to the
+ * user. The application will then query whatever active {@link Theme} instance
+ * is set up, expecting to receive a presentation to supply the {@link Logic}.
  * </p>
  * <p>
  * For most GUIs, the {@link Logic} needs to have access to its accompanying,
