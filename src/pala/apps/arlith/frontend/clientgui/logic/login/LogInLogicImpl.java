@@ -7,6 +7,7 @@ import pala.apps.arlith.backend.client.MalformedServerResponseException;
 import pala.apps.arlith.backend.common.protocol.errors.LoginError;
 import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.clientgui.ClientGUIFrontend;
+import pala.apps.arlith.frontend.clientgui.logic.home.HomeLogicImpl;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
@@ -45,45 +46,36 @@ public class LogInLogicImpl implements LogInLogic {
 		presentation.lockUIForLoggingIn();
 		ArlithFrontend.getGuiLogger().dbg("(1) GUI Locked");
 		Thread t = new Thread(() -> {
+			String un = presentation.getLogInIdentifier(), pw = presentation.getPassword();
+			ArlithFrontend.getGuiLogger().dbg("(2) Using Identifier: " + un);
+
+			builder.setUsername(un);
+			builder.setPassword(pw);
+			ArlithClient client;
 			try {
-				String un = presentation.getLogInIdentifier(), pw = presentation.getPassword();
-				ArlithFrontend.getGuiLogger().dbg("(2) Using Identifier: " + un);
-
-				builder.setUsername(un);
-				builder.setPassword(pw);
-				ArlithClient client;
-				try {
-					client = builder.login();
-				} catch (LoginError e) {
-					presentation.showLoginProblem(e.getLoginError());
-					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
-					return;
-				} catch (LoginFailureException e) {
-					presentation.showLogInFailure(e);
-					return;
-				} catch (MalformedServerResponseException e) {
-					ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error; " + e.getLocalizedMessage());
-					ArlithFrontend.getGuiLogger().err(e);
-					return;
-				}
-
-//				Platform.runLater(new Runnable() {
-//
-//					@Override
-//					public void run() {
-//						// TODO Auto-generated method stub
-//						// Upon successful log in, disable the presentation and show the next scene.
-//						frontend.setClient(client);
-//						presentation.hide();
-//						new WhateverNextSceneWillBeCalled(frontend).show();
-//					}
-//				});
-			} finally {
-				// Once the above Platform.runLater(...) call is uncommented, the following line
-				// will need to be reconsidered.
+				client = builder.login();
+			} catch (LoginError e) {
+				presentation.showLoginProblem(e.getLoginError());
+				ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
 				presentation.unlockUIForLoggingIn();
 				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
+				return;
+			} catch (LoginFailureException e) {
+				presentation.showLogInFailure(e);
+				presentation.unlockUIForLoggingIn();
+				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
+				return;
+			} catch (MalformedServerResponseException e) {
+				ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error; " + e.getLocalizedMessage());
+				ArlithFrontend.getGuiLogger().err(e);
+				presentation.unlockUIForLoggingIn();
+				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
+				return;
 			}
+
+			frontend.setClient(client);
+			// Attempt to show the home window.
+			frontend.show(new HomeLogicImpl());
 		});
 		t.start();
 	}
