@@ -89,9 +89,13 @@ public class ClientGUIFrontend implements Frontend {
 
 	/**
 	 * <p>
-	 * Shows the scene represented by the specified {@link Logic}. This method
-	 * queries the available {@link #getThemes() themes}, in order, for a
-	 * {@link Presentation} object that pairs with the specified {@link Logic}
+	 * Shows the scene represented by the specified {@link Logic}. This method may
+	 * be called from any thread, and (if not called on the FX thread) may return
+	 * before the new scene is shown.
+	 * </p>
+	 * <p>
+	 * This method queries the available {@link #getThemes() themes}, in order, for
+	 * a {@link Presentation} object that pairs with the specified {@link Logic}
 	 * class. If one is found, it is displayed, the {@link Logic} is hooked to it
 	 * (when it's instantiated), and it is hooked to the {@link Logic} (via
 	 * {@link Logic#hook(Presentation)}).
@@ -110,22 +114,26 @@ public class ClientGUIFrontend implements Frontend {
 	 * @param logic The {@link Logic} to show the scene of.
 	 */
 	public <P extends Presentation<L>, L extends Logic<P>> void show(L logic) {
-		P p;
-		for (Theme t : getThemes())
-			if ((p = t.supply(logic)) != null)
-				try {
-					logic.hook(p);
-					stage.setScene(p.getScene());
-					return;
-				} catch (WindowLoadFailureException e) {
-					ArlithFrontend.getGuiLogger()
-							.err("Failed to load a presentation for a scene; (Debug Info: LOGIC CLASS="
-									+ logic.getClass() + ", PRESENTATION CLASS=" + p.getClass() + ')');
-					ArlithFrontend.getGuiLogger().err(e);
-				}
-		throw new RuntimeException(
-				"Couldn't load a presentation for the specified scene's logic class; there was no presentation available by any of the loaded themes. (Loaded themes: "
-						+ themes + ')');
+		if (!Platform.isFxApplicationThread())
+			Platform.runLater(() -> show(logic));
+		else {
+			P p;
+			for (Theme t : getThemes())
+				if ((p = t.supply(logic)) != null)
+					try {
+						logic.hook(p);
+						stage.setScene(p.getScene());
+						return;
+					} catch (WindowLoadFailureException e) {
+						ArlithFrontend.getGuiLogger()
+								.err("Failed to load a presentation for a scene; (Debug Info: LOGIC CLASS="
+										+ logic.getClass() + ", PRESENTATION CLASS=" + p.getClass() + ')');
+						ArlithFrontend.getGuiLogger().err(e);
+					}
+			throw new RuntimeException(
+					"Couldn't load a presentation for the specified scene's logic class; there was no presentation available by any of the loaded themes. (Loaded themes: "
+							+ themes + ')');
+		}
 	}
 
 	@Override
