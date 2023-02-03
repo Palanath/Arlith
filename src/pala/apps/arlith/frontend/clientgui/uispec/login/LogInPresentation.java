@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui.uispec.login;
 
+import javafx.scene.text.Text;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.Presentation;
@@ -101,10 +102,33 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	 * occur in cases of a version mismatch or similar). When this is called, the
 	 * typical approach is to allow the user to try to log in again, which would
 	 * cause the logic to try and reconnect to the server.
+	 * </p>
 	 * 
 	 * @param error The specific error that occurred.
 	 */
 	void showLogInFailure(LoginFailureException error);
+
+	/**
+	 * <p>
+	 * Shows to the user that the log in attempt failed for some other,
+	 * logic-specifiable reason. This is used to allow the logic to convert complex
+	 * errors into a user-formatted string that the presentation should be able to
+	 * display, at the cost of disallowing the presentation to know the details, (so
+	 * auxiliary information cannot be presented to the user, e.g. color coding).
+	 * The string may be as long as a small paragraph (~50 words).
+	 * </p>
+	 * <p>
+	 * This type of error is presented to the user in Arlith's default theme in the
+	 * same way (same {@link Text} object) as
+	 * {@link #showLoginProblem(LoginProblemValue)} and
+	 * {@link #showLogInFailure(LoginFailureException)}, (although with a different
+	 * color).
+	 * </p>
+	 * 
+	 * @param error The error to display to the user. This is usually, but not
+	 *              necessarily, something severe.
+	 */
+	void showLogInError(String error);
 
 	/**
 	 * Prevents the user from triggering a <code>log-in</code> (via
