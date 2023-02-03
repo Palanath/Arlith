@@ -28,8 +28,8 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <children>
-                        <ImageView fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                        <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="SOMETIMES">
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
                            <children>
                               <HBox>
                                  <children>
@@ -55,8 +55,8 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <children>
-                        <ImageView fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                        <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="SOMETIMES">
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
                            <children>
                               <HBox>
                                  <children>
@@ -83,8 +83,8 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <children>
-                        <ImageView fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                        <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="SOMETIMES">
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
                            <children>
                               <HBox>
                                  <children>
