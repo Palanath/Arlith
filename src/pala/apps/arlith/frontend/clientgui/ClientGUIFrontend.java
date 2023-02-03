@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.clientgui.logic.login.LogInLogicImpl;
@@ -80,6 +81,7 @@ public class ClientGUIFrontend implements Frontend {
 		// Add default theme.
 		themes.add(new ArlithDefaultTheme());
 	}
+	private ArlithClient client;
 
 	public ClientGUIFrontend(Stage stage) {
 		this.stage = stage;
@@ -154,6 +156,37 @@ public class ClientGUIFrontend implements Frontend {
 
 	public Stage getStage() {
 		return stage;
+	}
+
+	/**
+	 * <p>
+	 * Sets the active, logged-in client for use by UIs in the frontend. This is
+	 * called by the {@link LogInLogic} implementation to set the client available
+	 * to other UI components after logging in succeeds. Once a client has been
+	 * built through logging in or creating an account, if it loses connection to
+	 * the server, it will simply reestablish the connection; it does not need to be
+	 * reconnected.
+	 * </p>
+	 * <p>
+	 * The frontend and its UI components have been designed around a reliance on
+	 * this property not changing once first set by the {@link LogInLogic}. As some
+	 * UIs may register event handlers or otherwise be directly linked with the
+	 * client, changing it mid-use can have widespread and weird effects.
+	 * </p>
+	 * 
+	 * @param client The logged-in client.
+	 */
+	public void setClient(ArlithClient client) {
+		this.client = client;
+	}
+
+	/**
+	 * Returns the logged-in client for use by the UIs in this frontend.
+	 * 
+	 * @return
+	 */
+	public ArlithClient getClient() {
+		return client;
 	}
 
 }
