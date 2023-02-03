@@ -183,4 +183,10 @@ public class LogInPresentationImpl implements LogInPresentation {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void showLogInError(String error) {
+		// TODO Auto-generated method stub
+
+	}
 }

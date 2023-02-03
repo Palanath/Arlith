@@ -450,4 +450,10 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		logInBox.setDisable(false);
 	}
 
+	@Override
+	public void showLogInError(String error) {
+		infoMessage.setText(error);
+		infoMessage.setFill(Color.hsb(0, 0.7, 0.5));
+	}
+
 }
