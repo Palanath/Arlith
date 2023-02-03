@@ -62,9 +62,55 @@ public class UserListItem {
 		root.setPrefHeight(32);
 	}
 
-	private final ObjectProperty<Image> profileIcon = icon.imageProperty();
-	private final StringProperty username = name.textProperty();
 	private final ObjectProperty<Duration> timeSinceLastMessage = new SimpleObjectProperty<Duration>();
 	// TODO Bind time's text property with a function of timeSinceLastMessage
-	private final StringProperty previousMessage = lastMessage.textProperty();
+
+	public final ObjectProperty<Image> profileIconProperty() {
+		return icon.imageProperty();
+	}
+
+	public final Image getProfileIcon() {
+		return this.profileIconProperty().get();
+	}
+
+	public final void setProfileIcon(final Image profileIcon) {
+		this.profileIconProperty().set(profileIcon);
+	}
+
+	public final StringProperty usernameProperty() {
+		return name.textProperty();
+	}
+
+	public final String getUsername() {
+		return this.usernameProperty().get();
+	}
+
+	public final void setUsername(final String username) {
+		this.usernameProperty().set(username);
+	}
+
+	public final ObjectProperty<Duration> timeSinceLastMessageProperty() {
+		return this.timeSinceLastMessage;
+	}
+
+	public final Duration getTimeSinceLastMessage() {
+		return this.timeSinceLastMessageProperty().get();
+	}
+
+	public final void setTimeSinceLastMessage(final Duration timeSinceLastMessage) {
+		this.timeSinceLastMessageProperty().set(timeSinceLastMessage);
+	}
+
+	public final StringProperty previousMessageProperty() {
+		return lastMessage.textProperty();
+	}
+
+	public final String getPreviousMessage() {
+		return this.previousMessageProperty().get();
+	}
+
+	public final void setPreviousMessage(final String previousMessage) {
+		this.previousMessageProperty().set(previousMessage);
+	}
+
 }
