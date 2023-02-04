@@ -34,6 +34,12 @@ public class UserListItem {
 	private static final Color LAST_MESSAGE_COLOR = Color.gray(.5412),
 			TIME_SINCE_LAST_MESSAGE_COLOR = Color.color(.21176470588, .55294117647, 0);
 
+	/**
+	 * The time in seconds from the epoch since the last message in the channel
+	 * associated with this {@link UserListItem} was sent.
+	 */
+	private final ObjectProperty<Long> timeSinceLastMessage = new SimpleObjectProperty<>();
+
 	private final ImageView icon = new ImageView();
 	{
 		icon.setFitWidth(32);
@@ -56,26 +62,28 @@ public class UserListItem {
 			MINUTES = NumberUnit.MINUTES.adjust(SECONDS);
 	{
 		time.setFill(TIME_SINCE_LAST_MESSAGE_COLOR);
-		Bindings.createStringBinding(() -> {
+		time.textProperty().bind(Bindings.createStringBinding(() -> {
+			if (getTimeSinceLastMessage() == null)
+				return "";
 			BigInteger t = BigInteger.valueOf(getTimeSinceLastMessage());
 			String res;
 			if (geq(t, YEARS))
 				// Show years & months.
-				res = format(t, " ", YEARS, MONTHS);
+				res = format(t, " ", MONTHS, YEARS);
 			else if (geq(t, MONTHS))
-				res = format(t, " ", MONTHS, DAYS);
+				res = format(t, " ", DAYS, MONTHS);
 			else if (geq(t, WEEKS))
-				res = format(t, " ", WEEKS, DAYS);
+				res = format(t, " ", DAYS, WEEKS);
 			else if (geq(t, DAYS))
 				res = format(t, " ", DAYS);
 			else if (geq(t, HOURS))
-				res = format(t, " ", HOURS, MINUTES);
+				res = format(t, " ", MINUTES, HOURS);
 			else if (geq(t, MINUTES))
 				res = format(t, " ", MINUTES);
 			else
 				res = "<1m";
 			return res + " ago";
-		}, timeSinceLastMessageProperty());
+		}, timeSinceLastMessageProperty()));
 	}
 	private final HBox header = new HBox(name, spacer, time);
 	private final Label lastMessage = new Label();
@@ -107,13 +115,6 @@ public class UserListItem {
 	public HBox getRoot() {
 		return root;
 	}
-
-	/**
-	 * The time in seconds from the epoch since the last message in the channel
-	 * associated with this {@link UserListItem} was sent.
-	 */
-	private final ObjectProperty<Long> timeSinceLastMessage = new SimpleObjectProperty<>();
-	// TODO Bind time's text property with a function of timeSinceLastMessage
 
 	public final ObjectProperty<Image> profileIconProperty() {
 		return icon.imageProperty();
