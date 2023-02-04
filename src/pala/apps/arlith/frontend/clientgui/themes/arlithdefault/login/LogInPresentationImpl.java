@@ -61,16 +61,6 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public String getLogInIdentifier() {
-		return usernamePromptText.getText();
-	}
-
-	@Override
-	public String getPassword() {
-		return passwordPromptText.getText();
-	}
-
-	@Override
 	public void showLoginProblem(LoginProblemValue problem) {
 		if (!Platform.isFxApplicationThread()) {
 			Platform.runLater(() -> showLoginProblem(problem));
@@ -161,19 +151,7 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
+	public String getInputValue(Input input) {
 		// TODO Auto-generated method stub
 		return null;
 	}
