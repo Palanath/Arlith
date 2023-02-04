@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui.logic.login;
 
+import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.ArlithClientBuilder;
 import pala.apps.arlith.backend.client.LoginFailureException;
@@ -7,7 +8,7 @@ import pala.apps.arlith.backend.client.MalformedServerResponseException;
 import pala.apps.arlith.backend.common.protocol.errors.LoginError;
 import pala.apps.arlith.frontend.ArlithFrontend;
 import pala.apps.arlith.frontend.clientgui.ClientGUIFrontend;
-import pala.apps.arlith.frontend.clientgui.logic.home.HomeLogicImpl;
+import pala.apps.arlith.frontend.clientgui.logic.home.HomeScene;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation.Input;
@@ -18,6 +19,7 @@ import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.Utilities.EmailIssue;
 import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue;
 import pala.apps.arlith.libraries.Utilities.UsernameIssue;
+import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 /**
  * This class represents the logic for the initial scene shown to the user of
@@ -26,7 +28,7 @@ import pala.apps.arlith.libraries.Utilities.UsernameIssue;
  * @author Palanath
  *
  */
-public class LogInLogicImpl implements LogInLogic {
+public class LogInScene extends ClientGUIFrontend.UserInterface implements LogInLogic {
 	private static Issue determineEmailIssue(String email) {
 		EmailIssue validationIssue = Utilities.checkEmailValidity(email);
 		if (validationIssue == null)
@@ -167,20 +169,12 @@ public class LogInLogicImpl implements LogInLogic {
 		return new Issue(Severity.ERROR, "Invalid username.", -1);
 	}
 
-	private final ClientGUIFrontend frontend;
-
 	private final ArlithClientBuilder builder;
-
 	private LogInPresentation presentation;
 
-	public LogInLogicImpl(ClientGUIFrontend frontend, ArlithClientBuilder builder) {
-		this.frontend = frontend;
+	public LogInScene(ClientGUIFrontend frontend, ArlithClientBuilder builder) {
+		frontend.super();
 		this.builder = builder;
-	}
-
-	@Override
-	public void hook(LogInPresentation presentation) {
-		this.presentation = presentation;
 	}
 
 	@Override
@@ -324,11 +318,21 @@ public class LogInLogicImpl implements LogInLogic {
 				return;
 			}
 
-			frontend.setClient(client);
+			getFrontend().setClient(client);
 			// Attempt to show the home window.
-			frontend.show(new HomeLogicImpl());
+			try {
+				new HomeScene(getFrontend()).display();
+			} catch (WindowLoadFailureException e) {
+				e.printStackTrace();
+			}
 		});
 		t.start();
+	}
+
+	@Override
+	protected void show(Stage stage) throws WindowLoadFailureException {
+		presentation = loadPresentation();
+		presentation.show(stage);
 	}
 
 }

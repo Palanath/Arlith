@@ -23,6 +23,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
@@ -33,8 +34,6 @@ import pala.libs.generic.javafx.FXTools;
 
 public class LogInPresentationImpl implements LogInPresentationWithLiveInputResponse {
 	private final LogInLogic logic;
-	private Scene scene;
-
 	private final LogInController loginUI = new LogInController();
 	private final CreateAccountController createAccountUI = new CreateAccountController();
 
@@ -168,9 +167,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public Scene getScene() throws WindowLoadFailureException {
-		if (scene != null)
-			return scene;
+	public void show(Stage stage) throws WindowLoadFailureException {
 		final FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
 		loader.setController(this);
 		Parent parent;
@@ -179,7 +176,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		} catch (final IOException e) {
 			throw new WindowLoadFailureException(e);
 		}
-		return scene = new Scene(parent);
+		stage.setScene(new Scene(parent));
 	}
 
 	private void hideInformationMessage() {
