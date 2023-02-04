@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -60,6 +61,17 @@ public class UserListItem {
 		root.setAlignment(Pos.CENTER);
 		root.setPadding(new Insets(5));
 		root.setPrefHeight(32);
+	}
+
+	/**
+	 * The root element which contains the whole of this {@link UserListItem}'s
+	 * graphical node hierarchy. This element can be added to another {@link Parent}
+	 * to allow the {@link UserListItem} to be shown.
+	 * 
+	 * @return The root node of this {@link UserListItem}.
+	 */
+	public HBox getRoot() {
+		return root;
 	}
 
 	private final ObjectProperty<Duration> timeSinceLastMessage = new SimpleObjectProperty<Duration>();
