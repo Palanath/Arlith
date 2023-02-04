@@ -4,9 +4,12 @@ import javafx.stage.Stage;
 import pala.apps.arlith.frontend.clientgui.ClientGUIFrontend;
 import pala.apps.arlith.frontend.clientgui.ClientGUIFrontend.UserInterface;
 import pala.apps.arlith.frontend.clientgui.uispec.home.HomeLogic;
+import pala.apps.arlith.frontend.clientgui.uispec.home.HomePresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public class HomeScene extends UserInterface implements HomeLogic {
+
+	private HomePresentation presentation;
 
 	public HomeScene(ClientGUIFrontend frontend) {
 		frontend.super();
@@ -14,8 +17,8 @@ public class HomeScene extends UserInterface implements HomeLogic {
 
 	@Override
 	protected void show(Stage stage) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
-
+		presentation = loadPresentation();
+		presentation.show(stage);
 	}
 
 }
