@@ -213,12 +213,14 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 		// Attach triggers for logic.
 		loginUI.getLogInIdentifierPrompt().getInput().textProperty()
-				.addListener(a -> logic.triggerCheckLogInIdentifier());
-		loginUI.getPasswordPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckPassword());
-		createAccountUI.getUsernamePrompt().getInput().textProperty().addListener(a -> logic.triggerCheckUsername());
-		createAccountUI.getEmailPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckEmail());
+				.addListener(a -> logic.triggerCheckInput(Input.LOGIN_IDENTIFIER));
+		loginUI.getPasswordPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckInput(Input.PASSWORD));
+		createAccountUI.getUsernamePrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckInput(Input.USERNAME));
+		createAccountUI.getEmailPrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckInput(Input.EMAIL_ADDRESS));
 		createAccountUI.getPhoneNumberPrompt().getInput().textProperty()
-				.addListener(a -> logic.triggerCheckPhoneNumber());
+				.addListener(a -> logic.triggerCheckInput(Input.PHONE_NUMBER));
 
 		loginUI.getCreateAccountHyperlink().setOnAction(a -> showCreateAccountUI());
 		createAccountUI.getBackToLogInHyperlink().setOnAction(a -> showLogInUI());
