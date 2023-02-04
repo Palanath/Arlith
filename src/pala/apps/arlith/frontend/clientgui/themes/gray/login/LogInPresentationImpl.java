@@ -23,6 +23,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
@@ -33,15 +34,13 @@ import pala.libs.generic.javafx.FXTools;
 
 public class LogInPresentationImpl implements LogInPresentationWithLiveInputResponse {
 	private final LogInLogic logic;
-	private Scene scene;
-
 	private final LogInController loginUI = new LogInController();
 	private final CreateAccountController createAccountUI = new CreateAccountController();
 
-	public @FXML BorderPane root;
+	private @FXML BorderPane root;
 
-	public @FXML VBox logInBox;
-	public @FXML Text title;
+	private @FXML VBox logInBox;
+	private @FXML Text title;
 	private final Text infoMessage = new Text();
 	private final StackPane infoMessageContainer = new StackPane(infoMessage);
 	{
@@ -145,30 +144,30 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		return !box.getProperties().containsKey(LogInPresentationImpl.class);
 	}
 
-	@Override
-	public String getEmail() {
-		return createAccountUI.getEmailPrompt().getInput().getText();
+	private SilverTextBox getInput(Input input) {
+		switch (input) {
+		case EMAIL_ADDRESS:
+			return createAccountUI.getEmailPrompt();
+		case LOGIN_IDENTIFIER:
+			return loginUI.getLogInIdentifierPrompt();
+		case PASSWORD:
+			return loginUI.getPasswordPrompt();
+		case PHONE_NUMBER:
+			return createAccountUI.getPhoneNumberPrompt();
+		case USERNAME:
+			return createAccountUI.getUsernamePrompt();
+		default:
+			throw new IllegalArgumentException("Unknown input type");
+		}
 	}
 
 	@Override
-	public String getLogInIdentifier() {
-		return loginUI.getLogInIdentifierPrompt().getInput().getText();
+	public String getInputValue(Input input) {
+		return getInput(input).getInput().getText();
 	}
 
 	@Override
-	public String getPassword() {
-		return loginUI.getPasswordPrompt().getInput().getText();
-	}
-
-	@Override
-	public String getPhoneNumber() {
-		return createAccountUI.getPhoneNumberPrompt().getInput().getText();
-	}
-
-	@Override
-	public Scene getScene() throws WindowLoadFailureException {
-		if (scene != null)
-			return scene;
+	public void show(Stage stage) throws WindowLoadFailureException {
 		final FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
 		loader.setController(this);
 		Parent parent;
@@ -177,12 +176,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		} catch (final IOException e) {
 			throw new WindowLoadFailureException(e);
 		}
-		return scene = new Scene(parent);
-	}
-
-	@Override
-	public String getUsername() {
-		return createAccountUI.getUsernamePrompt().getInput().getText();
+		stage.setScene(new Scene(parent));
 	}
 
 	private void hideInformationMessage() {
@@ -216,12 +210,14 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 		// Attach triggers for logic.
 		loginUI.getLogInIdentifierPrompt().getInput().textProperty()
-				.addListener(a -> logic.triggerCheckLogInIdentifier());
-		loginUI.getPasswordPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckPassword());
-		createAccountUI.getUsernamePrompt().getInput().textProperty().addListener(a -> logic.triggerCheckUsername());
-		createAccountUI.getEmailPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckEmail());
+				.addListener(a -> logic.triggerCheckInput(Input.LOGIN_IDENTIFIER));
+		loginUI.getPasswordPrompt().getInput().textProperty().addListener(a -> logic.triggerCheckInput(Input.PASSWORD));
+		createAccountUI.getUsernamePrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckInput(Input.USERNAME));
+		createAccountUI.getEmailPrompt().getInput().textProperty()
+				.addListener(a -> logic.triggerCheckInput(Input.EMAIL_ADDRESS));
 		createAccountUI.getPhoneNumberPrompt().getInput().textProperty()
-				.addListener(a -> logic.triggerCheckPhoneNumber());
+				.addListener(a -> logic.triggerCheckInput(Input.PHONE_NUMBER));
 
 		loginUI.getCreateAccountHyperlink().setOnAction(a -> showCreateAccountUI());
 		createAccountUI.getBackToLogInHyperlink().setOnAction(a -> showLogInUI());
@@ -313,31 +309,29 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public void showEmailError(final Issue issue) {
-		if (issue == null) {
-			setState(createAccountUI.getEmailPrompt(), null);
-			createAccountUI.getEmailPrompt().hideInformation();
-		} else {
-			setState(createAccountUI.getEmailPrompt(), issue.getSeverity());
-			createAccountUI.getEmailPrompt().showInformation(issue.message());
-		}
+	public void showInputError(Issue issue, Input input) {
+		SilverTextBox box = getInput(input);
+		setState(box, issue.getSeverity());
+		box.showInformation(issue.message());
+	}
+
+	@Override
+	public void showInputValid(Input input) {
+		SilverTextBox box = getInput(input);
+		setState(box, null);
+		box.hideInformation();
+	}
+
+	@Override
+	public void showLogInError(String error) {
+		infoMessage.setText(error);
+		infoMessage.setFill(Color.hsb(0, 0.7, 0.5));
 	}
 
 	@Override
 	public void showLogInFailure(final LoginFailureException error) {
 		informUserOfError(
 				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
-	}
-
-	@Override
-	public void showLogInIdentifierError(final Issue issue) {
-		if (issue == null) {
-			setState(loginUI.getLogInIdentifierPrompt(), null);
-			loginUI.getLogInIdentifierPrompt().hideInformation();
-		} else {
-			setState(loginUI.getLogInIdentifierPrompt(), issue.getSeverity());
-			loginUI.getLogInIdentifierPrompt().showInformation(issue.message());
-		}
 	}
 
 	@Override
@@ -410,39 +404,6 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 		title.setText("Log In");
 		JavaTools.swap(logInBox.getChildren(), createAccountButton, logInButton);
 		hideInformationMessage();
-	}
-
-	@Override
-	public void showPasswordError(final Issue issue) {
-		if (issue == null) {
-			setState(loginUI.getPasswordPrompt(), null);
-			loginUI.getPasswordPrompt().hideInformation();
-		} else {
-			setState(loginUI.getPasswordPrompt(), issue.getSeverity());
-			loginUI.getPasswordPrompt().showInformation(issue.message());
-		}
-	}
-
-	@Override
-	public void showPhoneNumberError(final Issue issue) {
-		if (issue == null) {
-			setState(createAccountUI.getPhoneNumberPrompt(), null);
-			createAccountUI.getPhoneNumberPrompt().hideInformation();
-		} else {
-			setState(createAccountUI.getPhoneNumberPrompt(), issue.getSeverity());
-			createAccountUI.getPhoneNumberPrompt().showInformation(issue.message());
-		}
-	}
-
-	@Override
-	public void showUsernameError(final Issue issue) {
-		if (issue == null) {
-			setState(createAccountUI.getUsernamePrompt(), null);
-			createAccountUI.getUsernamePrompt().hideInformation();
-		} else {
-			setState(createAccountUI.getUsernamePrompt(), issue.getSeverity());
-			createAccountUI.getUsernamePrompt().showInformation(issue.message());
-		}
 	}
 
 	@Override

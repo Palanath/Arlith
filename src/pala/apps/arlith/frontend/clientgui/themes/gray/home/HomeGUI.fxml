@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <ScrollPane fitToWidth="true" minWidth="300.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="32.0" spacing="15.0" style="-fx-background-color: #0001;">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label prefWidth="100.0" text="User 1">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane HBox.hgrow="SOMETIMES" />
+                                    <Text fill="#368d00" strokeType="OUTSIDE" strokeWidth="0.0" text="14m 7s ago" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BOTTOM_LEFT" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Did you receive the documents?" textFill="#8a8a8a" HBox.hgrow="SOMETIMES" />
+                                 </children>
+                              </HBox>
+                           </children></VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="32.0" spacing="15.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label prefWidth="100.0" text="User 2">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane HBox.hgrow="SOMETIMES" />
+                                    <Text fill="#368d00" strokeType="OUTSIDE" strokeWidth="0.0" text="45m 38s ago" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BOTTOM_LEFT" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Watch carefully." textFill="#8a8a8a" HBox.hgrow="SOMETIMES" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="32.0" spacing="15.0" style="-fx-background-color: #0001;">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox HBox.hgrow="SOMETIMES">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label prefWidth="100.0" text="User 3">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane HBox.hgrow="SOMETIMES" />
+                                    <Text fill="#368d00" strokeType="OUTSIDE" strokeWidth="0.0" text="2h 37m ago" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BOTTOM_LEFT" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Very busy practicing my exercises right now." textFill="#8a8a8a" HBox.hgrow="SOMETIMES" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children></VBox>
+         </content>
+      </ScrollPane>
+   </left>
+   <center>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <ScrollPane fitToWidth="true" minHeight="300.0" prefHeight="600.0" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox spacing="15.0">
+                     <children>
+                        <HBox spacing="10.0">
+                           <children>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" />
+                              <VBox spacing="1.0" HBox.hgrow="SOMETIMES">
+                                 <children>
+                                    <HBox spacing="15.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User 2">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fill="#aeaeae" strokeType="OUTSIDE" strokeWidth="0.0" text="Yesterday @ 4:03 PM" />
+                                       </children>
+                                    </HBox>
+                                    <TextFlow>
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem ipsum dolor sit amet&#10;" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumped over the lazy dog.&#10;" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Some more text." />
+                                       </children>
+                                    </TextFlow>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox spacing="10.0">
+                           <children>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" />
+                              <VBox spacing="1.0" HBox.hgrow="SOMETIMES">
+                                 <children>
+                                    <HBox spacing="15.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User 3">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fill="#aeaeae" strokeType="OUTSIDE" strokeWidth="0.0" text="Yesterday @ 4:04 PM" />
+                                       </children>
+                                    </HBox>
+                                    <TextFlow>
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hello.&#10;" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text=":)" />
+                                       </children>
+                                    </TextFlow>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children></VBox>
+               </content>
+            </ScrollPane>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER" maxHeight="250.0" minHeight="50.0" minWidth="600.0" prefHeight="60.0" prefWidth="1000.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextArea HBox.hgrow="SOMETIMES" />
+                  <Button mnemonicParsing="false" text="Button" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </center>
+</BorderPane>

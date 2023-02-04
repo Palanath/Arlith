@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui.uispec.login;
 
+import javafx.scene.text.Text;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.Presentation;
@@ -42,50 +43,54 @@ import pala.apps.arlith.frontend.clientgui.Presentation;
  *
  */
 public interface LogInPresentation extends Presentation<LogInLogic> {
-	/**
-	 * Retrieves the log in identifier that the user has entered to attempt to log
-	 * in. This can be either a tag, an email, or a phone number.
-	 * 
-	 * @return The log in identifier that the user has entered; this is used by the
-	 *         user to log in and should be either a tag, an email, or a phone
-	 *         number.
-	 */
-	String getLogInIdentifier();
 
 	/**
-	 * Retrieves the password from the user. Called by the interface's logic while
-	 * attempting to log the user in <b>or</b> create an account.
+	 * Enumeration over the types of inputs that this UI allows the user to provide
+	 * data for.
 	 * 
-	 * @return The {@link String} password from the user.
+	 * @author Palanath
+	 *
 	 */
-	String getPassword();
+	enum Input {
+		/**
+		 * The log in identifier used to log in. This is either a user tag (e.g.
+		 * Joe#1243), an email (e.g. joe@example.com), or a phone number (e.g.
+		 * 5559871234).
+		 */
+		LOGIN_IDENTIFIER,
+		/**
+		 * The password used for both logging in and creating an account.
+		 */
+		PASSWORD,
+		/**
+		 * The username, used for creating an account. Note that this input does not
+		 * accept a user <i>tag</i>, which is a username followed by a hashtag then a
+		 * discriminator, e.g. (Joe#1243).
+		 */
+		USERNAME,
+		/**
+		 * The email address, used for creating an account.
+		 */
+		EMAIL_ADDRESS,
+		/**
+		 * The phone number, used for creating an account. This input is optional; the
+		 * user does not have to provide it.
+		 */
+		PHONE_NUMBER
+	}
 
 	/**
-	 * Gets a user's username for the purposes of creating an account.
+	 * Gets the textual data that the user has entered for the provided input.
 	 * 
-	 * @return
+	 * @param input The input to get the data of.
+	 * @return The data the user has entered into the specified input.
 	 */
-	String getUsername();
-
-	/**
-	 * Retrieves the email from the user for the purposes of creating an account.
-	 * 
-	 * @return The user's email address.
-	 */
-	String getEmail();
-
-	/**
-	 * Retrieves the phone number from the user for the purposes of creating an
-	 * account.
-	 * 
-	 * @return
-	 */
-	String getPhoneNumber();
+	String getInputValue(Input input);
 
 	/**
 	 * <p>
-	 * Indicates to the user that the specified type of problem arose while
-	 * attempting to log the user in.
+	 * Indicates that the server rejected the user's log in information for the
+	 * specified reason.
 	 * </p>
 	 * 
 	 * @param problem The type of problem that occurred.
@@ -101,10 +106,33 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	 * occur in cases of a version mismatch or similar). When this is called, the
 	 * typical approach is to allow the user to try to log in again, which would
 	 * cause the logic to try and reconnect to the server.
+	 * </p>
 	 * 
 	 * @param error The specific error that occurred.
 	 */
 	void showLogInFailure(LoginFailureException error);
+
+	/**
+	 * <p>
+	 * Shows to the user that the log in attempt failed for some other,
+	 * logic-specifiable reason. This is used to allow the logic to convert complex
+	 * errors into a user-formatted string that the presentation should be able to
+	 * display, at the cost of disallowing the presentation to know the details, (so
+	 * auxiliary information cannot be presented to the user, e.g. color coding).
+	 * The string may be as long as a small paragraph (~50 words).
+	 * </p>
+	 * <p>
+	 * This type of error is presented to the user in Arlith's default theme in the
+	 * same way (same {@link Text} object) as
+	 * {@link #showLoginProblem(LoginProblemValue)} and
+	 * {@link #showLogInFailure(LoginFailureException)}, (although with a different
+	 * color).
+	 * </p>
+	 * 
+	 * @param error The error to display to the user. This is usually, but not
+	 *              necessarily, something severe.
+	 */
+	void showLogInError(String error);
 
 	/**
 	 * Prevents the user from triggering a <code>log-in</code> (via

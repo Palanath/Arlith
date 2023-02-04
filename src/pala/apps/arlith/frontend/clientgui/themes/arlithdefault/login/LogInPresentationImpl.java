@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -16,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import pala.apps.arlith.backend.client.LoginFailureException;
 import pala.apps.arlith.backend.common.protocol.types.LoginProblemValue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
@@ -24,7 +24,6 @@ import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 public class LogInPresentationImpl implements LogInPresentation {
 	private final LogInLogic logic;
-	private Scene scene;
 
 	public LogInPresentationImpl(LogInLogic logic) {
 		this.logic = logic;
@@ -58,16 +57,6 @@ public class LogInPresentationImpl implements LogInPresentation {
 		usernamePromptField.setOnAction(handler);
 		passwordPromptField.setOnAction(handler);
 		logInButton.setOnAction(handler);
-	}
-
-	@Override
-	public String getLogInIdentifier() {
-		return usernamePromptText.getText();
-	}
-
-	@Override
-	public String getPassword() {
-		return passwordPromptText.getText();
 	}
 
 	@Override
@@ -146,40 +135,30 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public Scene getScene() throws WindowLoadFailureException {
-		if (scene != null)
-			return scene;
+	public void show(Stage stage) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(LogInPresentationImpl.class.getResource("LogInGUI.fxml"));
 		loader.setController(this);
-		Parent parent;
 		try {
-			parent = loader.load();
+			stage.setScene(new Scene(loader.load()));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException(e);
 		}
-		return scene = new Scene(parent);
 	}
 
 	@Override
-	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
+	public String getInputValue(Input input) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void showLogInFailure(LoginFailureException error) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showLogInError(String error) {
 		// TODO Auto-generated method stub
 
 	}
