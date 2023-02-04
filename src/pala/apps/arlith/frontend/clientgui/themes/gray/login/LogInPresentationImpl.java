@@ -317,6 +317,19 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
+	public void showInputValid(Input input) {
+		SilverTextBox box = getInput(input);
+		setState(box, null);
+		box.hideInformation();
+	}
+
+	@Override
+	public void showLogInError(String error) {
+		infoMessage.setText(error);
+		infoMessage.setFill(Color.hsb(0, 0.7, 0.5));
+	}
+
+	@Override
 	public void showLogInFailure(final LoginFailureException error) {
 		informUserOfError(
 				"Failed to connect to (or negotiate with) server. This is usually because the server is offline or there's no internet. (See the log or speak to someone for details.)");
@@ -395,21 +408,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public void showInputValid(Input input) {
-		SilverTextBox box = getInput(input);
-		setState(box, null);
-		box.hideInformation();
-	}
-
-	@Override
 	public void unlockUIForLoggingIn() {
 		logInBox.setDisable(false);
-	}
-
-	@Override
-	public void showLogInError(String error) {
-		infoMessage.setText(error);
-		infoMessage.setFill(Color.hsb(0, 0.7, 0.5));
 	}
 
 }
