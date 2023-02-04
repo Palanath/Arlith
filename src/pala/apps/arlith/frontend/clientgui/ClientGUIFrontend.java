@@ -65,7 +65,7 @@ import pala.libs.generic.guis.Window.WindowLoadFailureException;
  * <p>
  * Each {@link Presentation} implementation provides a {@link Scene} object
  * which gets shown to the active {@link Stage} when that {@link Presentation}
- * is active (such occurs through an invocation of {@link #show(Logic)}).
+ * is active (such occurs through an invocation of {@link #loadPresentation(Logic)}).
  * </p>
  * 
  * @author Palanath
@@ -113,27 +113,15 @@ public class ClientGUIFrontend implements Frontend {
 	 * 
 	 * @param logic The {@link Logic} to show the scene of.
 	 */
-	public <P extends Presentation<L>, L extends Logic<P>> void show(L logic) {
-		if (!Platform.isFxApplicationThread())
-			Platform.runLater(() -> show(logic));
-		else {
+	public <P extends Presentation<L>, L extends Logic<P>> P loadPresentation(L logic) {
+		for (Theme t : getThemes()) {
 			P p;
-			for (Theme t : getThemes())
-				if ((p = t.supply(logic)) != null)
-					try {
-						logic.hook(p);
-						stage.setScene(p.getScene());
-						return;
-					} catch (WindowLoadFailureException e) {
-						ArlithFrontend.getGuiLogger()
-								.err("Failed to load a presentation for a scene; (Debug Info: LOGIC CLASS="
-										+ logic.getClass() + ", PRESENTATION CLASS=" + p.getClass() + ')');
-						ArlithFrontend.getGuiLogger().err(e);
-					}
-			throw new RuntimeException(
-					"Couldn't load a presentation for the specified scene's logic class; there was no presentation available by any of the loaded themes. (Loaded themes: "
-							+ themes + ')');
+			if ((p = t.supply(logic)) != null)
+				return p;
 		}
+		throw new RuntimeException(
+				"Couldn't load a presentation for the specified scene's logic class; there was no presentation available by any of the loaded themes. (Loaded themes: "
+						+ themes + ')');
 	}
 
 	@Override
@@ -142,7 +130,7 @@ public class ClientGUIFrontend implements Frontend {
 		Platform.setImplicitExit(true);
 		stage.show();
 		try {
-			show(new LogInLogicImpl(this, new ArlithClientBuilder()));
+			loadPresentation(new LogInLogicImpl(this, new ArlithClientBuilder()));
 		} catch (RuntimeException e) {
 			ArlithFrontend.getGuiLogger().err("Failed to show the log in scene.");
 			ArlithFrontend.getGuiLogger().err(e);
