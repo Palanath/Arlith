@@ -18,7 +18,7 @@
    <left>
       <ScrollPane fitToWidth="true" minWidth="300.0" BorderPane.alignment="CENTER">
          <content>
-            <VBox>
+            <VBox fx:id="userList">
                <children>
                   <HBox alignment="CENTER" prefHeight="32.0" spacing="15.0" style="-fx-background-color: #0001;">
                      <VBox.margin>
@@ -115,7 +115,7 @@
          <center>
             <ScrollPane fitToWidth="true" minHeight="300.0" prefHeight="600.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox spacing="15.0">
+                  <VBox fx:id="messagePane" spacing="15.0">
                      <children>
                         <HBox spacing="10.0">
                            <children>
