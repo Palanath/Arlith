@@ -10,6 +10,7 @@ import pala.apps.arlith.frontend.clientgui.ClientGUIFrontend;
 import pala.apps.arlith.frontend.clientgui.logic.home.HomeLogicImpl;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation;
+import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentation.Input;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Issue;
 import pala.apps.arlith.frontend.clientgui.uispec.login.LogInPresentationWithLiveInputResponse.Severity;
@@ -46,7 +47,8 @@ public class LogInLogicImpl implements LogInLogic {
 		presentation.lockUIForLoggingIn();
 		ArlithFrontend.getGuiLogger().dbg("(1) GUI Locked");
 		Thread t = new Thread(() -> {
-			String un = presentation.getLogInIdentifier(), pw = presentation.getPassword();
+			String un = presentation.getInputValue(Input.LOGIN_IDENTIFIER),
+					pw = presentation.getInputValue(Input.PASSWORD);
 			ArlithFrontend.getGuiLogger().dbg("(2) Using Identifier: " + un);
 
 			builder.setUsername(un);
@@ -83,19 +85,23 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCreateAccount() {
 		ArlithFrontend.getGuiLogger().dbg("Attempting to create an account...");
-		ArlithFrontend.getGuiLogger().dbg("(1) Using username: " + presentation.getUsername());
+		ArlithFrontend.getGuiLogger().dbg("(1) Using username: " + presentation.getInputValue(Input.USERNAME));
 	}
 
 	@Override
 	public void triggerCheckUsername() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		presentation.showUsernameError(determineUsernameIssue(presentation.getUsername()));
+		Issue issue = determineUsernameIssue(presentation.getInputValue(Input.USERNAME));
+		if (issue != null)
+			presentation.showInputError(issue, Input.USERNAME);
+		else
+			presentation.showInputValid(Input.USERNAME);
 	}
 
 	@Override
 	public void triggerCheckLogInIdentifier() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String ident = presentation.getLogInIdentifier();
+		String ident = presentation.getInputValue(Input.LOGIN_IDENTIFIER);
 
 		// This block contains clauses that check the syntax for specific types of
 		// identifiers (email, phone #, and user tag). If the input cannot be determined
@@ -108,29 +114,35 @@ public class LogInLogicImpl implements LogInLogic {
 			// The user tag CANNOT have an @ symbol but MUST have a #.
 			// The phone number CANNOT have an @ symbol and CANNOT have a #.
 			if (ident.contains("@")) {// Email
-				presentation.showLogInIdentifierError(determineEmailIssue(ident));
+				Issue issue = determineEmailIssue(ident);
+				if (issue != null)
+					presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
+				else
+					presentation.showInputValid(Input.LOGIN_IDENTIFIER);
 			} else if (ident.contains("#")) {// Tag
 				int hashind = ident.indexOf('#');
 				if (hashind == ident.length() - 1)
-					presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Tag can't end in '#'.", -1));
+					presentation.showInputError(new Issue(Severity.ERROR, "Tag can't end in '#'.", -1),
+							Input.LOGIN_IDENTIFIER);
 				else {
 					String username = ident.substring(0, hashind);
 					String disc = ident.substring(hashind + 1);
 					Issue issue = determineUsernameIssue(username);
 					if (issue != null)
-						presentation.showLogInIdentifierError(issue);
+						presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
 					else {// Verify disc.
 						for (int i = 0; i < disc.length(); i++)
 							if (!Character.isDigit(disc.charAt(i))) {
-								presentation.showLogInIdentifierError(new Issue(Severity.ERROR,
-										"'" + disc.charAt(i) + "' not allowed after '#'.", username.length() + 1 + i));
+								presentation.showInputError(new Issue(Severity.ERROR,
+										"'" + disc.charAt(i) + "' not allowed after '#'.", username.length() + 1 + i),
+										Input.LOGIN_IDENTIFIER);
 								return;
 							}
 						if (disc.length() < 4)
-							presentation.showLogInIdentifierError(
-									new Issue(Severity.ERROR, "Discriminator too short.", -1));
+							presentation.showInputError(new Issue(Severity.ERROR, "Discriminator too short.", -1),
+									Input.LOGIN_IDENTIFIER);
 						else
-							presentation.showLogInIdentifierError(null);
+							presentation.showInputValid(Input.LOGIN_IDENTIFIER);
 					}
 				}
 			} else// Treat as phone number if first character matches what a phone # could start
@@ -141,26 +153,31 @@ public class LogInLogicImpl implements LogInLogic {
 				char first = ident.charAt(0);
 				if (first != '+' && !Character.isDigit(first))
 					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
-				presentation.showLogInIdentifierError(determinePhoneNumberIssue(ident));
+				Issue issue = determinePhoneNumberIssue(ident);
+				if (issue != null)
+					presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
+				else
+					presentation.showInputValid(Input.LOGIN_IDENTIFIER);
 			}
 			return;
 		}
 		// We get here if the type of identifier the user is using has not been
 		// determined.
-		presentation.showLogInIdentifierError(new Issue(Severity.ERROR, "Tag, email, or phone # required.", -1));
+		presentation.showInputError(new Issue(Severity.ERROR, "Tag, email, or phone # required.", -1),
+				Input.LOGIN_IDENTIFIER);
 
 	}
 
 	@Override
 	public void triggerCheckPassword() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String pass = presentation.getPassword();
+		String pass = presentation.getInputValue(Input.PASSWORD);
 		if (pass.isEmpty())
-			presentation.showPasswordError(new Issue(Severity.ERROR, "Password can't be empty", -1));
+			presentation.showInputError(new Issue(Severity.ERROR, "Password can't be empty", -1), Input.PASSWORD);
 		else if (pass.length() < 9)
-			presentation.showPasswordError(new Issue(Severity.WARNING, "Short password", -1));
+			presentation.showInputError(new Issue(Severity.WARNING, "Short password", -1), Input.PASSWORD);
 		else
-			presentation.showPasswordError(null);
+			presentation.showInputValid(Input.PASSWORD);
 
 	}
 
@@ -307,13 +324,21 @@ public class LogInLogicImpl implements LogInLogic {
 	@Override
 	public void triggerCheckEmail() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		presentation.showEmailError(determineEmailIssue(presentation.getEmail()));
+		Issue issue = determineEmailIssue(presentation.getInputValue(Input.EMAIL_ADDRESS));
+		if (issue != null)
+			presentation.showInputError(issue, Input.EMAIL_ADDRESS);
+		else
+			presentation.showInputValid(Input.EMAIL_ADDRESS);
 	}
 
 	@Override
 	public void triggerCheckPhoneNumber() {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		presentation.showPhoneNumberError(determinePhoneNumberIssue(presentation.getPhoneNumber()));
+		Issue issue = determinePhoneNumberIssue(presentation.getInputValue(Input.PHONE_NUMBER));
+		if (issue != null)
+			presentation.showInputError(issue, Input.PHONE_NUMBER);
+		else
+			presentation.showInputValid(Input.PHONE_NUMBER);
 	}
 
 }
