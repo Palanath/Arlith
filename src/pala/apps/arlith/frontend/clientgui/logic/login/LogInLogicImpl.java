@@ -116,6 +116,7 @@ public class LogInLogicImpl implements LogInLogic {
 			return new Issue(Severity.ERROR, message, validationIssue.position());
 		}
 	}
+
 	private static Issue determinePhoneNumberIssue(String phoneNumber) {
 		PhoneNumberIssue issue = Utilities.checkPhoneNumberValidity(phoneNumber);
 		if (issue == null)
@@ -147,6 +148,7 @@ public class LogInLogicImpl implements LogInLogic {
 			return new Issue(Severity.ERROR, message, issue.getCharpos());
 		}
 	}
+
 	private static Issue determineUsernameIssue(String username) {
 		UsernameIssue issue = Utilities.checkUsernameValidity(username);
 		if (issue == null)
@@ -182,116 +184,104 @@ public class LogInLogicImpl implements LogInLogic {
 	}
 
 	@Override
-	public void triggerCheckEmail() {
+	public void triggerCheckInput(Input input) {
 		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		Issue issue = determineEmailIssue(presentation.getInputValue(Input.EMAIL_ADDRESS));
-		if (issue != null)
-			presentation.showInputError(issue, Input.EMAIL_ADDRESS);
-		else
-			presentation.showInputValid(Input.EMAIL_ADDRESS);
-	}
-
-	@Override
-	public void triggerCheckLogInIdentifier() {
-		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String ident = presentation.getInputValue(Input.LOGIN_IDENTIFIER);
-
-		// This block contains clauses that check the syntax for specific types of
-		// identifiers (email, phone #, and user tag). If the input cannot be determined
-		// to be one of those types, we break out of the block.
-		HANDLE_SYNTAX_FOR_DETERMINED_TYPES: {
-			// The log in identifier can be either an email address, a phone number, or a
-			// user tag. This gives us 3 cases:
-			//
-			// The email address MUST have an @ symbol.
-			// The user tag CANNOT have an @ symbol but MUST have a #.
-			// The phone number CANNOT have an @ symbol and CANNOT have a #.
-			if (ident.contains("@")) {// Email
-				Issue issue = determineEmailIssue(ident);
-				if (issue != null)
-					presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
-				else
-					presentation.showInputValid(Input.LOGIN_IDENTIFIER);
-			} else if (ident.contains("#")) {// Tag
-				int hashind = ident.indexOf('#');
-				if (hashind == ident.length() - 1)
-					presentation.showInputError(new Issue(Severity.ERROR, "Tag can't end in '#'.", -1),
-							Input.LOGIN_IDENTIFIER);
-				else {
-					String username = ident.substring(0, hashind);
-					String disc = ident.substring(hashind + 1);
-					Issue issue = determineUsernameIssue(username);
+		String inputString = presentation.getInputValue(input);
+		switch (input) {
+		case EMAIL_ADDRESS:
+			Issue issue = determineEmailIssue(inputString);
+			if (issue != null)
+				presentation.showInputError(issue, Input.EMAIL_ADDRESS);
+			else
+				presentation.showInputValid(Input.EMAIL_ADDRESS);
+			break;
+		case LOGIN_IDENTIFIER:
+			// This block contains clauses that check the syntax for specific types of
+			// identifiers (email, phone #, and user tag). If the input cannot be determined
+			// to be one of those types, we break out of the block.
+			HANDLE_SYNTAX_FOR_DETERMINED_TYPES: {
+				// The log in identifier can be either an email address, a phone number, or a
+				// user tag. This gives us 3 cases:
+				//
+				// The email address MUST have an @ symbol.
+				// The user tag CANNOT have an @ symbol but MUST have a #.
+				// The phone number CANNOT have an @ symbol and CANNOT have a #.
+				if (inputString.contains("@")) {// Email
+					issue = determineEmailIssue(inputString);
 					if (issue != null)
 						presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
-					else {// Verify disc.
-						for (int i = 0; i < disc.length(); i++)
-							if (!Character.isDigit(disc.charAt(i))) {
-								presentation.showInputError(new Issue(Severity.ERROR,
-										"'" + disc.charAt(i) + "' not allowed after '#'.", username.length() + 1 + i),
+					else
+						presentation.showInputValid(Input.LOGIN_IDENTIFIER);
+				} else if (inputString.contains("#")) {// Tag
+					int hashind = inputString.indexOf('#');
+					if (hashind == inputString.length() - 1)
+						presentation.showInputError(new Issue(Severity.ERROR, "Tag can't end in '#'.", -1),
+								Input.LOGIN_IDENTIFIER);
+					else {
+						String username = inputString.substring(0, hashind);
+						String disc = inputString.substring(hashind + 1);
+						issue = determineUsernameIssue(username);
+						if (issue != null)
+							presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
+						else {// Verify disc.
+							for (int i = 0; i < disc.length(); i++)
+								if (!Character.isDigit(disc.charAt(i))) {
+									presentation.showInputError(
+											new Issue(Severity.ERROR, "'" + disc.charAt(i) + "' not allowed after '#'.",
+													username.length() + 1 + i),
+											Input.LOGIN_IDENTIFIER);
+									return;
+								}
+							if (disc.length() < 4)
+								presentation.showInputError(new Issue(Severity.ERROR, "Discriminator too short.", -1),
 										Input.LOGIN_IDENTIFIER);
-								return;
-							}
-						if (disc.length() < 4)
-							presentation.showInputError(new Issue(Severity.ERROR, "Discriminator too short.", -1),
-									Input.LOGIN_IDENTIFIER);
-						else
-							presentation.showInputValid(Input.LOGIN_IDENTIFIER);
+							else
+								presentation.showInputValid(Input.LOGIN_IDENTIFIER);
+						}
 					}
-				}
-			} else// Treat as phone number if first character matches what a phone # could start
-					// with. Otherwise, consider type to be unknown.
-			if (ident.isEmpty())
-				break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
-			else {
-				char first = ident.charAt(0);
-				if (first != '+' && !Character.isDigit(first))
+				} else// Treat as phone number if first character matches what a phone # could start
+						// with. Otherwise, consider type to be unknown.
+				if (inputString.isEmpty())
 					break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
-				Issue issue = determinePhoneNumberIssue(ident);
-				if (issue != null)
-					presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
-				else
-					presentation.showInputValid(Input.LOGIN_IDENTIFIER);
+				else {
+					char first = inputString.charAt(0);
+					if (first != '+' && !Character.isDigit(first))
+						break HANDLE_SYNTAX_FOR_DETERMINED_TYPES;
+					issue = determinePhoneNumberIssue(inputString);
+					if (issue != null)
+						presentation.showInputError(issue, Input.LOGIN_IDENTIFIER);
+					else
+						presentation.showInputValid(Input.LOGIN_IDENTIFIER);
+				}
+				return;
 			}
-			return;
+			// We get here if the type of identifier the user is using has not been
+			// determined.
+			presentation.showInputError(new Issue(Severity.ERROR, "Tag, email, or phone # required.", -1),
+					Input.LOGIN_IDENTIFIER);
+			break;
+		case PASSWORD:
+			if (inputString.isEmpty())
+				presentation.showInputError(new Issue(Severity.ERROR, "Password can't be empty", -1), Input.PASSWORD);
+			else if (inputString.length() < 9)
+				presentation.showInputError(new Issue(Severity.WARNING, "Short password", -1), Input.PASSWORD);
+			else
+				presentation.showInputValid(Input.PASSWORD);
+			break;
+		case PHONE_NUMBER:
+			issue = determinePhoneNumberIssue(inputString);
+			if (issue != null)
+				presentation.showInputError(issue, Input.PHONE_NUMBER);
+			else
+				presentation.showInputValid(Input.PHONE_NUMBER);
+			break;
+		case USERNAME:
+			issue = determineUsernameIssue(inputString);
+			if (issue != null)
+				presentation.showInputError(issue, Input.USERNAME);
+			else
+				presentation.showInputValid(Input.USERNAME);
 		}
-		// We get here if the type of identifier the user is using has not been
-		// determined.
-		presentation.showInputError(new Issue(Severity.ERROR, "Tag, email, or phone # required.", -1),
-				Input.LOGIN_IDENTIFIER);
-
-	}
-
-	@Override
-	public void triggerCheckPassword() {
-		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		String pass = presentation.getInputValue(Input.PASSWORD);
-		if (pass.isEmpty())
-			presentation.showInputError(new Issue(Severity.ERROR, "Password can't be empty", -1), Input.PASSWORD);
-		else if (pass.length() < 9)
-			presentation.showInputError(new Issue(Severity.WARNING, "Short password", -1), Input.PASSWORD);
-		else
-			presentation.showInputValid(Input.PASSWORD);
-
-	}
-
-	@Override
-	public void triggerCheckPhoneNumber() {
-		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		Issue issue = determinePhoneNumberIssue(presentation.getInputValue(Input.PHONE_NUMBER));
-		if (issue != null)
-			presentation.showInputError(issue, Input.PHONE_NUMBER);
-		else
-			presentation.showInputValid(Input.PHONE_NUMBER);
-	}
-
-	@Override
-	public void triggerCheckUsername() {
-		LogInPresentationWithLiveInputResponse presentation = (LogInPresentationWithLiveInputResponse) this.presentation;
-		Issue issue = determineUsernameIssue(presentation.getInputValue(Input.USERNAME));
-		if (issue != null)
-			presentation.showInputError(issue, Input.USERNAME);
-		else
-			presentation.showInputValid(Input.USERNAME);
 	}
 
 	@Override
