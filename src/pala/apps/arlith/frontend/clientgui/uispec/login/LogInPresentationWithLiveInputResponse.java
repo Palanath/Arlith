@@ -144,154 +144,36 @@ public interface LogInPresentationWithLiveInputResponse extends LogInPresentatio
 
 	/**
 	 * <p>
-	 * Shows the provided {@link Issue} to the user, or indicates to the user that
-	 * the log in identifier input is valid if this method is provided
-	 * <code>null</code>. The {@link Issue} provided, if any, represents a problem
-	 * with the {@link LogInPresentation#getLogInIdentifier()} input. The
-	 * {@link Issue} should be shown to the user in the context of that input.
+	 * Shows the user that there is an {@link Issue} with the data entered into the
+	 * specified {@link Input}.
 	 * </p>
 	 * <p>
-	 * The default presentation implementation for Arlith implements this method by
-	 * changing the color of the input prompt and providing {@link Issue#message()}
-	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter and on
-	 * the {@link Severity} of the {@link Issue} if it is not <code>null</code>.
+	 * This method is used for showing <i>syntactic</i> problems with the input
+	 * data.
 	 * </p>
-	 * <ul>
-	 * <li>If the {@link Issue} is <code>null</code>, the prompt becomes
-	 * <span style="color: green;">green</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
-	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#ERROR}, the
-	 * prompt becomes <span style="color: red;">red</span>.</li>
-	 * </ul>
 	 * 
-	 * @param issue An object containing details about the issue with the input, or
-	 *              <code>null</code> if the input is valid.
+	 * @param issue An object containing information on the {@link Issue}.
+	 * @param input Specifies which {@link Input} the {@link Issue} corresponds to.
 	 */
-	void showLogInIdentifierError(Issue issue);
+	void showInputError(Issue issue, Input input);
 
 	/**
 	 * <p>
-	 * Shows the provided {@link Issue} to the user in the context of the username
-	 * input or conveys to the user that the input is not invalid if the
-	 * {@link Issue} parameter is <code>null</code>. The {@link Issue} provided, if
-	 * any, represents a problem with the {@link LogInPresentation#getUsername()}
-	 * input.
+	 * Shows the user that the data entered into the specified {@link Input} is
+	 * valid.
 	 * </p>
 	 * <p>
-	 * The default presentation implementation for Arlith implements this method by
-	 * changing the color of the input prompt and providing {@link Issue#message()}
-	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter and on
-	 * the {@link Severity} of the {@link Issue} if it is not <code>null</code>.
+	 * This method is used for showing <i>syntactic</i> validity of the input data,
+	 * and does not in any way guarantee that the server will not reject the
+	 * information. (For example, if the email address <code>abc@example.com</code>
+	 * is used, this method will be called on the {@link Input#EMAIL_ADDRESS} input,
+	 * but if an account with that email is already registered on the server, the
+	 * server will still reject the email address when creating an account.
 	 * </p>
-	 * <ul>
-	 * <li>If the {@link Issue} is <code>null</code>, the prompt becomes
-	 * <span style="color: green;">green</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
-	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#ERROR}, the
-	 * prompt becomes <span style="color: red;">red</span>.</li>
-	 * </ul>
 	 * 
-	 * @param issue An object containing details about the issue with the input, or
-	 *              <code>null</code> if the input is valid.
+	 * @param input The {@link Input} to denote as valid.
 	 */
-	void showUsernameError(Issue issue);
-
-	/**
-	 * <p>
-	 * Shows the provided {@link Issue} to the user in the context of the password
-	 * input, or conveys to the user that the input is not invalid if the
-	 * {@link Issue} parameter is <code>null</code>. The {@link Issue} provided, if
-	 * any, represents a problem with the {@link LogInPresentation#getPassword()}
-	 * input.
-	 * </p>
-	 * <p>
-	 * The default presentation implementation for Arlith implements this method by
-	 * changing the color of the input prompt and providing {@link Issue#message()}
-	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter and on
-	 * the {@link Severity} of the {@link Issue} if it is not <code>null</code>.
-	 * </p>
-	 * <ul>
-	 * <li>If the {@link Issue} is <code>null</code>, the prompt becomes
-	 * <span style="color: green;">green</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
-	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#ERROR}, the
-	 * prompt becomes <span style="color: red;">red</span>.</li>
-	 * </ul>
-	 * 
-	 * @param issue An object containing details about the issue with the input, or
-	 *              <code>null</code> if the input is valid.
-	 */
-	void showPasswordError(Issue issue);
-
-	/**
-	 * <p>
-	 * Shows the provided {@link Issue} to the user in the context of the email
-	 * address input, or conveys to the user that the input is not invalid if the
-	 * {@link Issue} parameter is <code>null</code>. The {@link Issue} provided, if
-	 * any, represents a problem with the {@link LogInPresentation#getEmail()}
-	 * input.
-	 * </p>
-	 * <p>
-	 * The default presentation implementation for Arlith implements this method by
-	 * changing the color of the input prompt and providing {@link Issue#message()}
-	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter and on
-	 * the {@link Severity} of the {@link Issue} if it is not <code>null</code>.
-	 * </p>
-	 * <ul>
-	 * <li>If the {@link Issue} is <code>null</code>, the prompt becomes
-	 * <span style="color: green;">green</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
-	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#ERROR}, the
-	 * prompt becomes <span style="color: red;">red</span>.</li>
-	 * </ul>
-	 * 
-	 * @param issue An object containing details about the issue with the input, or
-	 *              <code>null</code> if the input is valid.
-	 */
-	void showEmailError(Issue issue);
-
-	/**
-	 * <p>
-	 * Shows the provided {@link Issue} to the user in the context of the phone
-	 * number input, or conveys to the user that the input is not invalid if the
-	 * {@link Issue} parameter is <code>null</code>. The {@link Issue} provided, if
-	 * any, represents a problem with the {@link LogInPresentation#getPhoneNumber()}
-	 * input.
-	 * </p>
-	 * <p>
-	 * The default presentation implementation for Arlith implements this method by
-	 * changing the color of the input prompt and providing {@link Issue#message()}
-	 * as textual feedback in the vicinity of the prompt. The color of the prompt is
-	 * assigned based on the nullity of the provided {@link Issue} parameter, on the
-	 * {@link Severity} of the {@link Issue} if it is not <code>null</code>, and, if
-	 * it is <code>null</code>, on whether or not the phone number {@link String} in
-	 * the user input prompt is empty.
-	 * </p>
-	 * <ul>
-	 * <li>If the user has entered nothing, then this method will be called with
-	 * <code>null</code>, since phone numbers are not required. In such a case, the
-	 * prompt's color and styling reverts to its default (before anything was typed
-	 * into it).</li>
-	 * <li>Otherwise, if the {@link Issue} is <code>null</code>, the prompt becomes
-	 * <span style="color: green;">green</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#WARNING},
-	 * the prompt becomes <span style="color: gold;">gold</span>.</li>
-	 * <li>Otherwise, if {@link Issue#getSeverity()} is {@link Severity#ERROR}, the
-	 * prompt becomes <span style="color: red;">red</span>.</li>
-	 * </ul>
-	 * 
-	 * @param issue An object containing details about the issue with the input, or
-	 *              <code>null</code> if the input is valid.
-	 */
-	void showPhoneNumberError(Issue issue);
+	void showInputValid(Input input);
 
 	/**
 	 * Indicates the {@link Severity} of an {@link Issue}. {@link Issue}s with
