@@ -11,7 +11,7 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
-public abstract class SingleThreadRequestSubsystem implements RequestSubsystemInterface {
+public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 
 	private CommunicationConnection connection;
 	private Thread thread;
@@ -78,7 +78,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystemIn
 		private final Object monitor = new Object();
 
 		@Override
-		public RequestSubsystemInterface getRequestSubsystem() {
+		public RequestSubsystem getRequestSubsystem() {
 			return SingleThreadRequestSubsystem.this;
 		}
 

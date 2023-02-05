@@ -28,7 +28,7 @@ import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotificatio
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
@@ -144,10 +144,10 @@ public class ArlithClient {
 		protected final CommunicationProtocolRequest<ListValue<T>> request;
 
 		public AbstractUserListCache(CommunicationProtocolRequest<ListValue<T>> request) {
-			super(new Supplier<RequestSubsystemInterface>() {
+			super(new Supplier<RequestSubsystem>() {
 
 				@Override
-				public RequestSubsystemInterface get() {
+				public RequestSubsystem get() {
 					return ArlithClient.this.getRequestSubsystem();
 				}
 			});
@@ -273,19 +273,19 @@ public class ArlithClient {
 	private boolean running;
 
 	private final EventSubsystem eventSubsystem;
-	private final RequestSubsystemInterface requestSubsystem;
+	private final RequestSubsystem requestSubsystem;
 
 	/**
 	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
-	 * and {@link RequestSubsystemInterface}. The {@link EventSubsystem}'s
+	 * and {@link RequestSubsystem}. The {@link EventSubsystem}'s
 	 * {@link EventManager} is set to {@link #eventManager}. Once setup and
 	 * construction is complete, the client needs to be started up with a call to
 	 * {@link #startup()} before it can be used.
 	 * 
 	 * @param eventSubsystem   The {@link EventSubsystem} to use.
-	 * @param requestSubsystem The {@link RequestSubsystemInterface} to use.
+	 * @param requestSubsystem The {@link RequestSubsystem} to use.
 	 */
-	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystemInterface requestSubsystem) {
+	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystem requestSubsystem) {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
 		this.requestSubsystem = requestSubsystem;
@@ -569,7 +569,7 @@ public class ArlithClient {
 		return self.get();
 	}
 
-	public RequestSubsystemInterface getRequestSubsystem() {
+	public RequestSubsystem getRequestSubsystem() {
 		return requestSubsystem;
 	}
 

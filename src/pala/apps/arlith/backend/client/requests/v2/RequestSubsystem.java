@@ -7,7 +7,7 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
-public interface RequestSubsystemInterface {
+public interface RequestSubsystem {
 	/**
 	 * Produces an {@link ActionInterface} that represents the act of making the
 	 * specified {@link Inquiry} to the server. If this inquiry fails, the
@@ -28,7 +28,7 @@ public interface RequestSubsystemInterface {
 	 * {@link ActionInterface} may have already completed with the value specified,
 	 * although implementations can choose to determine whether this
 	 * {@link ActionInterface} is returned having been completed, or if it must be
-	 * queued in the {@link RequestSubsystemInterface} (and, thus, "executed" by a
+	 * queued in the {@link RequestSubsystem} (and, thus, "executed" by a
 	 * thread). This method does not fail (except for VM runtime errors), and the
 	 * {@link ActionInterface} itself should never complete exceptionally (also
 	 * except for VM runtime errors).
