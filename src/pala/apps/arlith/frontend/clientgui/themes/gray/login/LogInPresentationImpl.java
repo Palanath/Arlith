@@ -266,7 +266,7 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public void lockUIForLoggingIn() {
+	public void lockUI() {
 		logInBox.setDisable(true);
 	}
 
@@ -407,8 +407,14 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 	}
 
 	@Override
-	public void unlockUIForLoggingIn() {
+	public void unlockUI() {
 		logInBox.setDisable(false);
+	}
+
+	@Override
+	public void showCreateAccountError(String error) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

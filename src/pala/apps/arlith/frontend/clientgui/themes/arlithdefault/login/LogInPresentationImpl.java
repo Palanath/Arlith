@@ -125,12 +125,12 @@ public class LogInPresentationImpl implements LogInPresentation {
 	}
 
 	@Override
-	public void lockUIForLoggingIn() {
+	public void lockUI() {
 		logInBox.setDisable(true);
 	}
 
 	@Override
-	public void unlockUIForLoggingIn() {
+	public void unlockUI() {
 		logInBox.setDisable(false);
 	}
 
@@ -161,5 +161,11 @@ public class LogInPresentationImpl implements LogInPresentation {
 	public void showLogInError(String error) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void showCreateAccountError(String error) {
+		// TODO Auto-generated method stub
+		
 	}
 }

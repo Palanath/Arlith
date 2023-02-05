@@ -134,22 +134,25 @@ public interface LogInPresentation extends Presentation<LogInLogic> {
 	 */
 	void showLogInError(String error);
 
-	/**
-	 * Prevents the user from triggering a <code>log-in</code> (via
-	 * {@link LogInLogic#triggerLogIn()}) until {@link #unlockUIForLoggingIn()} is
-	 * called. The UI should remain responsive so as to indicate to the user that
-	 * the application is still alive, and should, preferably, also indicate to the
-	 * user that the application is currently attempting to log in. If this method
-	 * is called more than once before calling {@link #unlockUIForLoggingIn()}, the
-	 * subsequent calls have no effect.
-	 */
-	void lockUIForLoggingIn();
+	void showCreateAccountError(String error);
 
 	/**
-	 * Releases the restriction that bars the user from triggering a
-	 * <code>log-in</code> (essentially, undoes the effects of
-	 * {@link #lockUIForLoggingIn()}). This method is called by the Log In scene's
-	 * logic class while the client attempts to log in to the server, so that
+	 * Prevents the user from attempting to log in or create an account until
+	 * {@link #unlockUI()} is called. The UI should remain responsive so as to
+	 * indicate to the user that the application is still alive, and should,
+	 * preferably, also indicate to the user that the application is currently
+	 * attempting to log in. If this method is called more than once before calling
+	 * {@link #unlockUI()}, the subsequent calls have no effect.
 	 */
-	void unlockUIForLoggingIn();
+	void lockUI();
+
+	/**
+	 * Releases the restriction that bars the user from triggering log in or account
+	 * creation (essentially, undoes the effects of {@link #lockUI()}). This method
+	 * is called by the Log In scene's logic class while the client attempts to log
+	 * in to the server, so that the user does not repeatedly cause multiple
+	 * simultaneous log in requests, and so that the GUI can update the user of the
+	 * fact that a request is being made.
+	 */
+	void unlockUI();
 }
