@@ -301,11 +301,11 @@ public class ArlithClient {
 	 * Creates a new Community using the provided name. The icon and background are
 	 * <i>both</i> optional. To not provide an icon or background, supply
 	 * <code>null</code> for either's {@link InputStream} argument. The sizes of the
-	 * icon and background size are required to populate the fields of the
-	 * respective {@link PieceOMediaValue} objects created, but the server
-	 * <b>currently does not use</b> the size field of the {@link PieceOMediaValue}.
-	 * It is recommended to just set the values to the actual size, if known, of the
-	 * media being uploaded. If either media is not being uploaded (i.e. the
+	 * icon and background are required to populate the fields of the respective
+	 * {@link PieceOMediaValue} objects created, but the server <b>currently does
+	 * not use</b> the size field of the {@link PieceOMediaValue}. It is recommended
+	 * to just set the values to the actual size, if known, of the media being
+	 * uploaded. If either media is not being uploaded (i.e. the
 	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
 	 * then it is recommended to supply <code>-1</code> for the media size.
 	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
