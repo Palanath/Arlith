@@ -413,8 +413,8 @@ public class LogInPresentationImpl implements LogInPresentationWithLiveInputResp
 
 	@Override
 	public void showCreateAccountError(String error) {
-		// TODO Auto-generated method stub
-		
+		infoMessage.setText(error);
+		infoMessage.setFill(Color.hsb(0, 0.7, 0.5));
 	}
 
 }
