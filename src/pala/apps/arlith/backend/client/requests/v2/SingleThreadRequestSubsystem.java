@@ -312,12 +312,16 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 	}
 
 	/**
+	 * <p>
 	 * Creates a new {@link CommunicationConnection} and prepares it, so that
 	 * {@link Inquiry Inquiries} are ready to be sent on it. This method is
 	 * responsible for instantiating {@link CommunicationConnection}s, connecting
 	 * them to a server, <i>and potentially</i> for logging into the server on them,
 	 * so that nothing remains to be done before {@link Inquiry Inquiries} can be
-	 * made on them.
+	 * made on them. This method is called whenever a
+	 * {@link SingleThreadRequestSubsystem} is started and whenever it encounters an
+	 * error with the server, prompting a restart in the connection.
+	 * </p>
 	 * 
 	 * @return A new, prepared {@link CommunicationConnection}.
 	 * @throws ConnectionStartupException In case the actual network connection
@@ -353,8 +357,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 		return new STRSAction<R>() {
 			@Override
 			protected R act(CommunicationConnection connection) throws CommunicationProtocolError, RuntimeException {
-				inquiry.sendRequest(connection);
-				return inquiry.receiveResponse(connection);
+				return inquiry.inquire(connection);
 			}
 		};
 	}
@@ -362,7 +365,6 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 	@Override
 	public <R> ActionInterface<R> executable(ArlithFunction<? extends R> executable) {
 		return new STRSAction<R>() {
-
 			@Override
 			protected R act(CommunicationConnection connection) throws CommunicationProtocolError, RuntimeException {
 				return executable.execute(connection);
