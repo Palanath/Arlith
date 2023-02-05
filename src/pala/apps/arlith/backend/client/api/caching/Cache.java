@@ -3,7 +3,7 @@ package pala.apps.arlith.backend.client.api.caching;
 import java.util.function.Supplier;
 
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
@@ -11,24 +11,24 @@ public abstract class Cache<O> {
 
 	protected O value;
 	protected volatile boolean populated;
-	protected Supplier<? extends RequestSubsystemInterface> reqsys;
+	protected Supplier<? extends RequestSubsystem> reqsys;
 
-	protected final Supplier<? extends RequestSubsystemInterface> getReqsys() {
+	protected final Supplier<? extends RequestSubsystem> getReqsys() {
 		return reqsys;
 	}
 
-	public Cache(Supplier<? extends RequestSubsystemInterface> reqsys) {
+	public Cache(Supplier<? extends RequestSubsystem> reqsys) {
 		this.reqsys = reqsys;
 	}
 
 	public Cache() {
 	}
 
-	public void setReqsys(Supplier<? extends RequestSubsystemInterface> reqsys) {
+	public void setReqsys(Supplier<? extends RequestSubsystem> reqsys) {
 		this.reqsys = reqsys;
 	}
 
-	public void setReqsys(RequestSubsystemInterface reqsys) {
+	public void setReqsys(RequestSubsystem reqsys) {
 		setReqsys(() -> reqsys);
 	}
 

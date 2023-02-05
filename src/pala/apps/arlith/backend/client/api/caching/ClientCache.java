@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
@@ -45,12 +45,12 @@ public abstract class ClientCache<O> extends Cache<O> {
 			return querier.query(connection);
 		}
 
-		public ClientCacheMaker(RequestSubsystemInterface reqsys, Querier<? extends O> querier) {
+		public ClientCacheMaker(RequestSubsystem reqsys, Querier<? extends O> querier) {
 			super(reqsys);
 			this.querier = querier;
 		}
 
-		public ClientCacheMaker(Supplier<? extends RequestSubsystemInterface> reqsys, Querier<? extends O> querier) {
+		public ClientCacheMaker(Supplier<? extends RequestSubsystem> reqsys, Querier<? extends O> querier) {
 			super(reqsys);
 			this.querier = querier;
 		}
@@ -59,11 +59,11 @@ public abstract class ClientCache<O> extends Cache<O> {
 
 	/**
 	 * Constructs a new {@link ClientCache} that makes {@link #get()}
-	 * {@link ActionInterface}s on the provided {@link RequestSubsystemInterface}.
+	 * {@link ActionInterface}s on the provided {@link RequestSubsystem}.
 	 * 
 	 * @param reqsys The request system to use.
 	 */
-	public ClientCache(RequestSubsystemInterface reqsys) {
+	public ClientCache(RequestSubsystem reqsys) {
 		super(() -> reqsys);
 	}
 
@@ -73,21 +73,21 @@ public abstract class ClientCache<O> extends Cache<O> {
 	/**
 	 * <p>
 	 * Constructs a new {@link ClientCache} that makes {@link #get()}
-	 * {@link ActionInterface}s based on the {@link RequestSubsystemInterface}
+	 * {@link ActionInterface}s based on the {@link RequestSubsystem}
 	 * returned by the provided {@link Supplier}. The {@link Supplier} is called
 	 * every time the cache needs to make a new {@link ActionInterface}.
 	 * </p>
 	 * <p>
 	 * This constructor is primarily available just so that the client can construct
 	 * new {@link ClientCache}s in initialization blocks before setting the final
-	 * {@link RequestSubsystemInterface} in its own constructor.
+	 * {@link RequestSubsystem} in its own constructor.
 	 * </p>
 	 * 
 	 * @param reqsys A {@link Supplier} that should provide the
-	 *               {@link RequestSubsystemInterface} whenever {@link #get()} needs
+	 *               {@link RequestSubsystem} whenever {@link #get()} needs
 	 *               to be called.
 	 */
-	public ClientCache(Supplier<? extends RequestSubsystemInterface> reqsys) {
+	public ClientCache(Supplier<? extends RequestSubsystem> reqsys) {
 		super(reqsys);
 	}
 

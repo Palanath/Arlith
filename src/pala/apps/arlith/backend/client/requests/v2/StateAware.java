@@ -7,7 +7,7 @@ public interface StateAware {
 	 * executed or running. Completed actions return <code>true</code> for this.
 	 * 
 	 * @return <code>true</code> if this action has been queued on a
-	 *         {@link RequestSubsystemInterface}, <code>false</code> otherwise.
+	 *         {@link RequestSubsystem}, <code>false</code> otherwise.
 	 */
 	boolean isQueued();
 

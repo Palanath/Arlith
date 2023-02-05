@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import pala.apps.arlith.backend.client.api.caching.ClientCache.Querier;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.apps.arlith.libraries.watchables.View;
@@ -35,7 +35,7 @@ public final class WatchableCache<O> extends Cache<O> implements Watchable<O> {
 		this.populator = populator;
 	}
 
-	public WatchableCache(Supplier<? extends RequestSubsystemInterface> reqsys, Populator populator) {
+	public WatchableCache(Supplier<? extends RequestSubsystem> reqsys, Populator populator) {
 		super(reqsys);
 		this.populator = populator;
 	}
@@ -44,7 +44,7 @@ public final class WatchableCache<O> extends Cache<O> implements Watchable<O> {
 		this.populator = connection -> populate(populator.query(connection));
 	}
 
-	public WatchableCache(Supplier<? extends RequestSubsystemInterface> reqsys, Querier<? extends O> populator) {
+	public WatchableCache(Supplier<? extends RequestSubsystem> reqsys, Querier<? extends O> populator) {
 		super(reqsys);
 		this.populator = connection -> populate(populator.query(connection));
 	}
