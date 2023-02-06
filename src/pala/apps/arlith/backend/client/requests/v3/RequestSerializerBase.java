@@ -21,7 +21,7 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 	 * prepared} connection.
 	 * </p>
 	 */
-	private CommunicationConnection connection;
+	private volatile CommunicationConnection connection;
 
 	@Override
 	public synchronized <R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError {
@@ -30,24 +30,36 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 		return inquiry.inquire(connection);
 	}
 
+	/**
+	 * Variable used to keep track of the {@link Thread} calling {@link #start()} so
+	 * that another {@link Thread} calling {@link #stop()} can interrupt it.
+	 */
+	private volatile Thread startingThread;
+
 	@Override
 	public void start() {
 		if (connection != null)
 			return;
-		synchronized (this) {
-			try {
-				restartConnection();
-			} catch (InterruptedException e) {
-				return;// This may instead be changed to only stop if the interrupt() was due to
-						// #stop() being called.
-			}
+		startingThread = Thread.currentThread();
+		try {
+			restartConnection();
+		} catch (InterruptedException e) {
+			if (startingThread == null)// #stop() sets this field to null to signal that it was the one that made
+										// the interruption.
+				return;
 		}
+		startingThread = null;
 	}
 
 	@Override
 	public void stop() {
 		if (connection == null)
 			return;
+		Thread t = startingThread;
+		if (t != null) {
+			startingThread = null;
+			t.interrupt();
+		}
 		try {
 			connection.close();
 		} finally {
