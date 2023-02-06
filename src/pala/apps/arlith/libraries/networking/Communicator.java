@@ -25,14 +25,8 @@ import pala.libs.generic.streams.CharacterStream;
 
 /**
  * <p>
- * A class that streamlines communication through a {@link Socket} by providing
- * (only) the ability to communicate back and forth using blocks of raw byte
- * data. (The restriction is imposed because of encryption.) A single block can
- * be sent or read at a time. Blocks remain disjoint after they're sent, so if
- * {@link #writeBlock(byte[])} is called with two arrays, the first being 50
- * bytes large and the second being 125, when the receiver calls
- * #{@link #readBlockLong()} twice, the receiver will receive the 50 byte array
- * and then the 125 byte array.
+ * A basic implementation of {@link Connection} that provides encryption (using
+ * {@link EncryptedConnection}) on top of its underlying {@link IOStream}.
  * </p>
  * <p>
  * Please note that any read methods in this class that make use of a limit
