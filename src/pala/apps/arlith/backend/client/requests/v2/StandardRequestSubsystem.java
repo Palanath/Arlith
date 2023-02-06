@@ -13,8 +13,11 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 public abstract class StandardRequestSubsystem implements RequestSubsystem {
 
+	/**
+	 * The current connection
+	 */
 	private CommunicationConnection connection;
-	private Thread thread;
+	private Thread queueThread;
 	private final LinkedBlockingQueue<STRSAction<?>> queue = new LinkedBlockingQueue<>();
 
 	/**
@@ -27,8 +30,8 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 	private Logger logger = Arlith.getLogger();
 
 	/**
-	 * Gets the {@link Logger} that this {@link StandardRequestSubsystem} uses.
-	 * See {@link #logger} for more information.
+	 * Gets the {@link Logger} that this {@link StandardRequestSubsystem} uses. See
+	 * {@link #logger} for more information.
 	 * 
 	 * @return The {@link Logger} used by this {@link StandardRequestSubsystem}
 	 */
@@ -37,8 +40,8 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 	}
 
 	/**
-	 * Sets the {@link Logger} that this {@link StandardRequestSubsystem} uses.
-	 * See {@link #logger} for more information.
+	 * Sets the {@link Logger} that this {@link StandardRequestSubsystem} uses. See
+	 * {@link #logger} for more information.
 	 * 
 	 * @param logger The {@link Logger} used by this
 	 *               {@link StandardRequestSubsystem}.
@@ -86,7 +89,7 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 				throws CommunicationProtocolError, RuntimeException;
 
 		/**
-		 * Method called by the {@link StandardRequestSubsystem#thread} to actually
+		 * Method called by the {@link StandardRequestSubsystem#queueThread} to actually
 		 * execute an {@link Action}s in the queue so that the required state in the
 		 * {@link STRSAction} gets set upon completion and waiting caller threads are
 		 * notified. This method invokes {@link #act(CommunicationConnection)}, which
@@ -117,10 +120,10 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 		 * its {@link STRSAction#exception} field set.
 		 * </p>
 		 * <p>
-		 * This method is called by {@link StandardRequestSubsystem#thread} to
+		 * This method is called by {@link StandardRequestSubsystem#queueThread} to
 		 * execute an action that has been placed in the
-		 * {@link StandardRequestSubsystem#queue}. Actions in the queue should
-		 * already be marked as {@link #queued}.
+		 * {@link StandardRequestSubsystem#queue}. Actions in the queue should already
+		 * be marked as {@link #queued}.
 		 * </p>
 		 */
 		private void execute() {
@@ -243,14 +246,16 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 
 	/**
 	 * <p>
-	 * Stops this {@link StandardRequestSubsystem} and resets its state so that
-	 * it is ready to be started up again (if desired) or discarded. If this
+	 * Stops this {@link StandardRequestSubsystem} and resets its state so that it
+	 * is ready to be started up again (if desired) or discarded. If this
 	 * {@link StandardRequestSubsystem} is not yet started or is in a discarded
-	 * state, this method does nothing.
+	 * state, this method does nothing. This method will interrupt any active
+	 * requests waiting to be executed on the queue thread, and may even interrupt
+	 * actions mid-execution.
 	 * </p>
 	 * <p>
 	 * Specifically, this method closes the {@link #connection} then interrupts the
-	 * {@link #thread}, then sets both to <code>null</code>. It then clears the
+	 * {@link #queueThread}, then sets both to <code>null</code>. It then clears the
 	 * {@link #queue} of {@link STRSAction}s that have been submitted to this
 	 * {@link StandardRequestSubsystem}.
 	 * </p>
@@ -260,23 +265,33 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 			return;
 		try {
 			connection.close();
-			thread.interrupt();
+			queueThread.interrupt();
 		} finally {
 			connection = null;
-			thread = null;
+			queueThread = null;
 		}
 	}
 
 	/**
 	 * <p>
-	 * Starts this {@link StandardRequestSubsystem} by creating a new
-	 * {@link Thread} and a new {@link CommunicationConnection} using
-	 * {@link #prepareConnection()}, then having the thread wait for new
-	 * {@link STRSAction}s to execute.
+	 * Starts this {@link StandardRequestSubsystem} by creating a new {@link Thread}
+	 * and a new {@link CommunicationConnection} using {@link #prepareConnection()},
+	 * then having the thread wait for new {@link STRSAction}s to execute. The
+	 * {@link CommunicationConnection} is connected to the server and prepared for
+	 * use once this method is called, and is kept alive (or restarted, as
+	 * appropriate), before, and throughout, the use of this
+	 * {@link StandardRequestSubsystem}. It is shut down upon a call to
+	 * {@link #stop()}.
+	 * </p>
+	 * <p>
+	 * If the connection fails at any point during operation, for one reason or
+	 * another, it is restarted (specifically, another call to
+	 * {@link #prepareConnection()} is made to build a fresh, new connection that is
+	 * ready to be used).
 	 * </p>
 	 */
 	public void start() {
-		thread = new Thread() {
+		queueThread = new Thread() {
 			@Override
 			public void run() {
 
@@ -307,8 +322,8 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 				}
 			}
 		};
-		thread.setDaemon(true);
-		thread.start();
+		queueThread.setDaemon(true);
+		queueThread.start();
 	}
 
 	/**
