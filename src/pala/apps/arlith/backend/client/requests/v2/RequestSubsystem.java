@@ -11,15 +11,17 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
  * <p>
  * The subsystem underlying Arlith's client that handles all requests the client
  * makes to the server. A {@link RequestSubsystem} manages a
- * {@link CommunicationConnection}, or set of {@link CommunicationConnection}s
- * to the server, through which {@link Inquiry Inquiries} are sent and responses
- * are received.
+ * {@link CommunicationConnection}, (or possibly even a set of
+ * {@link CommunicationConnection}s), to the server, through which
+ * {@link Inquiry Inquiries} are sent and responses are received.
  * </p>
  * <p>
- * This type is used to manage and organize the sending of requests over the
- * connection (assuring that no two <i>send</i> calls are made in a row, without
- * an interposed <i>receive</i> call; synchronizing code executing on the
- * connection, etc.), to facilitate sending requests and receiving responses.
+ * {@link RequestSubsystem}s are used to manage and organize the sending of
+ * requests over the connection(s) (assuring that no two <i>send</i> calls are
+ * made in a row over the same connection, without an interposed <i>receive</i>
+ * call; synchronizing code executing on the connection, etc.), to facilitate
+ * sending requests and receiving responses by the client without having to
+ * worry about organization and synchronization.
  * </p>
  * 
  * @author Palanath

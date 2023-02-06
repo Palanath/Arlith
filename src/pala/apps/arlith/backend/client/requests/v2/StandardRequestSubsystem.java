@@ -17,6 +17,9 @@ public abstract class StandardRequestSubsystem implements RequestSubsystem {
 	 * The current connection
 	 */
 	private CommunicationConnection connection;
+	/**
+	 * Thread used for queueing 
+	 */
 	private Thread queueThread;
 	private final LinkedBlockingQueue<STRSAction<?>> queue = new LinkedBlockingQueue<>();
 
