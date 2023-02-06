@@ -11,7 +11,7 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
-public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
+public abstract class StandardRequestSubsystem implements RequestSubsystem {
 
 	private CommunicationConnection connection;
 	private Thread thread;
@@ -21,27 +21,27 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 	 * The {@link Logger} used to log error and other messages to. This typically
 	 * starts out as the {@link Arlith#getLogger() main Arlith Application Logger}
 	 * and then gets changed to the {@link ArlithClient#getLogger() client's logger}
-	 * once the client boots up and this {@link SingleThreadRequestSubsystem} is
+	 * once the client boots up and this {@link StandardRequestSubsystem} is
 	 * attached to it.
 	 */
 	private Logger logger = Arlith.getLogger();
 
 	/**
-	 * Gets the {@link Logger} that this {@link SingleThreadRequestSubsystem} uses.
+	 * Gets the {@link Logger} that this {@link StandardRequestSubsystem} uses.
 	 * See {@link #logger} for more information.
 	 * 
-	 * @return The {@link Logger} used by this {@link SingleThreadRequestSubsystem}
+	 * @return The {@link Logger} used by this {@link StandardRequestSubsystem}
 	 */
 	public Logger getLogger() {
 		return logger;
 	}
 
 	/**
-	 * Sets the {@link Logger} that this {@link SingleThreadRequestSubsystem} uses.
+	 * Sets the {@link Logger} that this {@link StandardRequestSubsystem} uses.
 	 * See {@link #logger} for more information.
 	 * 
 	 * @param logger The {@link Logger} used by this
-	 *               {@link SingleThreadRequestSubsystem}.
+	 *               {@link StandardRequestSubsystem}.
 	 */
 	public void setLogger(Logger logger) {
 		if (logger == null)
@@ -49,18 +49,18 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 		this.logger = logger;
 	}
 
-	public SingleThreadRequestSubsystem(Logger logger) {
+	public StandardRequestSubsystem(Logger logger) {
 		this.logger = logger;
 	}
 
 	/**
-	 * Instantiates this {@link SingleThreadRequestSubsystem} with the
+	 * Instantiates this {@link StandardRequestSubsystem} with the
 	 * {@link Arlith#getLogger() main Arlith Application Logger} as its
 	 * {@link Logger}. Typical use of this object involves changing the
 	 * {@link Logger} it uses to the {@link ArlithClient#getLogger() client's
 	 * logger} once this object becomes attached to the client.
 	 */
-	public SingleThreadRequestSubsystem() {
+	public StandardRequestSubsystem() {
 		this(Arlith.getLogger());
 	}
 
@@ -79,14 +79,14 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 
 		@Override
 		public RequestSubsystem getRequestSubsystem() {
-			return SingleThreadRequestSubsystem.this;
+			return StandardRequestSubsystem.this;
 		}
 
 		protected abstract R act(CommunicationConnection connection)
 				throws CommunicationProtocolError, RuntimeException;
 
 		/**
-		 * Method called by the {@link SingleThreadRequestSubsystem#thread} to actually
+		 * Method called by the {@link StandardRequestSubsystem#thread} to actually
 		 * execute an {@link Action}s in the queue so that the required state in the
 		 * {@link STRSAction} gets set upon completion and waiting caller threads are
 		 * notified. This method invokes {@link #act(CommunicationConnection)}, which
@@ -117,9 +117,9 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 		 * its {@link STRSAction#exception} field set.
 		 * </p>
 		 * <p>
-		 * This method is called by {@link SingleThreadRequestSubsystem#thread} to
+		 * This method is called by {@link StandardRequestSubsystem#thread} to
 		 * execute an action that has been placed in the
-		 * {@link SingleThreadRequestSubsystem#queue}. Actions in the queue should
+		 * {@link StandardRequestSubsystem#queue}. Actions in the queue should
 		 * already be marked as {@link #queued}.
 		 * </p>
 		 */
@@ -139,7 +139,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 			synchronized (this.monitor) {
 				if (!this.queued) {
 					this.queued = true;
-					synchronized (SingleThreadRequestSubsystem.this) {
+					synchronized (StandardRequestSubsystem.this) {
 						execute();
 					}
 					// Other types of exceptions do not need to be passed to this thread. As a
@@ -243,16 +243,16 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 
 	/**
 	 * <p>
-	 * Stops this {@link SingleThreadRequestSubsystem} and resets its state so that
+	 * Stops this {@link StandardRequestSubsystem} and resets its state so that
 	 * it is ready to be started up again (if desired) or discarded. If this
-	 * {@link SingleThreadRequestSubsystem} is not yet started or is in a discarded
+	 * {@link StandardRequestSubsystem} is not yet started or is in a discarded
 	 * state, this method does nothing.
 	 * </p>
 	 * <p>
 	 * Specifically, this method closes the {@link #connection} then interrupts the
 	 * {@link #thread}, then sets both to <code>null</code>. It then clears the
 	 * {@link #queue} of {@link STRSAction}s that have been submitted to this
-	 * {@link SingleThreadRequestSubsystem}.
+	 * {@link StandardRequestSubsystem}.
 	 * </p>
 	 */
 	public void stop() {
@@ -269,7 +269,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 
 	/**
 	 * <p>
-	 * Starts this {@link SingleThreadRequestSubsystem} by creating a new
+	 * Starts this {@link StandardRequestSubsystem} by creating a new
 	 * {@link Thread} and a new {@link CommunicationConnection} using
 	 * {@link #prepareConnection()}, then having the thread wait for new
 	 * {@link STRSAction}s to execute.
@@ -280,7 +280,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 			@Override
 			public void run() {
 
-				synchronized (SingleThreadRequestSubsystem.this) {
+				synchronized (StandardRequestSubsystem.this) {
 					try {
 						restartConnection();
 					} catch (InterruptedException e1) {
@@ -301,7 +301,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 						return;
 					}
 
-					synchronized (SingleThreadRequestSubsystem.this) {
+					synchronized (StandardRequestSubsystem.this) {
 						c.execute();
 					}
 				}
@@ -319,7 +319,7 @@ public abstract class SingleThreadRequestSubsystem implements RequestSubsystem {
 	 * them to a server, <i>and potentially</i> for logging into the server on them,
 	 * so that nothing remains to be done before {@link Inquiry Inquiries} can be
 	 * made on them. This method is called whenever a
-	 * {@link SingleThreadRequestSubsystem} is started and whenever it encounters an
+	 * {@link StandardRequestSubsystem} is started and whenever it encounters an
 	 * error with the server, prompting a restart in the connection.
 	 * </p>
 	 * 

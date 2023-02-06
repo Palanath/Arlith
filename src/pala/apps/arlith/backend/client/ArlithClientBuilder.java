@@ -14,7 +14,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
-import pala.apps.arlith.backend.client.requests.v2.SingleThreadRequestSubsystem;
+import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
@@ -285,8 +285,8 @@ public class ArlithClientBuilder {
 
 	/**
 	 * A default, fairly simple implementation of
-	 * {@link SingleThreadRequestSubsystem}. This implementation is not highly
-	 * configurable. Whenever the {@link SingleThreadRequestSubsystem} is restarted
+	 * {@link StandardRequestSubsystem}. This implementation is not highly
+	 * configurable. Whenever the {@link StandardRequestSubsystem} is restarted
 	 * (and a new connection is opened), this implementation uses the
 	 * {@link AuthToken} it was provided to create a new connection and log in to
 	 * it, then returns that {@link CommunicationConnection}.
@@ -294,7 +294,7 @@ public class ArlithClientBuilder {
 	 * @author Palanath
 	 *
 	 */
-	private static class RequestSubsystemImpl extends SingleThreadRequestSubsystem {
+	private static class RequestSubsystemImpl extends StandardRequestSubsystem {
 
 		private final InetAddress host;
 		private final int port;
