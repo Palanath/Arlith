@@ -24,21 +24,33 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 	private CommunicationConnection connection;
 
 	@Override
-	public <R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized <R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError {
+		return inquiry.inquire(connection);
 	}
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-
+		if (connection != null)
+			return;
+		synchronized (this) {
+			try {
+				restartConnection();
+			} catch (InterruptedException e) {
+				return;// This may instead be changed to only stop if the interrupt() was due to
+						// #stop() being called.
+			}
+		}
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-
+		if (connection == null)
+			return;
+		try {
+			connection.close();
+		} finally {
+			connection = null;
+		}
 	}
 
 	/**
