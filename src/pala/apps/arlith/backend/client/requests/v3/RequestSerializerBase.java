@@ -25,6 +25,8 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 
 	@Override
 	public synchronized <R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError {
+		if (connection == null)
+			throw new IllegalStateException("Request Serializer is shut down and cannot perform requests.");
 		return inquiry.inquire(connection);
 	}
 
