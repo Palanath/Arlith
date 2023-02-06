@@ -10,25 +10,45 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 /**
  * <p>
- * The subsystem underlying Arlith's client that handles all requests the client
- * makes to the server. A {@link RequestSubsystem} manages a
- * {@link CommunicationConnection}, (or possibly even a set of
- * {@link CommunicationConnection}s), to the server, through which
- * {@link Inquiry Inquiries} are sent and responses are received.
+ * {@link RequestSerializer} is a lightweight request-API class designed to
+ * organize inquiries made over a {@link CommunicationConnection} (or set of
+ * {@link CommunicationConnection}s) and maintain stability of the connection(s)
+ * (i.e., assure that no two threads interleave network calls/inquiries).
  * </p>
  * <p>
- * {@link RequestSubsystem}s are used to manage and organize the sending of
- * requests over the connection(s) (assuring that no two <i>send</i> calls are
- * made in a row over the same connection, without an interposed <i>receive</i>
- * call; synchronizing code executing on the connection, etc.), to facilitate
- * sending requests and receiving responses by the client without having to
- * worry about organization and synchronization.
+ * It is a requirement for the server's request connections that {@link Inquiry
+ * Inquiries} be made one at a time; once an {@link Inquiry} has been sent over
+ * a {@link CommunicationConnection}, its response should be received before
+ * another {@link Inquiry} is sent. (The reason for this is that {@link Inquiry
+ * Inquiries} are guaranteed exclusive control of a
+ * {@link CommunicationConnection} from the beginning of their
+ * {@link Inquiry#sendRequest(CommunicationConnection) sending} to the end of
+ * their {@link Inquiry#receiveResponse(CommunicationConnection) receiving}.) A
+ * {@link RequestSerializer} assures stability over its underlying connection by
+ * organizing and synchronizing uses of it: Requests are organized into a
+ * conceptual queue or sequence, so that inquiries (and other supplementary
+ * supported actions) are made sequentially and are synchronized so that two
+ * threads may not attempt to manipulate the {@link CommunicationConnection} at
+ * the same time, or to interleave {@link Inquiry Inquiries}, etc.
+ * </p>
+ * <p>
+ * {@link RequestSerializer} is the most basic Client Request API type, as it
+ * does nothing but guarantee {@link Inquiry}-conforming use of
+ * {@link CommunicationConnection}s. {@link Inquiry Inquiries} are sent on the
+ * calling thread, so calls to {@link #inquire(Inquiry)} block until the
+ * {@link Inquiry} has fully completed (or fully failed).
+ * </p>
+ * <p>
+ * If a {@link RequestSerializer} does not implement the concept of
+ * {@link #start() start} and {@link #stop() stop} states, the {@link #start()}
+ * and {@link #stop()} methods may be implemented to do nothing, or throw a
+ * {@link RuntimeException}, although the former is generally preferred.
  * </p>
  * 
  * @author Palanath
  *
  */
-public interface RequestSubsystem {
+public interface RequestSerializer {
 
 	/**
 	 * <p>
@@ -81,7 +101,28 @@ public interface RequestSubsystem {
 	 */
 	<R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError;
 
+	// Start and Stop methods may need to be updated or removed (or new methods may
+	// need to be added) as appropriate.
+	/**
+	 * Starts this {@link RequestSerializer}, if such operation is supported. This
+	 * method puts the {@link RequestSerializer} into a state of operation so that
+	 * calls to {@link #inquire(Inquiry)} work. This method most often enables an
+	 * underlying {@link CommunicationConnection} over which {@link Inquiry
+	 * inquiries} are then sent, though it does not necessarily have to (e.g., in a
+	 * {@link RequestSerializer} implementation that wraps an already-working
+	 * {@link CommunicationConnection}). Implementations that do support starting
+	 * should do nothing upon a call to {@link #start()} that is made while the
+	 * {@link RequestSerializer} is already in the started state.
+	 */
 	void start();
 
+	/**
+	 * Stops this {@link RequestSerializer}, if such operation is supported, so that
+	 * the underlying {@link CommunicationConnection} (and other related resources)
+	 * are released. Whether this {@link RequestSerializer} may be started again,
+	 * after being stopped, is implementation-defined. Implementations that do
+	 * support stopping should do nothing upon a call to {@link #stop()} that is
+	 * made while the {@link RequestSerializer} is already in the stopped state.
+	 */
 	void stop();
 }
