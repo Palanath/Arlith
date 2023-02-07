@@ -125,19 +125,21 @@ public abstract class EventSubsystem extends ClientNetworkingBase {
 		this(eventReifier, Arlith.getLogger());
 	}
 
+	public EventSubsystem(Connection connection, EventReader eventReifier, Logger logger) {
+		super(connection);
+		this.eventReifier = eventReifier;
+		this.logger = logger;
+		errorHandler = generalErrorHandler = logger::err;
+		startThread();
+	}
+
 	/**
-	 * Starts this {@link EventSubsystem}, or does nothing if it is already started
-	 * and in operation. Invoking this method causes the {@link EventSubsystem} to
-	 * try to open a new {@link Connection} using {@link #prepareConnection()} and
-	 * to, upon success, instantiate and start an internal <i>read</i>
-	 * {@link Thread} which reads and dispatches incoming events from the
-	 * connection.
+	 * Used by {@link #start()} and by
+	 * {@link #EventSubsystem(Connection, EventReader, Logger)}, in both cases to
+	 * start up the internal even-dispatch {@link Thread} once the object is being
+	 * started up. This method is solely used to remove code redundancy.
 	 */
-	@Override
-	public synchronized void start() {
-		if (isRunning())
-			return;
-		super.start();
+	private void startThread() {
 		t = ArlithRuntime.newThread(Instance.CLIENT, () -> {
 			while (isRunning())
 				try {
@@ -158,11 +160,28 @@ public abstract class EventSubsystem extends ClientNetworkingBase {
 		t.start();
 	}
 
+	/**
+	 * Starts this {@link EventSubsystem}, or does nothing if it is already started
+	 * and in operation. Invoking this method causes the {@link EventSubsystem} to
+	 * try to open a new {@link Connection} using {@link #prepareConnection()} and
+	 * to, upon success, instantiate and start an internal <i>read</i>
+	 * {@link Thread} which reads and dispatches incoming events from the
+	 * connection.
+	 */
+	@Override
+	public synchronized void start() {
+		if (isRunning())
+			return;
+		super.start();
+		startThread();
+	}
+
 	@Override
 	public synchronized void stop() {
 		if (!isRunning())
 			return;
 		t.interrupt();
+		t = null;
 		super.stop();
 	}
 
