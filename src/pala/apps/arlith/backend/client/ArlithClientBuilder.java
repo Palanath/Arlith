@@ -2,6 +2,7 @@ package pala.apps.arlith.backend.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
@@ -25,6 +26,9 @@ import pala.apps.arlith.backend.common.protocol.requests.LoginRequest;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.Utilities;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Communicator;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
@@ -188,14 +192,13 @@ public class ArlithClientBuilder {
 		this(null, "0", (InetAddress) null);
 	}
 
-	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException {
-		CommunicationConnection conn = new CommunicationConnection();
-		conn.setAddress(host);
-		conn.setPort(port);
+	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException,
+			BlockException, UnknownCommStateException {
+		Communicator conn;
 
 		// Perform login handshake
 		try {
-			conn.start();
+			conn = new Communicator(new Socket(host, port));
 		} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
 				| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IOException
 				| MalformedResponseException e) {
@@ -223,7 +226,17 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			InetAddress host = this.host;
+			int port = this.port;
+
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken) {
+
+				@Override
+				protected Socket prepareSocket() throws InterruptedException, Exception {
+					return new Socket(host, port);
+				}
+
+			};
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
@@ -236,7 +249,8 @@ public class ArlithClientBuilder {
 		}
 	}
 
-	public ArlithClient createAccount() throws LoginFailureException, CreateAccountError {
+	public ArlithClient createAccount()
+			throws LoginFailureException, CreateAccountError, BlockException, UnknownCommStateException {
 		if (getEmail() == null)
 			throw new RuntimeException("The email is required when creating an account.");
 		CommunicationConnection conn = new CommunicationConnection();
@@ -270,7 +284,17 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			InetAddress host = this.host;
+			int port = this.port;
+
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken) {
+
+				@Override
+				protected Socket prepareSocket() throws InterruptedException, Exception {
+					return new Socket(host, port);
+				}
+
+			};
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
@@ -284,12 +308,12 @@ public class ArlithClientBuilder {
 	}
 
 	/**
-	 * A default, fairly simple implementation of
-	 * {@link StandardRequestSubsystem}. This implementation is not highly
-	 * configurable. Whenever the {@link StandardRequestSubsystem} is restarted
-	 * (and a new connection is opened), this implementation uses the
-	 * {@link AuthToken} it was provided to create a new connection and log in to
-	 * it, then returns that {@link CommunicationConnection}.
+	 * A default, fairly simple implementation of {@link StandardRequestSubsystem}.
+	 * This implementation is not highly configurable. Whenever the
+	 * {@link StandardRequestSubsystem} is restarted (and a new connection is
+	 * opened), this implementation uses the {@link AuthToken} it was provided to
+	 * create a new connection and log in to it, then returns that
+	 * {@link CommunicationConnection}.
 	 * 
 	 * @author Palanath
 	 *
