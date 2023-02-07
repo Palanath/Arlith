@@ -1,5 +1,6 @@
 package pala.apps.arlith.backend.client;
 
+import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
@@ -63,10 +64,47 @@ public abstract class ClientNetworkingBase {
 	private volatile Thread restartingThread;
 
 	/**
+	 * Instantiates a new {@link ClientNetworkingBase}.
+	 */
+	public ClientNetworkingBase() {
+	}
+
+	/**
+	 * <p>
+	 * Instantiates this {@link ClientNetworkingBase} into an already-started state.
+	 * After this constructor is invoked, {@link #start()} need not be called before
+	 * utilizing the {@link ClientNetworkingBase}'s {@link #getConnection()
+	 * connection}. This constructor considers the provided {@link Connection} to be
+	 * valid, as if successfully returned from {@link #prepareConnection()} in a
+	 * call to {@link #restartConnection()}.
+	 * </p>
+	 * <p>
+	 * The {@link ClientNetworkingBase} may still be {@link #stop() stopped} and
+	 * {@link #start() started back up} again.
+	 * </p>
+	 * <p>
+	 * This constructor is useful for facilities that wish to <i>fail</i> upon first
+	 * attempt to connect, but wish to repeatedly retry thereafter. For example,
+	 * Arlith's client's {@link EventSubsystem} is constructed in the
+	 * {@link ArlithClientBuilder} with a {@link Connection} created by the
+	 * {@link ArlithClientBuilder}, and if the {@link EventSubsystem} loses
+	 * connection, it instantiates a new {@link Connection} and attempts to log in
+	 * again. However, if the initial {@link Connection} fails, building the
+	 * {@link ArlithClient} will fail.
+	 * </p>
+	 * 
+	 * @param conn The {@link Connection} to start the {@link ClientNetworkingBase}
+	 *             with.
+	 */
+	public ClientNetworkingBase(Connection conn) {
+		connection = conn;
+	}
+
+	/**
 	 * Determines whether this {@link ClientNetworkingBase} is currently running or
 	 * not.
 	 * 
-	 * @return
+	 * @return <code>true</code> if running, <code>false</code> otherwise.
 	 */
 	protected final boolean isRunning() {
 		return connection != null;
