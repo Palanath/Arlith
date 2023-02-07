@@ -1,5 +1,6 @@
 package pala.apps.arlith.backend.common.protocol.types;
 
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.libs.generic.json.JSONConstant;
 import pala.libs.generic.json.JSONValue;
 
@@ -7,7 +8,7 @@ public class CompletionValue implements CommunicationProtocolType {
 
 	public CompletionValue(JSONValue json) {
 		if (json != JSONConstant.TRUE)
-			throw new IllegalArgumentException("Expected the JSON constant \"true\" but found: " + json);
+			throw new CommunicationProtocolConstructionError("Expected the JSON constant \"true\" but found: " + json);
 	}
 
 	public CompletionValue() {
