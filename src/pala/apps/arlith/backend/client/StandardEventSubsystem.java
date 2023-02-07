@@ -18,6 +18,24 @@ abstract class StandardEventSubsystem extends EventSubsystem {
 		this.token = token;
 	}
 
+	/**
+	 * <p>
+	 * Constructs this {@link StandardEventSubsystem} into an already-started state,
+	 * using the provided {@link Connection} as the underlying {@link Connection} to
+	 * begin. The {@link Connection} is considered to be already started.
+	 * </p>
+	 * 
+	 * @param connection The {@link Connection} to start this
+	 *                   {@link StandardEventSubsystem} with.
+	 * @param token      The {@link AuthToken}, used for {@link #prepareConnection()
+	 *                   preparing the connection} if it fails and logging back in
+	 *                   needs to occur.
+	 */
+	public StandardEventSubsystem(Connection connection, AuthToken token) {
+		super(connection, new StandardEventReader());
+		this.token = token;
+	}
+
 	@Override
 	protected Connection prepareConnection() throws InterruptedException, Exception {
 		Communicator connection = new Communicator(prepareSocket());
