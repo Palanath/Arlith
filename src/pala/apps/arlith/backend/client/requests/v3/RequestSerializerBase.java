@@ -2,8 +2,12 @@ package pala.apps.arlith.backend.client.requests.v3;
 
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 public abstract class RequestSerializerBase implements RequestSerializer {
 
@@ -15,19 +19,29 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 	 * started and in operation.
 	 * </p>
 	 * <p>
-	 * If, during operation, the {@link CommunicationConnection} fails or is
-	 * otherwise considered dead, it is replaced with a call to
-	 * {@link #restartConnection()}, with a new, freshly {@link #prepareConnection()
-	 * prepared} connection.
+	 * If, during operation, the {@link Connection} fails or is otherwise considered
+	 * dead, it is replaced with a call to {@link #restartConnection()}, with a new,
+	 * freshly {@link #prepareConnection() prepared} connection.
 	 * </p>
 	 */
-	private volatile CommunicationConnection connection;
+	private volatile Connection connection;
 
 	@Override
-	public synchronized <R> R inquire(Inquiry<? extends R> inquiry) throws CommunicationProtocolError {
+	public synchronized <R> R inquire(Inquiry<? extends R> inquiry) throws IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, CommunicationProtocolError {
 		if (connection == null)
 			throw new IllegalStateException("Request Serializer is shut down and cannot perform requests.");
-		return inquiry.inquire(connection);
+		while (true)
+			try {
+				return inquiry.inquire(connection);
+			} catch (UnknownCommStateException | BlockException e) {
+				try {
+					restartConnection();
+				} catch (InterruptedException e1) {
+					throw new IllegalStateException("Could not execute inquiry, (" + inquiry
+							+ "), because Request Serializer is shut(ting) down.");
+				}
+			}
 	}
 
 	/**
@@ -149,9 +163,9 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 	 * 	}</code>
 	 * </pre>
 	 * 
-	 * @return A successfully prepared {@link CommunicationConnection}.
+	 * @return A successfully prepared {@link Connection}.
 	 */
-	protected CommunicationConnection restartConnectionLoop() throws InterruptedException {
+	protected Connection restartConnectionLoop() throws InterruptedException {
 		for (int i = 2;; i += i >= 512 ? 1 : i)
 			try {
 				return prepareConnection();
@@ -161,7 +175,7 @@ public abstract class RequestSerializerBase implements RequestSerializer {
 			}
 	}
 
-	protected abstract CommunicationConnection prepareConnection()
+	protected abstract Connection prepareConnection()
 			throws CommunicationProtocolError, RuntimeException, ConnectionStartupException;
 
 }
