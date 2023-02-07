@@ -133,6 +133,10 @@ public abstract class EventSubsystem extends ClientNetworkingBase {
 		startThread();
 	}
 
+	public EventSubsystem(Connection connection, EventReader eventReifier) {
+		this(connection, eventReifier, Arlith.getLogger());
+	}
+
 	/**
 	 * Used by {@link #start()} and by
 	 * {@link #EventSubsystem(Connection, EventReader, Logger)}, in both cases to
