@@ -12,7 +12,9 @@ import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstr
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.ListValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -51,8 +53,9 @@ public class GetThreadMembersRequest extends SimpleCommunicationProtocolRequest<
 	}
 
 	@Override
-	public ListValue<UserValue> receiveResponse(CommunicationConnection client) throws SyntaxError, RateLimitError,
-			ServerError, RestrictedError, ObjectNotFoundError, AccessDeniedError {
+	public ListValue<UserValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError,
+			ServerError, RestrictedError, ObjectNotFoundError, AccessDeniedError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | AccessDeniedError

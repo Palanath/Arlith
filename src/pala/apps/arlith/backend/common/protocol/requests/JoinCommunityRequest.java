@@ -5,9 +5,12 @@ import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolErro
 import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -48,8 +51,9 @@ public class JoinCommunityRequest extends SimpleCommunicationProtocolRequest<Com
 	}
 
 	@Override
-	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws IllegalCommunicationProtocolException, SyntaxError, ObjectNotFoundError, RestrictedError {
+	public CompletionValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, ObjectNotFoundError, RestrictedError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | ObjectNotFoundError | RestrictedError e) {

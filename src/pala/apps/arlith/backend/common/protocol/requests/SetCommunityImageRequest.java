@@ -6,6 +6,7 @@ import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
@@ -13,7 +14,6 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -77,14 +77,15 @@ public class SetCommunityImageRequest extends CommunicationProtocolRequest<Compl
 	}
 
 	@Override
-	protected void sendAuxiliaryData(CommunicationConnection connection) {
+	protected void sendAuxiliaryData(Connection connection) throws UnknownCommStateException {
 		if (image != null)
 			image.sendAuxiliaryData(connection);
 	}
 
 	@Override
-	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws IllegalCommunicationProtocolException, SyntaxError, RateLimitError, ServerError, RestrictedError {
+	public CompletionValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, RateLimitError, ServerError, RestrictedError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError e) {
@@ -95,7 +96,7 @@ public class SetCommunityImageRequest extends CommunicationProtocolRequest<Compl
 	}
 
 	@Override
-	protected CompletionValue parseReturnValue(JSONValue json, CommunicationConnection connection) {
+	protected CompletionValue parseReturnValue(JSONValue json, Connection connection) {
 		return new CompletionValue(json);
 	}
 

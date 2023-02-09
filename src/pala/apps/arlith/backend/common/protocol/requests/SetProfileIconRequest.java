@@ -1,3 +1,4 @@
+
 package pala.apps.arlith.backend.common.protocol.requests;
 
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
@@ -6,21 +7,21 @@ import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
 /**
  * <p>
- * {@link CommunicationProtocolRequest} that sets the user's profile picture. This request sets
- * the currently logged in user's profile picture to be that specified, or
- * removes the profile picture if the specified {@link #profileIcon} is
- * <code>null</code>.
+ * {@link CommunicationProtocolRequest} that sets the user's profile picture.
+ * This request sets the currently logged in user's profile picture to be that
+ * specified, or removes the profile picture if the specified
+ * {@link #profileIcon} is <code>null</code>.
  * </p>
  * 
  * @author Palanath
@@ -31,11 +32,11 @@ public class SetProfileIconRequest extends CommunicationProtocolRequest<Completi
 
 	/**
 	 * The key for the profile icon data in the JSON package of this
-	 * {@link CommunicationProtocolRequest}. The {@link #profileIcon} is a {@link PieceOMediaValue}
-	 * object, and {@link PieceOMediaValue} objects store some JSON metadata about the
-	 * media being sent over the network. In particular, (currently), the encode the
-	 * size of the media as JSON. That size is stored in the JSON package of this
-	 * request under this key.
+	 * {@link CommunicationProtocolRequest}. The {@link #profileIcon} is a
+	 * {@link PieceOMediaValue} object, and {@link PieceOMediaValue} objects store
+	 * some JSON metadata about the media being sent over the network. In
+	 * particular, (currently), the encode the size of the media as JSON. That size
+	 * is stored in the JSON package of this request under this key.
 	 */
 	private static final String PROFILE_ICON_KEY = "media-length";
 
@@ -56,8 +57,8 @@ public class SetProfileIconRequest extends CommunicationProtocolRequest<Completi
 	}
 
 	/**
-	 * Reconstructs a {@link SetProfileIconRequest} from the provided JSON
-	 * package and {@link Connection}.
+	 * Reconstructs a {@link SetProfileIconRequest} from the provided JSON package
+	 * and {@link Connection}.
 	 * 
 	 * @param properties The JSON package of the request.
 	 * @param client     The {@link Connection} to read the auxiliary data from.
@@ -117,8 +118,9 @@ public class SetProfileIconRequest extends CommunicationProtocolRequest<Completi
 	}
 
 	@Override
-	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws IllegalCommunicationProtocolException, SyntaxError, RateLimitError, ServerError, RestrictedError {
+	public CompletionValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, RateLimitError, ServerError, RestrictedError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError e) {
@@ -133,15 +135,19 @@ public class SetProfileIconRequest extends CommunicationProtocolRequest<Completi
 	 * any. If {@link #profileIcon} is <code>null</code>, this method does nothing.
 	 * Otherwise, this method {@link PieceOMediaValue#send(Connection)}s the
 	 * {@link #profileIcon} over the specified {@link Connection}.
+	 * 
+	 * @throws UnknownCommStateException If writing to the provided
+	 *                                   {@link Connection} raises an
+	 *                                   {@link UnknownCommStateException}.
 	 */
 	@Override
-	protected void sendAuxiliaryData(CommunicationConnection connection) {
+	protected void sendAuxiliaryData(Connection connection) throws UnknownCommStateException {
 		if (profileIcon != null)
 			profileIcon.sendAuxiliaryData(connection);
 	}
 
 	@Override
-	protected CompletionValue parseReturnValue(JSONValue json, CommunicationConnection connection) {
+	protected CompletionValue parseReturnValue(JSONValue json, Connection connection) {
 		return new CompletionValue(json);
 	}
 

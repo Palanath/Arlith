@@ -7,9 +7,12 @@ import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -63,8 +66,9 @@ public class FriendByNameRequest extends SimpleCommunicationProtocolRequest<GIDV
 	}
 
 	@Override
-	public GIDValue receiveResponse(CommunicationConnection client) throws IllegalCommunicationProtocolException, SyntaxError,
-			RateLimitError, ServerError, ObjectNotFoundError, RestrictedError {
+	public GIDValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, RateLimitError, ServerError, ObjectNotFoundError,
+			RestrictedError, CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | ObjectNotFoundError | RestrictedError e) {
