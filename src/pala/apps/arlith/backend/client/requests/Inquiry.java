@@ -4,8 +4,11 @@ import pala.apps.arlith.application.ArlithRuntime;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueueBase;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
+import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 /**
@@ -58,8 +61,11 @@ public interface Inquiry<R> {
 	 * 
 	 * @param client The {@link Connection} to run the request on.
 	 * @author Palanath
+	 * @throws UnknownCommStateException If sending the request over the provided
+	 *                                   {@link Connection} results in an
+	 *                                   {@link UnknownCommStateException}.
 	 */
-	void sendRequest(Connection client);
+	void sendRequest(Connection client) throws UnknownCommStateException;
 
 	/**
 	 * Decodes the response that the server sent into the return type of this
@@ -67,25 +73,37 @@ public interface Inquiry<R> {
 	 * 
 	 * @param client The {@link Connection} to read the response from.
 	 * @return The decoded response.
-	 * @throws CommunicationProtocolError            In case a protocol error occurs
-	 *                                               (e.g., the server sends an
-	 *                                               invalid datum or the wrong type
-	 *                                               of object, etc).
-	 * @throws IllegalCommunicationProtocolException In case the server sends back a
-	 *                                               {@link CommunicationProtocolError}
-	 *                                               that is not supposed to be sent
-	 *                                               back for this {@link Inquiry}
-	 *                                               (usually this indicates a
-	 *                                               version mismatch between this
-	 *                                               client and the server, where
-	 *                                               one or the other has
-	 *                                               mismatching specifications as
-	 *                                               to what type of errors can be
-	 *                                               sent back in response to this
-	 *                                               {@link Inquiry}, or there could
-	 *                                               be a bug bug).
+	 * @throws CommunicationProtocolError             In case a protocol error
+	 *                                                occurs (e.g., the server sends
+	 *                                                an invalid datum or the wrong
+	 *                                                type of object, etc).
+	 * @throws IllegalCommunicationProtocolException  In case the server sends back
+	 *                                                a
+	 *                                                {@link CommunicationProtocolError}
+	 *                                                that is not supposed to be
+	 *                                                sent back for this
+	 *                                                {@link Inquiry} (usually this
+	 *                                                indicates a version mismatch
+	 *                                                between this client and the
+	 *                                                server, where one or the other
+	 *                                                has mismatching specifications
+	 *                                                as to what type of errors can
+	 *                                                be sent back in response to
+	 *                                                this {@link Inquiry}, or there
+	 *                                                could be a bug bug).
+	 * @throws BlockException                         If reading the response from
+	 *                                                the provided
+	 *                                                {@link Connection} results in
+	 *                                                a {@link BlockException}.
+	 * @throws UnknownCommStateException              If reading the response from
+	 *                                                the provided
+	 *                                                {@link Connection} results in
+	 *                                                an
+	 *                                                {@link UnknownCommStateException}.
+	 * @throws CommunicationProtocolConstructionError
 	 */
-	R receiveResponse(Connection client) throws CommunicationProtocolError, IllegalCommunicationProtocolException;
+	R receiveResponse(Connection client) throws CommunicationProtocolError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException;
 
 	/**
 	 * <p>
@@ -105,12 +123,40 @@ public interface Inquiry<R> {
 	 *               {@link Inquiry}.
 	 * @return The result of the {@link Inquiry} as received from the server and
 	 *         decoded.
-	 * @throws CommunicationProtocolError            As thrown by
-	 *                                               {@link #receiveResponse(Connection)}.
-	 * @throws IllegalCommunicationProtocolException As thrown by
-	 *                                               {@link #receiveResponse(Connection)}.
+	 * @throws CommunicationProtocolError             As thrown by
+	 *                                                {@link #receiveResponse(Connection)}.
+	 * @throws IllegalCommunicationProtocolException  As thrown by
+	 *                                                {@link #receiveResponse(Connection)}.
+	 * @throws BlockException                         If calling
+	 *                                                {@link #receiveResponse(Connection)}
+	 *                                                (reading the response from the
+	 *                                                provided {@link Connection})
+	 *                                                results in a
+	 *                                                {@link BlockException}.
+	 * @throws UnknownCommStateException              If either calling
+	 *                                                {@link #receiveResponse(Connection)}
+	 *                                                (reading the response from the
+	 *                                                provided {@link Connection})
+	 *                                                or calling
+	 *                                                {@link #sendRequest(Connection)}
+	 *                                                (sending the inquiry over the
+	 *                                                provided {@link Connection})
+	 *                                                results in an
+	 *                                                {@link UnknownCommStateException}.
+	 * @throws CommunicationProtocolConstructionError If reading the JSON response
+	 *                                                from the {@link Connection}
+	 *                                                succeeds but attempting to
+	 *                                                reconstruct that JSON into a
+	 *                                                valid Communication Protocol
+	 *                                                object fails. This can be due
+	 *                                                to the response being
+	 *                                                malformed (e.g. the JSON does
+	 *                                                not represent a valid
+	 *                                                Communication Protocol Object
+	 *                                                representation).
 	 */
-	default R inquire(Connection client) throws CommunicationProtocolError, IllegalCommunicationProtocolException {
+	default R inquire(Connection client) throws CommunicationProtocolError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		sendRequest(client);
 		return receiveResponse(client);
 	}
