@@ -312,7 +312,8 @@ public class Cache<V> {
 				// Called in synchronized(this) block
 				if (isPopulated())
 					try {
-						resultHandler.accept(value);
+						if (resultHandler != null)
+							resultHandler.accept(value);
 					} catch (Exception e) {
 						e.printStackTrace();// Ignore exceptions propagated by resultHandler.
 					}
@@ -325,7 +326,8 @@ public class Cache<V> {
 						i = query.inquirySupplier.get();
 					} catch (Exception e) {
 						try {
-							errorHandler.accept(e);
+							if (errorHandler != null)
+								errorHandler.accept(e);
 						} finally {
 							query.started = false;
 							if (!query.waiters.isEmpty())
@@ -339,7 +341,8 @@ public class Cache<V> {
 							value = ((Function<Object, V>) query.resultConverter).apply(t);
 						} catch (Exception e) {
 							try {
-								errorHandler.accept(e);
+								if (errorHandler != null)
+									errorHandler.accept(e);
 							} finally {
 								synchronized (Cache.this) {
 									query.started = false;
@@ -359,7 +362,8 @@ public class Cache<V> {
 
 					}, t -> {
 						try {
-							errorHandler.accept(t);
+							if (errorHandler != null)
+								errorHandler.accept(t);
 						} finally {
 							synchronized (Cache.this) {
 								query.started = false;
