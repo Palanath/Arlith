@@ -401,20 +401,124 @@ public class Cache<V> {
 		this.value = value;
 	}
 
+	/**
+	 * <p>
+	 * Creates a new, empty {@link Cache} that makes the provided {@link Inquiry} to
+	 * the server. The {@link Inquiry} should return a value of the type stored in
+	 * this {@link Cache}, and the value is always directly placed into this
+	 * {@link Cache} when the {@link Inquiry} is made. The specified
+	 * {@link RequestQueue} is used to make the request.
+	 * </p>
+	 * <p>
+	 * This constructor is equivalent to calling
+	 * {@link Cache#Cache(Supplier, RequestQueue)} with <code>() -> inquiry</code>
+	 * as the first argument, i.e., a dummy {@link Supplier} that always returns the
+	 * specified {@link Inquiry} is used. Additionally, this constructor is
+	 * equivalent to {@link Cache#Cache(Supplier, Function, RequestQueue)}, in that
+	 * the same dummy supplier is used and the conversion {@link Function} is
+	 * <code>a -> (V) a</code>, or <code>null</code> (such a {@link Function} and
+	 * <code>null</code> are treated by that constructor as equivalent).
+	 * </p>
+	 * 
+	 * @param inquiry      The {@link Inquiry} that gets made to the server when the
+	 *                     {@link Cache} needs to be populated.
+	 * @param requestQueue The {@link RequestQueue} to make the {@link Inquiry} on.
+	 */
 	public Cache(Inquiry<? extends V> inquiry, RequestQueue requestQueue) {
 		this(() -> inquiry, requestQueue);
 	}
 
+	/**
+	 * <p>
+	 * Creates a new {@link Cache} with the specified {@link Inquiry} to be used
+	 * when populating, the specified {@link Function} to convert the result to an
+	 * appropriate value, and the specified {@link RequestQueue} to make the
+	 * {@link Inquiry} on. The <code>resultConverter</code> function should
+	 * generally be lightweight, as it is not specified what {@link Thread} will
+	 * actually execute it (it may get executed on the {@link RequestQueue}'s
+	 * backing thread or on some thread that calls {@link #get()}).
+	 * </p>
+	 * <p>
+	 * Exceptions occurring on the provided <code>resultConverter</code>
+	 * {@link Function} will be propagated to the <code>errorHandler</code> provided
+	 * in calls to {@link #get(Consumer, Consumer)}, or to the caller if calling
+	 * {@link #get()}.
+	 * </p>
+	 * 
+	 * @param <T>             The type of the result of the {@link Inquiry}.
+	 * @param inquiry         The {@link Inquiry} that will be made to the server.
+	 * @param resultConverter A {@link Function} to convert the result of the
+	 *                        {@link Inquiry} to the type that this {@link Cache}
+	 *                        should store.
+	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
+	 *                        on.
+	 */
 	public <T> Cache(Inquiry<? extends T> inquiry, Function<? super T, ? extends V> resultConverter,
 			RequestQueue requestQueue) {
 		this(() -> inquiry, resultConverter, requestQueue);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> Cache(Supplier<? extends Inquiry<? extends T>> inquirySupplier, RequestQueue requestQueue) {
-		this(inquirySupplier, a -> (V) a, requestQueue);
+	/**
+	 * <p>
+	 * Constructs a new {@link Cache} with the specified {@link Inquiry}
+	 * {@link Supplier} and the specified {@link RequestQueue}. When the
+	 * {@link Cache} needs to be populated, the {@link Supplier} is queried for a
+	 * new {@link Inquiry} to make on the {@link RequestQueue}. Note that the
+	 * {@link Supplier} may be queried multiple times if making {@link Inquiry
+	 * Inquiries} fails, causing the {@link Cache} to need to attempt to repopulate
+	 * itself again.
+	 * </p>
+	 * <p>
+	 * Exceptions on the {@link Supplier} are passed to the
+	 * <code>errorHandler</code> if a call to {@link #get(Consumer, Consumer)} is
+	 * the source of the need to populate the {@link Cache}, and are relayed to the
+	 * caller if {@link #get()} is instead the source.
+	 * </p>
+	 * 
+	 * @param inquirySupplier A {@link Supplier} that provides the {@link Inquiry}
+	 *                        when the {@link Cache} needs to populate itself.
+	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
+	 *                        on when the {@link Cache} needs to populate itself.
+	 */
+	public Cache(Supplier<? extends Inquiry<? extends V>> inquirySupplier, RequestQueue requestQueue) {
+		this(inquirySupplier, a -> a, requestQueue);
 	}
 
+	/**
+	 * <p>
+	 * Constructs a new {@link Cache} with the specified {@link Inquiry}
+	 * {@link Supplier}, specified <code>resultConverter</code> {@link Function},
+	 * and specified {@link RequestQueue} to make the {@link Inquiry} on.
+	 * </p>
+	 * <p>
+	 * When the {@link Cache} needs to be populated, the {@link Supplier} is queried
+	 * for a new {@link Inquiry} to make on the {@link RequestQueue}, the
+	 * {@link Inquiry} is made, and the result is passed to the
+	 * <code>resultConverter</code> {@link Function} provided.
+	 * </p>
+	 * <p>
+	 * Note that the {@link Supplier}, and even the <code>resultConverter</code>
+	 * {@link Function}, may be queried multiple times if making {@link Inquiry
+	 * Inquiries} fails, causing the {@link Cache} to need to attempt to repopulate
+	 * itself again.
+	 * </p>
+	 * <p>
+	 * Both the provided {@link Supplier} and {@link Function} should generally be
+	 * lightweight. Exceptions on either are relayed to the caller if {@link #get()}
+	 * is invoked and relayed to the <code>errorHandler</code> if
+	 * {@link #get(Consumer, Consumer)} is invoked.
+	 * </p>
+	 * 
+	 * @param <T>             The type of the result of the {@link Inquiry}.
+	 * @param inquirySupplier The {@link Supplier} to supply {@link Inquiry
+	 *                        Inquiries} that result in <code>T</code> objects.
+	 * @param resultConverter The {@link Function} used to convert from the result
+	 *                        of the {@link Inquiry} (of type <code>T</code>) to a
+	 *                        value suitable for storage in this {@link Cache} (of
+	 *                        type <code>V</code>, may be <code>null</code>).
+	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
+	 *                        on.
+	 */
 	public <T> Cache(Supplier<? extends Inquiry<? extends T>> inquirySupplier,
 			Function<? super T, ? extends V> resultConverter, RequestQueue requestQueue) {
 		query = new CachePopulator<>(requestQueue, inquirySupplier, resultConverter);
