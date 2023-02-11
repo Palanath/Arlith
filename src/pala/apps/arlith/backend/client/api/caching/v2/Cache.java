@@ -127,7 +127,7 @@ public class Cache<V> {
 		 * its parameters do not have to be known at construction time of the
 		 * {@link Cache} (since that is when this {@link CachePopulator} is built).
 		 */
-		private final Supplier<Inquiry<? extends T>> inquirySupplier;
+		private final Supplier<? extends Inquiry<? extends T>> inquirySupplier;
 		/**
 		 * A {@link Function} used to convert the result of the {@link Inquiry} made to
 		 * the server to the type that this {@link Cache} wishes to store. This is often
@@ -137,7 +137,7 @@ public class Cache<V> {
 		 */
 		private final Function<? super T, ? extends V> resultConverter;
 
-		public CachePopulator(RequestQueue requestQueue, Supplier<Inquiry<? extends T>> inquirySupplier,
+		public CachePopulator(RequestQueue requestQueue, Supplier<? extends Inquiry<? extends T>> inquirySupplier,
 				Function<? super T, ? extends V> resultConverter) {
 			this.requestQueue = requestQueue;
 			this.inquirySupplier = inquirySupplier;
@@ -361,8 +361,10 @@ public class Cache<V> {
 						try {
 							resultHandler.accept(value);
 						} finally {
-							for (Waiter w : waiters)
-								w.awaken();
+							synchronized (Cache.this) {
+								for (Waiter w : waiters)
+									w.awaken();
+							}
 						}
 
 					}, t -> {
@@ -400,7 +402,22 @@ public class Cache<V> {
 	}
 
 	public Cache(Inquiry<? extends V> inquiry, RequestQueue requestQueue) {
-		query = new CachePopulator<>(requestQueue, () -> inquiry, a -> a);
+		this(() -> inquiry, requestQueue);
+	}
+
+	public <T> Cache(Inquiry<? extends T> inquiry, Function<? super T, ? extends V> resultConverter,
+			RequestQueue requestQueue) {
+		this(() -> inquiry, resultConverter, requestQueue);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Cache(Supplier<? extends Inquiry<? extends T>> inquirySupplier, RequestQueue requestQueue) {
+		this(inquirySupplier, a -> (V) a, requestQueue);
+	}
+
+	public <T> Cache(Supplier<? extends Inquiry<? extends T>> inquirySupplier,
+			Function<? super T, ? extends V> resultConverter, RequestQueue requestQueue) {
+		query = new CachePopulator<>(requestQueue, inquirySupplier, resultConverter);
 	}
 
 }
