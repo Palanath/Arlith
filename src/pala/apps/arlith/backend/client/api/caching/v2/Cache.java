@@ -16,8 +16,8 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
  * <p>
  * A class that represents an indefinite client cache of a property. The
  * {@link Cache} can be populated manually at any time by calling code, but will
- * only ever query from the server once (if a retrieval attempt is made while
- * the {@link Cache} is empty).
+ * only ever query from the server, at max, once (if a retrieval attempt is made
+ * while the {@link Cache} is empty).
  * </p>
  * <p>
  * In a nutshell, a {@link Cache} is meant to act as a convenience utility that
