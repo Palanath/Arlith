@@ -353,9 +353,14 @@ public class Cache<V> {
 							return;
 						}
 
+						List<Waiter> waiters;
 						synchronized (Cache.this) {
-							List<Waiter> waiters = query.waiters;
+							waiters = query.waiters;
 							query = null;
+						}
+						try {
+							resultHandler.accept(value);
+						} finally {
 							for (Waiter w : waiters)
 								w.awaken();
 						}
