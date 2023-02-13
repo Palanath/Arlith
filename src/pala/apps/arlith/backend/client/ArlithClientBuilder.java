@@ -16,6 +16,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
 import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
+import pala.apps.arlith.backend.client.requests.v3.RequestQueueBase;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
@@ -28,6 +29,7 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Communicator;
+import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
@@ -318,52 +320,24 @@ public class ArlithClientBuilder {
 	 * @author Palanath
 	 *
 	 */
-	private static class RequestSubsystemImpl extends StandardRequestSubsystem {
+	private static class RequestSubsystemImpl extends RequestQueueBase {
 
 		private final InetAddress host;
 		private final int port;
 		private final AuthToken authToken;
 
-		@Override
-		protected CommunicationConnection prepareConnection()
-				throws CommunicationProtocolError, RuntimeException, ConnectionStartupException {
-			CommunicationConnection requestConnection = new CommunicationConnection() {
-				// start() is called every time the connection is restarted, so we need to
-				// authorize the connection when this happens.
-				@Override
-				public void start()
-						throws IOException, InvalidKeyException, InvalidKeySpecException, IllegalBlockSizeException,
-						BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-						InvalidAlgorithmParameterException, MalformedResponseException, SocketTimeoutException {
-					super.start();// Start the connection.
-					AuthRequest req = new AuthRequest(authToken);
-					// Not yet documented, but this throws an exception when it fails. Otherwise, it
-					// returns a completion.
-					try {
-						req.inquire(this);// Authorize the connection.
-						// TODO Change from being "potentially recursive."
-					} catch (CommunicationProtocolError e) {
-						throw new RuntimeException(e);
-					}
-				}
-			};
-			requestConnection.setAddress(host);
-			requestConnection.setPort(port);
-			try {
-				requestConnection.start();
-			} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
-					| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
-					| IOException | MalformedResponseException e) {
-				throw new ConnectionStartupException(e);
-			}
-
-			return requestConnection;
-		}
-
 		private RequestSubsystemImpl(InetAddress host, int port, AuthToken authToken) {
 			this.host = host;
 			this.port = port;
 			this.authToken = authToken;
+		}
+
+		@Override
+		protected Connection prepareConnection() throws InterruptedException, Exception {
+			Communicator c = new Communicator(new Socket(host, port));
+			AuthRequest ar = new AuthRequest(authToken);
+			ar.inquire(c);
+			return c;
 		}
 	}
 
