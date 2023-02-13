@@ -55,6 +55,26 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 	private volatile Thread queueThread;
 	private final LinkedBlockingQueue<Request<?>> requestQueue = new LinkedBlockingQueue<>();
 
+	/**
+	 * <p>
+	 * Called with {@link Throwable}s that occur while invoking
+	 * <code>result handlers</code> and <code>error handlers</code> when performing
+	 * requests. This method can be overridden to provide custom logging/error
+	 * handling.
+	 * </p>
+	 * <p>
+	 * By default, this method simply prints the error's stacktrace to the console.
+	 * </p>
+	 * <p>
+	 * This method should not throw an exception.
+	 * </p>
+	 * 
+	 * @param e The {@link Throwable} error that occurred.
+	 */
+	protected void handleException(Throwable e) {
+		e.printStackTrace();
+	}
+
 	private class Request<R> {
 		private final Inquiry<? extends R> inquiry;
 		private final Consumer<? super R> resultHandler;
@@ -89,12 +109,14 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 				try {
 					errorHandler.accept(e);
 				} catch (Throwable e2) {
+					handleException(e2);
 				}
 				return;
 			}
 			try {
 				resultHandler.accept(result);
 			} catch (Throwable e) {
+				handleException(e);
 			}
 		}
 	}
