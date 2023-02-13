@@ -14,6 +14,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
 import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueueBase;
@@ -325,6 +326,15 @@ public class ArlithClientBuilder {
 		private final InetAddress host;
 		private final int port;
 		private final AuthToken authToken;
+		private Logger logger = Logger.STD;
+
+		public Logger getLogger() {
+			return logger;
+		}
+
+		public void setLogger(Logger logger) {
+			this.logger = logger;
+		}
 
 		private RequestSubsystemImpl(InetAddress host, int port, AuthToken authToken) {
 			this.host = host;
