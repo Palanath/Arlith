@@ -20,7 +20,12 @@ import pala.libs.generic.events.EventType;
 public abstract class EventSubsystem extends ClientNetworkingBase {
 
 	private final EventReader eventReifier;
-	private final EventManager<CommunicationProtocolEvent> eventManager = new EventManager<>();
+	private EventManager<CommunicationProtocolEvent> eventManager = new EventManager<>();
+
+	public void setEventManager(EventManager<CommunicationProtocolEvent> eventManager) {
+		this.eventManager = eventManager;
+	}
+
 	/**
 	 * <p>
 	 * The {@link Logger} to which errors and other logging information will be
