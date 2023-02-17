@@ -29,6 +29,7 @@ import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
+import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
@@ -273,22 +274,28 @@ public class ArlithClient {
 	private boolean running;
 
 	private final EventSubsystem eventSubsystem;
-	private final RequestSubsystem requestSubsystem;
+	private final RequestQueue requestQueue;
 
 	/**
 	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
-	 * and {@link RequestSubsystem}. The {@link EventSubsystem}'s
-	 * {@link EventManager} is set to {@link #eventManager}. Once setup and
-	 * construction is complete, the client needs to be started up with a call to
-	 * {@link #startup()} before it can be used.
+	 * and {@link RequestQueue}. The {@link EventSubsystem}'s {@link EventManager}
+	 * is set to {@link #eventManager}. Once setup and construction is complete, the
+	 * client needs to be started up with a call to {@link #startup()} before it can
+	 * be used.
 	 * 
-	 * @param eventSubsystem   The {@link EventSubsystem} to use.
-	 * @param requestSubsystem The {@link RequestSubsystem} to use.
+	 * @param eventSubsystem   The {@link EventSubsystem} to use for listening for
+	 *                         events. The {@link EventSubsystem} is expected to be
+	 *                         in a non-started state. It is started up upon a call
+	 *                         to {@link #startup()}.
+	 * @param requestSubsystem The {@link RequestQueue} to use for making requests.
+	 *                         The request subsystem is expected to be in a
+	 *                         non-started state. It is started up upon a call to
+	 *                         {@link #startup()}.
 	 */
-	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystem requestSubsystem) {
+	public ArlithClient(EventSubsystem eventSubsystem, RequestQueue requestQueue) {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
-		this.requestSubsystem = requestSubsystem;
+		this.requestQueue = requestQueue;
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
@@ -699,7 +706,7 @@ public class ArlithClient {
 		if (running)
 			throw new IllegalStateException("Application Client already running!");
 		running = true;
-		eventSubsystem.startup();
+		eventSubsystem.start();
 		requestSubsystem.start();
 	}
 
