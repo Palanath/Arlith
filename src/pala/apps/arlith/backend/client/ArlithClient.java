@@ -248,8 +248,15 @@ public class ArlithClient {
 		friends = new NewCache<>(new ListFriendsRequest(), listfn(this::getUser, ArrayList::new), requestQueue);
 		incomingFriends = new NewCache<>(new GetIncomingFriendRequestsRequest(),
 				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
-		outgoingFriends = new NewCache<List<ClientUser>>(new GetOutgoingFriendRequestsRequest(),
+		outgoingFriends = new NewCache<>(new GetOutgoingFriendRequestsRequest(),
 				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
+		self = new NewCache<>(new GetOwnUserRequest(), a -> {
+			ClientOwnUser u = new ClientOwnUser(a.id(), ArlithClient.this, a.username(), a.status(), a.messageCount(),
+					a.discriminant());
+			if (!users.containsKey(a.id()))
+				users.put(a.id(), u);
+			return u;
+		}, requestQueue);
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
