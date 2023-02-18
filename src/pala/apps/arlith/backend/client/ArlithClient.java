@@ -23,6 +23,7 @@ import pala.apps.arlith.backend.client.api.ClientThread;
 import pala.apps.arlith.backend.client.api.ClientUser;
 import pala.apps.arlith.backend.client.api.caching.Cache;
 import pala.apps.arlith.backend.client.api.caching.ClientCache;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
@@ -125,93 +126,26 @@ public class ArlithClient {
 	}
 
 	private final Map<GID, ClientCommunity> communities = new HashMap<>();
-	private final Cache<List<ClientCommunity>> joinedCommunities = new ClientCache<List<ClientCommunity>>(
-			this::getRequestSubsystem) {
-		@Override
-		protected List<ClientCommunity> queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			// Upon the first request for the list of joined communities, make a query to
-			// the server, process the result (convert it to a list of ClientCommunities
-			// instead
-			// of CommunicationProtcolCommunities), and then return the processed result.
-			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection),
-					ArlithClient.this::getCommunity, new ArrayList<>());
-		}
-	};
+	private final NewCache<List<ClientCommunity>> joinedCommunities;
+//	private final Cache<List<ClientCommunity>> joinedCommunities = new ClientCache<List<ClientCommunity>>(
+//			this::getRequestSubsystem) {
+//		@Override
+//		protected List<ClientCommunity> queryFromServer(CommunicationConnection connection)
+//				throws CommunicationProtocolError, RuntimeException {
+//			// Upon the first request for the list of joined communities, make a query to
+//			// the server, process the result (convert it to a list of ClientCommunities
+//			// instead
+//			// of CommunicationProtcolCommunities), and then return the processed result.
+//			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection),
+//					ArlithClient.this::getCommunity, new ArrayList<>());
+//		}
+//	};
 
-	private abstract class AbstractUserListCache<T extends CommunicationProtocolType>
-			extends ClientCache<List<ClientUser>> {
+	private final NewCache<List<ClientUser>> friends, incomingFriends, outgoingFriends;
 
-		protected final CommunicationProtocolRequest<ListValue<T>> request;
-
-		public AbstractUserListCache(CommunicationProtocolRequest<ListValue<T>> request) {
-			super(new Supplier<RequestSubsystem>() {
-
-				@Override
-				public RequestSubsystem get() {
-					return ArlithClient.this.getRequestSubsystem();
-				}
-			});
-			this.request = request;
-		}
-
-		/**
-		 * <p>
-		 * Returns the list backing this cache. This can be used by event handlers
-		 * created by calling code to modify the list, for example, to include new users
-		 * in this user cache once updates from the server are received signifying that
-		 * they've been added to the list. This value is not volatile, and, when
-		 * determining whether to write to or read from this list (as obtained via a
-		 * call to this method), care should be taken to synchronize over this object
-		 * and to make sure that the cache is not unpopulated (via a call to
-		 * {@link #isPopulated()}).
-		 * </p>
-		 * 
-		 * @return The list of {@link ClientUser}s backing this cache.
-		 */
-		public List<ClientUser> getUsers() {
-			return value;
-		}
-
-		protected abstract ClientUser getUserFromResult(T res);
-
-		@Override
-		protected List<ClientUser> queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			return JavaTools.addAll(request.inquire(connection), this::getUserFromResult, new ArrayList<>());
-		}
-	}
-
-	private class UserListCache extends AbstractUserListCache<UserValue> {
-
-		public UserListCache(CommunicationProtocolRequest<ListValue<UserValue>> req) {
-			super(req);
-		}
-
-		@Override
-		protected ClientUser getUserFromResult(UserValue res) {
-			return getUser(res);
-		}
-
-	}
-
-	private class UserGIDListCache extends AbstractUserListCache<GIDValue> {
-
-		public UserGIDListCache(CommunicationProtocolRequest<ListValue<GIDValue>> req) {
-			super(req);
-		}
-
-		@Override
-		protected ClientUser getUserFromResult(GIDValue res) {
-			return getUser(res.getGid());
-		}
-
-	}
-
-	// This cache will need to be "updated" via an event handler.
-	private final AbstractUserListCache<?> friends = new UserListCache(new ListFriendsRequest()),
-			incomingFriends = new UserGIDListCache(new GetIncomingFriendRequestsRequest()),
-			outgoingFriends = new UserGIDListCache(new GetOutgoingFriendRequestsRequest());
+//	private final AbstractUserListCache<?> friends = new UserListCache(new ListFriendsRequest()),
+//			incomingFriends = new UserGIDListCache(new GetIncomingFriendRequestsRequest()),
+//			outgoingFriends = new UserGIDListCache(new GetOutgoingFriendRequestsRequest());
 
 	{
 		eventManager.register(IncomingFriendEvent.INCOMING_FRIEND_EVENT, event -> {
@@ -256,25 +190,36 @@ public class ArlithClient {
 							event.getUser().getGid(), event.getPreviousState(), event.getNewState()));
 		});
 	}
-	private final Cache<ClientOwnUser> self = new ClientCache<ClientOwnUser>(this::getRequestSubsystem) {
-
-		@Override
-		protected ClientOwnUser queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			UserValue t = new GetOwnUserRequest().inquire(connection);
-			// TODO Possibly synchronize and document.
-			ClientOwnUser u = new ClientOwnUser(t.id(), ArlithClient.this, t.username(), t.status(), t.messageCount(),
-					t.discriminant());
-			if (!users.containsKey(t.id()))
-				users.put(t.id(), u);
-			return u;
-		}
-	};
+	private final NewCache<ClientOwnUser> self;
+//	private final Cache<ClientOwnUser> self = new ClientCache<ClientOwnUser>(this::getRequestSubsystem) {
+//
+//		@Override
+//		protected ClientOwnUser queryFromServer(CommunicationConnection connection)
+//				throws CommunicationProtocolError, RuntimeException {
+//			UserValue t = new GetOwnUserRequest().inquire(connection);
+//			// TODO Possibly synchronize and document.
+//			ClientOwnUser u = new ClientOwnUser(t.id(), ArlithClient.this, t.username(), t.status(), t.messageCount(),
+//					t.discriminant());
+//			if (!users.containsKey(t.id()))
+//				users.put(t.id(), u);
+//			return u;
+//		}
+//	};
 
 	private boolean running;
 
 	private final EventSubsystem eventSubsystem;
 	private final RequestQueue requestQueue;
+
+	private static <F, T, A extends List<T>> Function<ListValue<? extends F>, A> listfn(
+			Function<? super F, ? extends T> converter, Function<? super Integer, ? extends A> listMaker) {
+		return a -> {
+			A l = listMaker.apply(a.size());
+			for (F f : a)
+				l.add(converter.apply(f));
+			return l;
+		};
+	}
 
 	/**
 	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
@@ -296,6 +241,15 @@ public class ArlithClient {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
 		this.requestQueue = requestQueue;
+
+		// Initialize caches with requestQueue.
+		joinedCommunities = new NewCache<>(new ListJoinedCommunitiesRequest(),
+				listfn(this::getCommunity, ArrayList::new), requestQueue);
+		friends = new NewCache<>(new ListFriendsRequest(), listfn(this::getUser, ArrayList::new), requestQueue);
+		incomingFriends = new NewCache<>(new GetIncomingFriendRequestsRequest(),
+				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
+		outgoingFriends = new NewCache<List<ClientUser>>(new GetOutgoingFriendRequestsRequest(),
+				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
@@ -576,8 +530,8 @@ public class ArlithClient {
 		return self.get();
 	}
 
-	public RequestSubsystem getRequestSubsystem() {
-		return requestSubsystem;
+	public RequestQueue getRequestQueue() {
+		return requestQueue;
 	}
 
 	public ClientThread getThread(ThreadValue thread) {
@@ -707,7 +661,7 @@ public class ArlithClient {
 			throw new IllegalStateException("Application Client already running!");
 		running = true;
 		eventSubsystem.start();
-		requestSubsystem.start();
+		requestQueue.start();
 	}
 
 	public synchronized void stop() {
@@ -717,7 +671,7 @@ public class ArlithClient {
 		// While we've stolen processing, we notify other threads that a shutdown has
 		// caused their stop.
 		eventSubsystem.stop();
-		requestSubsystem.stop();
+		requestQueue.stop();
 	}
 
 	public <T extends CommunicationProtocolEvent> void unregister(EventType<T> type, EventHandler<? super T> handler) {
