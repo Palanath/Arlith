@@ -15,22 +15,23 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
 /**
  * <p>
  * A class that represents an indefinite client cache of a property. The
- * {@link Cache} can be populated manually at any time by calling code, but will
- * only ever query from the server, at max, once (if a retrieval attempt is made
- * while the {@link Cache} is empty). This class supports the <code>null</code>
- * value.
+ * {@link NewCache} can be populated manually at any time by calling code, but
+ * will only ever query from the server, at max, once (if a retrieval attempt is
+ * made while the {@link NewCache} is empty). This class supports the
+ * <code>null</code> value.
  * </p>
  * <p>
- * In a nutshell, a {@link Cache} is meant to act as a convenience utility that
- * holds a <i>value</i> for the {@link ArlithClient}, (much like a class field
- * or other variable), but only actually queries the server for the value the
- * first time calling code attempts to read the value from the {@link Cache}.
- * The {@link Cache} is said to be <i>populated</i> when it holds a value, and
- * said to be <i>empty</i> when it does not hold a value. Attempts by calling
- * code to read the value in the {@link Cache} while it is empty will
- * automatically cause the cache to attempt to retrieve the value from the
- * server (in a way that is specified when the {@link Cache} is constructed).
- * {@link Cache}s can be seen as <i>lazily-loaded variables</i>.
+ * In a nutshell, a {@link NewCache} is meant to act as a convenience utility
+ * that holds a <i>value</i> for the {@link ArlithClient}, (much like a class
+ * field or other variable), but only actually queries the server for the value
+ * the first time calling code attempts to read the value from the
+ * {@link NewCache}. The {@link NewCache} is said to be <i>populated</i> when it
+ * holds a value, and said to be <i>empty</i> when it does not hold a value.
+ * Attempts by calling code to read the value in the {@link NewCache} while it
+ * is empty will automatically cause the cache to attempt to retrieve the value
+ * from the server (in a way that is specified when the {@link NewCache} is
+ * constructed). {@link NewCache}s can be seen as <i>lazily-loaded
+ * variables</i>.
  * <p>
  * This class is designed for properties that only need to be <i>queried</i>
  * once, but may be updated later through an event, or possibly a user action.
@@ -58,27 +59,27 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
  * <p>
  * This class also provides facilities to allow callers to update the value held
  * by the cache at any time. This is typically used to allow calling code to
- * update the value of the {@link Cache} in if it changes.
+ * update the value of the {@link NewCache} in if it changes.
  * </p>
  * 
  * @author Palanath
  *
- * @param <V> The type of value held by the {@link Cache}.
+ * @param <V> The type of value held by the {@link NewCache}.
  */
-public class Cache<V> {
+public class NewCache<V> {// Temporarily rename to NewCache until all references to old Cache are gone.
 
 	private interface Waiter {
 		/**
 		 * <p>
 		 * Called upon failure or success of the thread/operation that was already
-		 * trying to populate the {@link Cache}. This method is called with a lock over
-		 * the {@link Cache} itself, so care should be taken not to perform blocking or
-		 * long-standing operations while this method is running, however, it is
-		 * guaranteed that the states of the {@link Cache} and the
+		 * trying to populate the {@link NewCache}. This method is called with a lock
+		 * over the {@link NewCache} itself, so care should be taken not to perform
+		 * blocking or long-standing operations while this method is running, however,
+		 * it is guaranteed that the states of the {@link NewCache} and the
 		 * {@link CachePopulator} will not be modified while this method is running, and
 		 * that threads attempting to read such states will block until this method
 		 * completes, (unless such modification is done by this method). This method can
-		 * safely read the states of all of the {@link Cache} and its populator.
+		 * safely read the states of all of the {@link NewCache} and its populator.
 		 * </p>
 		 */
 		void awaken();
@@ -87,14 +88,15 @@ public class Cache<V> {
 	/**
 	 * <p>
 	 * This class encapsulates a query that will be made to the server when the
-	 * {@link Cache} needs to be populated. It is used to allow the {@link Cache} to
-	 * choose between running the query <i>on the calling thread</i> as well as
-	 * <i>on the {@link RequestQueue}'s query thread</i>, as well as to let the
-	 * {@link Cache} handle multiple calls to the {@link Cache}'s get methods.
+	 * {@link NewCache} needs to be populated. It is used to allow the
+	 * {@link NewCache} to choose between running the query <i>on the calling
+	 * thread</i> as well as <i>on the {@link RequestQueue}'s query thread</i>, as
+	 * well as to let the {@link NewCache} handle multiple calls to the
+	 * {@link NewCache}'s get methods.
 	 * </p>
 	 * <p>
 	 * This class implements {@link Consumer}, and instances of this class are used
-	 * to actually populate the surrounding {@link Cache}.
+	 * to actually populate the surrounding {@link NewCache}.
 	 * </p>
 	 * <p>
 	 * 
@@ -106,12 +108,12 @@ public class Cache<V> {
 		/**
 		 * <p>
 		 * Determines whether this query has been started yet. This property is checked
-		 * and set by one of the {@link Cache}'s three different {@link Cache#get()
-		 * getter methods}.
+		 * and set by one of the {@link NewCache}'s three different
+		 * {@link NewCache#get() getter methods}.
 		 * </p>
 		 * <p>
 		 * If the value of this variable is checked while synchronized over the
-		 * {@link Cache}, it will exactly reflect whether this {@link CachePopulator}
+		 * {@link NewCache}, it will exactly reflect whether this {@link CachePopulator}
 		 * has been started. It is used to determine if there is a need to attempt to
 		 * query the server to populate the cache, or if such is already underway by
 		 * another thread.
@@ -126,15 +128,15 @@ public class Cache<V> {
 		 * A {@link Supplier} that gives the {@link Inquiry} once the actual
 		 * cache-population needs to occur. This is done so that the {@link Inquiry} and
 		 * its parameters do not have to be known at construction time of the
-		 * {@link Cache} (since that is when this {@link CachePopulator} is built).
+		 * {@link NewCache} (since that is when this {@link CachePopulator} is built).
 		 */
 		private final Supplier<? extends Inquiry<? extends T>> inquirySupplier;
 		/**
 		 * A {@link Function} used to convert the result of the {@link Inquiry} made to
-		 * the server to the type that this {@link Cache} wishes to store. This is often
-		 * used to do things like convert the result of an {@link Inquiry} that is e.g.
-		 * a {@link TextValue}, to a {@link String}. This {@link Function} is often very
-		 * trivial (and frequently a method reference).
+		 * the server to the type that this {@link NewCache} wishes to store. This is
+		 * often used to do things like convert the result of an {@link Inquiry} that is
+		 * e.g. a {@link TextValue}, to a {@link String}. This {@link Function} is often
+		 * very trivial (and frequently a method reference).
 		 */
 		private final Function<? super T, ? extends V> resultConverter;
 
@@ -154,18 +156,18 @@ public class Cache<V> {
 	}
 
 	/**
-	 * The value currently in the {@link Cache}, or <code>null</code> if there is no
-	 * value in the {@link Cache} yet. (Note that the value held by a populated
-	 * {@link Cache} may be <code>null</code>, so this property cannot always be
-	 * used to check if the {@link Cache} is already populated. For such,
-	 * {@link #isCached()} can be used, which checks if {@link #query} is
+	 * The value currently in the {@link NewCache}, or <code>null</code> if there is
+	 * no value in the {@link NewCache} yet. (Note that the value held by a
+	 * populated {@link NewCache} may be <code>null</code>, so this property cannot
+	 * always be used to check if the {@link NewCache} is already populated. For
+	 * such, {@link #isCached()} can be used, which checks if {@link #query} is
 	 * <code>null</code>.)
 	 */
 	private V value;
 
 	/**
 	 * The operation that queries the result if it is requested but is not already
-	 * in the {@link Cache}. This is set to <code>null</code> once the result is
+	 * in the {@link NewCache}. This is set to <code>null</code> once the result is
 	 * requested to indicate that the result has been requested. It is <i>not</i>
 	 * set to <code>null</code> if requesting the result fails.
 	 */
@@ -173,17 +175,17 @@ public class Cache<V> {
 
 	/**
 	 * <p>
-	 * Updates the {@link Cache} to hold the specified value. If the {@link Cache}
-	 * previously was empty, this method changes its state. If the {@link Cache}
-	 * previously was non-empty, this method updates it so that the value it holds
-	 * is the one specified.
+	 * Updates the {@link NewCache} to hold the specified value. If the
+	 * {@link NewCache} previously was empty, this method changes its state. If the
+	 * {@link NewCache} previously was non-empty, this method updates it so that the
+	 * value it holds is the one specified.
 	 * </p>
 	 * <p>
-	 * After a call to this method, the {@link Cache} will never attempt to query
+	 * After a call to this method, the {@link NewCache} will never attempt to query
 	 * from the server.
 	 * </p>
 	 * 
-	 * @param item The item to populate the {@link Cache} with.
+	 * @param item The item to populate the {@link NewCache} with.
 	 */
 	public void updateItem(V item) {
 		this.value = item;
@@ -191,14 +193,14 @@ public class Cache<V> {
 	}
 
 	/**
-	 * Returns whether this {@link Cache} is <i>populated</i>. If this method is
+	 * Returns whether this {@link NewCache} is <i>populated</i>. If this method is
 	 * <code>false</code> then the next attempt to {@link #get()} the value (using
 	 * one of the three retrieval methods, also including {@link #get(Consumer)} and
 	 * {@link #get(Consumer, Consumer)}), will cause the value to be retrieved from
 	 * the server. Otherwise, the value is supplied immediately and no query to the
 	 * server is made.
 	 * 
-	 * @return <code>true</code> if the {@link Cache} is populated,
+	 * @return <code>true</code> if the {@link NewCache} is populated,
 	 *         <code>false</code> if it is empty.
 	 */
 	public boolean isPopulated() {
@@ -206,8 +208,8 @@ public class Cache<V> {
 	}
 
 	/**
-	 * Gets the value from this {@link Cache}. If the {@link Cache} is empty, this
-	 * method queries the value from the server on the calling thread before
+	 * Gets the value from this {@link NewCache}. If the {@link NewCache} is empty,
+	 * this method queries the value from the server on the calling thread before
 	 * returning it.
 	 * 
 	 * @return The value.
@@ -276,15 +278,15 @@ public class Cache<V> {
 
 	/**
 	 * <p>
-	 * Gets the value from this {@link Cache} and supplies the specified
+	 * Gets the value from this {@link NewCache} and supplies the specified
 	 * {@link Consumer} with it.
 	 * </p>
 	 * <ul>
-	 * <li>If the {@link Cache} is already populated, the provided {@link Consumer}
-	 * is called on <b>this</b> {@link Thread} with the value in the {@link Cache}.
-	 * Otherwise,</li>
+	 * <li>If the {@link NewCache} is already populated, the provided
+	 * {@link Consumer} is called on <b>this</b> {@link Thread} with the value in
+	 * the {@link NewCache}. Otherwise,</li>
 	 * <li>If the cache is empty, this method queues a request to the server that
-	 * makes the {@link Inquiry}, populates this {@link Cache}, and then runs the
+	 * makes the {@link Inquiry}, populates this {@link NewCache}, and then runs the
 	 * provided {@link Consumer} <code>resultHandler</code> with the result, all of
 	 * which happens on the {@link RequestQueue}'s dedicated thread.</li>
 	 * </ul>
@@ -292,8 +294,8 @@ public class Cache<V> {
 	 * Care should usually be taken to assure that, in either case, the provided
 	 * result handler is not a blocking or intensive task. The purpose of this
 	 * method is to offload the operation of making the server {@link Inquiry} (and
-	 * populating this {@link Cache} with the response) onto a separate thread; the
-	 * provided {@link Consumer} may run on the calling thread.
+	 * populating this {@link NewCache} with the response) onto a separate thread;
+	 * the provided {@link Consumer} may run on the calling thread.
 	 * </p>
 	 * 
 	 * @param resultHandler The {@link Consumer} that will receive the value.
@@ -345,7 +347,7 @@ public class Cache<V> {
 								if (errorHandler != null)
 									errorHandler.accept(e);
 							} finally {
-								synchronized (Cache.this) {
+								synchronized (NewCache.this) {
 									query.started = false;
 									if (!query.waiters.isEmpty())
 										query.waiters.remove(0).awaken();
@@ -355,14 +357,14 @@ public class Cache<V> {
 						}
 
 						List<Waiter> waiters;
-						synchronized (Cache.this) {
+						synchronized (NewCache.this) {
 							waiters = query.waiters;
 							query = null;
 						}
 						try {
 							resultHandler.accept(value);
 						} finally {
-							synchronized (Cache.this) {
+							synchronized (NewCache.this) {
 								for (Waiter w : waiters)
 									w.awaken();
 							}
@@ -373,7 +375,7 @@ public class Cache<V> {
 							if (errorHandler != null)
 								errorHandler.accept(t);
 						} finally {
-							synchronized (Cache.this) {
+							synchronized (NewCache.this) {
 								query.started = false;
 								if (!query.waiters.isEmpty())
 									query.waiters.remove(0).awaken();
@@ -390,48 +392,49 @@ public class Cache<V> {
 	}
 
 	/**
-	 * Constructs this {@link Cache} already initialized with the provided value. If
-	 * the {@link Cache} is constructed in this way, the value is never queried from
-	 * the server after construction; it is always just returned. The value may
-	 * still be updated however using {@link #updateItem(Object)} after
+	 * Constructs this {@link NewCache} already initialized with the provided value.
+	 * If the {@link NewCache} is constructed in this way, the value is never
+	 * queried from the server after construction; it is always just returned. The
+	 * value may still be updated however using {@link #updateItem(Object)} after
 	 * construction.
 	 * 
-	 * @param value The value to construct the {@link Cache} with.
+	 * @param value The value to construct the {@link NewCache} with.
 	 */
-	public Cache(V value) {
+	public NewCache(V value) {
 		this.value = value;
 	}
 
 	/**
 	 * <p>
-	 * Creates a new, empty {@link Cache} that makes the provided {@link Inquiry} to
-	 * the server. The {@link Inquiry} should return a value of the type stored in
-	 * this {@link Cache}, and the value is always directly placed into this
-	 * {@link Cache} when the {@link Inquiry} is made. The specified
+	 * Creates a new, empty {@link NewCache} that makes the provided {@link Inquiry}
+	 * to the server. The {@link Inquiry} should return a value of the type stored
+	 * in this {@link NewCache}, and the value is always directly placed into this
+	 * {@link NewCache} when the {@link Inquiry} is made. The specified
 	 * {@link RequestQueue} is used to make the request.
 	 * </p>
 	 * <p>
 	 * This constructor is equivalent to calling
-	 * {@link Cache#Cache(Supplier, RequestQueue)} with <code>() -> inquiry</code>
-	 * as the first argument, i.e., a dummy {@link Supplier} that always returns the
-	 * specified {@link Inquiry} is used. Additionally, this constructor is
-	 * equivalent to {@link Cache#Cache(Supplier, Function, RequestQueue)}, in that
-	 * the same dummy supplier is used and the conversion {@link Function} is
+	 * {@link NewCache#Cache(Supplier, RequestQueue)} with
+	 * <code>() -> inquiry</code> as the first argument, i.e., a dummy
+	 * {@link Supplier} that always returns the specified {@link Inquiry} is used.
+	 * Additionally, this constructor is equivalent to
+	 * {@link NewCache#Cache(Supplier, Function, RequestQueue)}, in that the same
+	 * dummy supplier is used and the conversion {@link Function} is
 	 * <code>a -> (V) a</code>, or <code>null</code> (such a {@link Function} and
 	 * <code>null</code> are treated by that constructor as equivalent).
 	 * </p>
 	 * 
 	 * @param inquiry      The {@link Inquiry} that gets made to the server when the
-	 *                     {@link Cache} needs to be populated.
+	 *                     {@link NewCache} needs to be populated.
 	 * @param requestQueue The {@link RequestQueue} to make the {@link Inquiry} on.
 	 */
-	public Cache(Inquiry<? extends V> inquiry, RequestQueue requestQueue) {
+	public NewCache(Inquiry<? extends V> inquiry, RequestQueue requestQueue) {
 		this(() -> inquiry, requestQueue);
 	}
 
 	/**
 	 * <p>
-	 * Creates a new {@link Cache} with the specified {@link Inquiry} to be used
+	 * Creates a new {@link NewCache} with the specified {@link Inquiry} to be used
 	 * when populating, the specified {@link Function} to convert the result to an
 	 * appropriate value, and the specified {@link RequestQueue} to make the
 	 * {@link Inquiry} on. The <code>resultConverter</code> function should
@@ -449,59 +452,59 @@ public class Cache<V> {
 	 * @param <T>             The type of the result of the {@link Inquiry}.
 	 * @param inquiry         The {@link Inquiry} that will be made to the server.
 	 * @param resultConverter A {@link Function} to convert the result of the
-	 *                        {@link Inquiry} to the type that this {@link Cache}
+	 *                        {@link Inquiry} to the type that this {@link NewCache}
 	 *                        should store.
 	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
 	 *                        on.
 	 */
-	public <T> Cache(Inquiry<? extends T> inquiry, Function<? super T, ? extends V> resultConverter,
+	public <T> NewCache(Inquiry<? extends T> inquiry, Function<? super T, ? extends V> resultConverter,
 			RequestQueue requestQueue) {
 		this(() -> inquiry, resultConverter, requestQueue);
 	}
 
 	/**
 	 * <p>
-	 * Constructs a new {@link Cache} with the specified {@link Inquiry}
+	 * Constructs a new {@link NewCache} with the specified {@link Inquiry}
 	 * {@link Supplier} and the specified {@link RequestQueue}. When the
-	 * {@link Cache} needs to be populated, the {@link Supplier} is queried for a
+	 * {@link NewCache} needs to be populated, the {@link Supplier} is queried for a
 	 * new {@link Inquiry} to make on the {@link RequestQueue}. Note that the
 	 * {@link Supplier} may be queried multiple times if making {@link Inquiry
-	 * Inquiries} fails, causing the {@link Cache} to need to attempt to repopulate
-	 * itself again.
+	 * Inquiries} fails, causing the {@link NewCache} to need to attempt to
+	 * repopulate itself again.
 	 * </p>
 	 * <p>
 	 * Exceptions on the {@link Supplier} are passed to the
 	 * <code>errorHandler</code> if a call to {@link #get(Consumer, Consumer)} is
-	 * the source of the need to populate the {@link Cache}, and are relayed to the
-	 * caller if {@link #get()} is instead the source.
+	 * the source of the need to populate the {@link NewCache}, and are relayed to
+	 * the caller if {@link #get()} is instead the source.
 	 * </p>
 	 * 
 	 * @param inquirySupplier A {@link Supplier} that provides the {@link Inquiry}
-	 *                        when the {@link Cache} needs to populate itself.
+	 *                        when the {@link NewCache} needs to populate itself.
 	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
-	 *                        on when the {@link Cache} needs to populate itself.
+	 *                        on when the {@link NewCache} needs to populate itself.
 	 */
-	public Cache(Supplier<? extends Inquiry<? extends V>> inquirySupplier, RequestQueue requestQueue) {
+	public NewCache(Supplier<? extends Inquiry<? extends V>> inquirySupplier, RequestQueue requestQueue) {
 		this(inquirySupplier, a -> a, requestQueue);
 	}
 
 	/**
 	 * <p>
-	 * Constructs a new {@link Cache} with the specified {@link Inquiry}
+	 * Constructs a new {@link NewCache} with the specified {@link Inquiry}
 	 * {@link Supplier}, specified <code>resultConverter</code> {@link Function},
 	 * and specified {@link RequestQueue} to make the {@link Inquiry} on.
 	 * </p>
 	 * <p>
-	 * When the {@link Cache} needs to be populated, the {@link Supplier} is queried
-	 * for a new {@link Inquiry} to make on the {@link RequestQueue}, the
+	 * When the {@link NewCache} needs to be populated, the {@link Supplier} is
+	 * queried for a new {@link Inquiry} to make on the {@link RequestQueue}, the
 	 * {@link Inquiry} is made, and the result is passed to the
 	 * <code>resultConverter</code> {@link Function} provided.
 	 * </p>
 	 * <p>
 	 * Note that the {@link Supplier}, and even the <code>resultConverter</code>
 	 * {@link Function}, may be queried multiple times if making {@link Inquiry
-	 * Inquiries} fails, causing the {@link Cache} to need to attempt to repopulate
-	 * itself again.
+	 * Inquiries} fails, causing the {@link NewCache} to need to attempt to
+	 * repopulate itself again.
 	 * </p>
 	 * <p>
 	 * Both the provided {@link Supplier} and {@link Function} should generally be
@@ -515,12 +518,12 @@ public class Cache<V> {
 	 *                        Inquiries} that result in <code>T</code> objects.
 	 * @param resultConverter The {@link Function} used to convert from the result
 	 *                        of the {@link Inquiry} (of type <code>T</code>) to a
-	 *                        value suitable for storage in this {@link Cache} (of
-	 *                        type <code>V</code>, may be <code>null</code>).
+	 *                        value suitable for storage in this {@link NewCache}
+	 *                        (of type <code>V</code>, may be <code>null</code>).
 	 * @param requestQueue    The {@link RequestQueue} to make the {@link Inquiry}
 	 *                        on.
 	 */
-	public <T> Cache(Supplier<? extends Inquiry<? extends T>> inquirySupplier,
+	public <T> NewCache(Supplier<? extends Inquiry<? extends T>> inquirySupplier,
 			Function<? super T, ? extends V> resultConverter, RequestQueue requestQueue) {
 		query = new CachePopulator<>(requestQueue, inquirySupplier, resultConverter);
 	}
