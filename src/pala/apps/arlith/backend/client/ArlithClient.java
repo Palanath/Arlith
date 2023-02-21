@@ -416,7 +416,7 @@ public class ArlithClient {
 			synchronized (this.users) {
 				// Loop over all provided GIDs and find non-loaded users.
 				for (GID g : gids) {
-					ClientUser user = this.users.get(g);
+					ClientUser user = this.users.queue(g);
 					if (user != null)
 						users.add(user);
 					else

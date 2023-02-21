@@ -195,8 +195,8 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	/**
 	 * Returns whether this {@link NewCache} is <i>populated</i>. If this method is
 	 * <code>false</code> then the next attempt to {@link #get()} the value (using
-	 * one of the three retrieval methods, also including {@link #get(Consumer)} and
-	 * {@link #get(Consumer, Consumer)}), will cause the value to be retrieved from
+	 * one of the three retrieval methods, also including {@link #queue(Consumer)} and
+	 * {@link #queue(Consumer, Consumer)}), will cause the value to be retrieved from
 	 * the server. Otherwise, the value is supplied immediately and no query to the
 	 * server is made.
 	 * 
@@ -300,11 +300,11 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * 
 	 * @param resultHandler The {@link Consumer} that will receive the value.
 	 */
-	public void get(Consumer<? super V> resultHandler) {
-		get(resultHandler, null);
+	public void queue(Consumer<? super V> resultHandler) {
+		queue(resultHandler, null);
 	}
 
-	public void get(Consumer<? super V> resultHandler, Consumer<? super Throwable> errorHandler) {
+	public void queue(Consumer<? super V> resultHandler, Consumer<? super Throwable> errorHandler) {
 		// This is pulled out (and called below) to reduce code redundancy; the logic
 		// for what this should do when awoken after waiting is the same as what it
 		// should do the first time this method is called.
@@ -445,7 +445,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * <p>
 	 * Exceptions occurring on the provided <code>resultConverter</code>
 	 * {@link Function} will be propagated to the <code>errorHandler</code> provided
-	 * in calls to {@link #get(Consumer, Consumer)}, or to the caller if calling
+	 * in calls to {@link #queue(Consumer, Consumer)}, or to the caller if calling
 	 * {@link #get()}.
 	 * </p>
 	 * 
@@ -474,7 +474,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * </p>
 	 * <p>
 	 * Exceptions on the {@link Supplier} are passed to the
-	 * <code>errorHandler</code> if a call to {@link #get(Consumer, Consumer)} is
+	 * <code>errorHandler</code> if a call to {@link #queue(Consumer, Consumer)} is
 	 * the source of the need to populate the {@link NewCache}, and are relayed to
 	 * the caller if {@link #get()} is instead the source.
 	 * </p>
@@ -510,7 +510,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * Both the provided {@link Supplier} and {@link Function} should generally be
 	 * lightweight. Exceptions on either are relayed to the caller if {@link #get()}
 	 * is invoked and relayed to the <code>errorHandler</code> if
-	 * {@link #get(Consumer, Consumer)} is invoked.
+	 * {@link #queue(Consumer, Consumer)} is invoked.
 	 * </p>
 	 * 
 	 * @param <T>             The type of the result of the {@link Inquiry}.

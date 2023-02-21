@@ -65,7 +65,7 @@ public class ListCache<O> extends NewCache<List<O>> {
 
 	/**
 	 * <p>
-	 * Same as {@link #get(Consumer, Consumer)}, but the {@link List} provided to
+	 * Same as {@link #queue(Consumer, Consumer)}, but the {@link List} provided to
 	 * the <code>resultHandler</code> is unmodifiable. If querying the cache results
 	 * in the value <code>null</code> then <code>null</code> is provided to the
 	 * <code>resultHandler</code>. Otherwise, the list retrieved from the cache is
@@ -87,7 +87,7 @@ public class ListCache<O> extends NewCache<List<O>> {
 	 *                      errors are simply discarded.
 	 */
 	public void getUnmodifiable(Consumer<? super List<O>> resultHandler, Consumer<? super Throwable> errorHandler) {
-		super.get(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)), errorHandler);
+		super.queue(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)), errorHandler);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class ListCache<O> extends NewCache<List<O>> {
 	 *                      discarded.
 	 */
 	public void getUnmodifiable(Consumer<? super List<O>> resultHandler) {
-		super.get(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)));
+		super.queue(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)));
 	}
 
 }
