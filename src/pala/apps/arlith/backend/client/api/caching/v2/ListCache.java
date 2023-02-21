@@ -86,12 +86,13 @@ public class ListCache<O> extends NewCache<List<O>> {
 	 *                      handler can be <code>null</code>, in which case any
 	 *                      errors are simply discarded.
 	 */
-	public void getUnmodifiable(Consumer<? super List<O>> resultHandler, Consumer<? super Throwable> errorHandler) {
-		super.queue(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)), errorHandler);
+	public void queueUnmodifiable(Consumer<? super List<O>> resultHandler, Consumer<? super Throwable> errorHandler) {
+		super.queue(resultHandler == null ? null
+				: a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)), errorHandler);
 	}
 
 	/**
-	 * Calls {@link #getUnmodifiable(Consumer, Consumer)}, but passes
+	 * Calls {@link #queueUnmodifiable(Consumer, Consumer)}, but passes
 	 * <code>null</code> for the <code>errorHandler</code>.
 	 * 
 	 * @param resultHandler The {@link Consumer} to handle the result of the cache
@@ -100,8 +101,9 @@ public class ListCache<O> extends NewCache<List<O>> {
 	 *                      <code>null</code>, in which case the result is
 	 *                      discarded.
 	 */
-	public void getUnmodifiable(Consumer<? super List<O>> resultHandler) {
-		super.queue(a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)));
+	public void queueUnmodifiable(Consumer<? super List<O>> resultHandler) {
+		super.queue(resultHandler == null ? null
+				: a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)));
 	}
 
 }
