@@ -195,10 +195,10 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	/**
 	 * Returns whether this {@link NewCache} is <i>populated</i>. If this method is
 	 * <code>false</code> then the next attempt to {@link #get()} the value (using
-	 * one of the three retrieval methods, also including {@link #queue(Consumer)} and
-	 * {@link #queue(Consumer, Consumer)}), will cause the value to be retrieved from
-	 * the server. Otherwise, the value is supplied immediately and no query to the
-	 * server is made.
+	 * one of the three retrieval methods, also including {@link #queue(Consumer)}
+	 * and {@link #queue(Consumer, Consumer)}), will cause the value to be retrieved
+	 * from the server. Otherwise, the value is supplied immediately and no query to
+	 * the server is made.
 	 * 
 	 * @return <code>true</code> if the {@link NewCache} is populated,
 	 *         <code>false</code> if it is empty.
@@ -274,6 +274,10 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 
 	private boolean isRequesting() {
 		return !isPopulated() && query.started;
+	}
+
+	public void queue() {
+		queue(null);
 	}
 
 	/**
