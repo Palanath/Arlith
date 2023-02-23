@@ -12,24 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.application.logging.LoggingUtilities;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.client.api.ClientThread;
 import pala.apps.arlith.backend.client.api.ClientUser;
-import pala.apps.arlith.backend.client.api.caching.Cache;
-import pala.apps.arlith.backend.client.api.caching.ClientCache;
+import pala.apps.arlith.backend.client.api.caching.v2.ListCache;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystem;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
@@ -39,7 +35,6 @@ import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChanged
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
 import pala.apps.arlith.backend.common.protocol.requests.CreateCommunityRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByNameRequest;
@@ -49,7 +44,6 @@ import pala.apps.arlith.backend.common.protocol.requests.GetOutgoingFriendReques
 import pala.apps.arlith.backend.common.protocol.requests.GetOwnUserRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListFriendsRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListJoinedCommunitiesRequest;
-import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.common.protocol.types.CommunityValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.ListValue;
@@ -57,8 +51,6 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
@@ -126,85 +118,9 @@ public class ArlithClient {
 	}
 
 	private final Map<GID, ClientCommunity> communities = new HashMap<>();
-	private final NewCache<List<ClientCommunity>> joinedCommunities;
-//	private final Cache<List<ClientCommunity>> joinedCommunities = new ClientCache<List<ClientCommunity>>(
-//			this::getRequestSubsystem) {
-//		@Override
-//		protected List<ClientCommunity> queryFromServer(CommunicationConnection connection)
-//				throws CommunicationProtocolError, RuntimeException {
-//			// Upon the first request for the list of joined communities, make a query to
-//			// the server, process the result (convert it to a list of ClientCommunities
-//			// instead
-//			// of CommunicationProtcolCommunities), and then return the processed result.
-//			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection),
-//					ArlithClient.this::getCommunity, new ArrayList<>());
-//		}
-//	};
-
-	private final NewCache<List<ClientUser>> friends, incomingFriends, outgoingFriends;
-
-//	private final AbstractUserListCache<?> friends = new UserListCache(new ListFriendsRequest()),
-//			incomingFriends = new UserGIDListCache(new GetIncomingFriendRequestsRequest()),
-//			outgoingFriends = new UserGIDListCache(new GetOutgoingFriendRequestsRequest());
-
-	{
-		eventManager.register(IncomingFriendEvent.INCOMING_FRIEND_EVENT, event -> {
-			ClientUser other = getUser(event.getUser().getGid());
-			REMOVE: {
-				List<ClientUser> toRemoveFrom;
-				switch (event.getPreviousState()) {
-				case FRIENDED:
-					toRemoveFrom = friends.getUsers();
-					break;
-				case INCOMING:
-					toRemoveFrom = incomingFriends.getUsers();
-					break;
-				default:
-					break REMOVE;
-				case OUTGOING:
-					toRemoveFrom = outgoingFriends.getUsers();
-					break;
-				}
-				if (toRemoveFrom != null)
-					toRemoveFrom.remove(other);
-			}
-
-			List<ClientUser> toAddTo;
-			switch (event.getNewState()) {
-			case FRIENDED:
-				toAddTo = friends.getUsers();
-				break;
-			case INCOMING:
-				toAddTo = incomingFriends.getUsers();
-				break;
-			case OUTGOING:
-				toAddTo = outgoingFriends.getUsers();
-				break;
-			default:
-				return;
-			}
-			if (toAddTo != null)
-				toAddTo.add(other);
-			notifications.put(event.getNotificationID().getGid(),
-					new ClientFriendRequestNotification(event.getNotificationID().getGid(), this,
-							event.getUser().getGid(), event.getPreviousState(), event.getNewState()));
-		});
-	}
+	private final ListCache<ClientCommunity> joinedCommunities;
+	private final ListCache<ClientUser> friends, incomingFriends, outgoingFriends;
 	private final NewCache<ClientOwnUser> self;
-//	private final Cache<ClientOwnUser> self = new ClientCache<ClientOwnUser>(this::getRequestSubsystem) {
-//
-//		@Override
-//		protected ClientOwnUser queryFromServer(CommunicationConnection connection)
-//				throws CommunicationProtocolError, RuntimeException {
-//			UserValue t = new GetOwnUserRequest().inquire(connection);
-//			// TODO Possibly synchronize and document.
-//			ClientOwnUser u = new ClientOwnUser(t.id(), ArlithClient.this, t.username(), t.status(), t.messageCount(),
-//					t.discriminant());
-//			if (!users.containsKey(t.id()))
-//				users.put(t.id(), u);
-//			return u;
-//		}
-//	};
 
 	private boolean running;
 
@@ -243,13 +159,66 @@ public class ArlithClient {
 		this.requestQueue = requestQueue;
 
 		// Initialize caches with requestQueue.
-		joinedCommunities = new NewCache<>(new ListJoinedCommunitiesRequest(),
-				listfn(this::getCommunity, ArrayList::new), requestQueue);
-		friends = new NewCache<>(new ListFriendsRequest(), listfn(this::getUser, ArrayList::new), requestQueue);
-		incomingFriends = new NewCache<>(new GetIncomingFriendRequestsRequest(),
-				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
-		outgoingFriends = new NewCache<>(new GetOutgoingFriendRequestsRequest(),
-				listfn(a -> getUser(a.getGid()), ArrayList::new), requestQueue);
+		joinedCommunities = new ListCache<>(new ListJoinedCommunitiesRequest(), this::getCommunity, requestQueue);
+		friends = new ListCache<>(new ListFriendsRequest(), a -> getUser(a.getId().getGid()), requestQueue);
+		incomingFriends = new ListCache<ClientUser>(new GetIncomingFriendRequestsRequest(), a -> getUser(a.getGid()),
+				requestQueue);
+		outgoingFriends = new ListCache<ClientUser>(new GetOutgoingFriendRequestsRequest(), a -> getUser(a.getGid()),
+				requestQueue);
+
+		// Setup for friend events.
+		eventManager.register(IncomingFriendEvent.INCOMING_FRIEND_EVENT, event -> {
+			ClientUser other = getUser(event.getUser().getGid());
+			REMOVE: {
+				ListCache<ClientUser> cache;
+				switch (event.getPreviousState()) {
+				case FRIENDED:
+					cache = friends;
+					break;
+				case INCOMING:
+					cache = incomingFriends;
+					break;
+				default:
+					break REMOVE;
+				case OUTGOING:
+					cache = outgoingFriends;
+					break;
+				}
+				if (cache.isPopulated())
+					try {
+						cache.get().remove(other);
+					} catch (CommunicationProtocolError e) {
+						assert false
+								: "A Cache threw a CommunicationProtocolError after it was populated. (Caches throw these errors when something goes wrong while attempting to populate. This should not happen.)";
+					}
+			}
+
+			ListCache<ClientUser> cache;
+			switch (event.getNewState()) {
+			case FRIENDED:
+				cache = friends;
+				break;
+			case INCOMING:
+				cache = incomingFriends;
+				break;
+			case OUTGOING:
+				cache = outgoingFriends;
+				break;
+			default:
+				return;
+			}
+			if (cache.isPopulated())
+				try {
+					cache.get().add(other);
+				} catch (CommunicationProtocolError e) {
+					assert false
+							: "A Cache threw a CommunicationProtocolError after it was populated. (Caches throw these errors when something goes wrong while attempting to populate. This should not happen.)";
+				}
+			notifications.put(event.getNotificationID().getGid(),
+					new ClientFriendRequestNotification(event.getNotificationID().getGid(), this,
+							event.getUser().getGid(), event.getPreviousState(), event.getNewState()));
+		});
+
 		self = new NewCache<>(new GetOwnUserRequest(), a -> {
 			ClientOwnUser u = new ClientOwnUser(a.id(), ArlithClient.this, a.username(), a.status(), a.messageCount(),
 					a.discriminant());
@@ -353,19 +322,18 @@ public class ArlithClient {
 		return getRequestSubsystem().action(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
 				.then((Function<GIDValue, GID>) t -> {
 					if (incomingFriends.isPopulated()) {
-						for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator
-								.hasNext();) {
+						for (Iterator<ClientUser> iterator = incomingFriends.get().iterator(); iterator.hasNext();) {
 							ClientUser u = iterator.next();
 							if (u.id().equals(t.getGid())) {
 								iterator.remove();
 								if (friends.isPopulated())
-									friends.getUsers().add(u);
+									friends.get().add(u);
 								return u.id();
 							}
 						}
 						// Add to outgoing list, if not already present.
 						if (outgoingFriends.isPopulated())
-							outgoingFriends.getUsers().add(getUser(t.getGid()));
+							outgoingFriends.get().add(getUser(t.getGid()));
 					}
 					return t.getGid();
 				});
@@ -490,7 +458,7 @@ public class ArlithClient {
 	}
 
 	public ActionInterface<List<ClientUser>> getIncomingFriendRequestsRequest() {
-		return incomingFriends.get().transform(Collections::unmodifiableList);
+		return incomingFriends.get
 	}
 
 	public ClientCommunity getLoadedCommunity(GID id) {
