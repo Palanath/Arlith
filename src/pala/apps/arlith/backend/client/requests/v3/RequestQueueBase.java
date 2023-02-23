@@ -63,7 +63,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 	private final Object connectionLock = new Object();
 
 	private volatile Thread queueThread;
-	private final LinkedBlockingQueue<Request<?>> requestQueue = new LinkedBlockingQueue<>();
+	protected final LinkedBlockingQueue<Request<?>> requestQueue = new LinkedBlockingQueue<>();
 
 	/**
 	 * <p>
@@ -85,7 +85,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		e.printStackTrace();
 	}
 
-	private class Request<R> {
+	protected class Request<R> {
 		private final Inquiry<? extends R> inquiry;
 		private final Consumer<? super R> resultHandler;
 		private final Consumer<? super Throwable> errorHandler;
@@ -109,7 +109,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		 * 
 		 * @throws Throwable
 		 */
-		private void perform() {
+		public void perform() {
 			R result;
 			try {
 				synchronized (connectionLock) {
@@ -148,7 +148,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		assureQueueThreadReady();
 	}
 
-	private synchronized void assureQueueThreadReady() {
+	protected synchronized void assureQueueThreadReady() {
 		if (!isRunning())
 			throw new IllegalStateException("Cannot run queued inquiries while the RequestQueueBase is stopped.");
 		if (queueThread == null) {
