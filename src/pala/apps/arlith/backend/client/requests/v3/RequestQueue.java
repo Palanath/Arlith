@@ -1,5 +1,7 @@
 package pala.apps.arlith.backend.client.requests.v3;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import pala.apps.arlith.backend.client.requests.Inquiry;
@@ -34,6 +36,60 @@ import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolErro
  *
  */
 public interface RequestQueue extends RequestSerializer {
+
+	/**
+	 * <p>
+	 * Returns a {@link CompletableFuture} that represents the asynchronous making
+	 * of the specified {@link Inquiry} to the server. The {@link CompletableFuture}
+	 * is completed, either exceptionally or normally, whenever the call to
+	 * {@link #queue(Inquiry, Consumer, Consumer)} completes in the likewise manner.
+	 * </p>
+	 * <p>
+	 * <span style="color: red;">Note that {@link CompletableFuture}s returned by
+	 * {@link RequestQueue} implementations cannot be
+	 * {@link CompletableFuture#cancel(boolean) cancelled} unless otherwise
+	 * specified,</span> <b>and that</b> {@link CompletableFuture#cancel(boolean)}
+	 * should not be called on results returned from this method (unless allowed by
+	 * the implementation); <span style="color: red;"><b>calls to the
+	 * {@link CompletableFuture#cancel(boolean)} method may invoke undefined
+	 * behavior.</b></span>
+	 * </p>
+	 * <p>
+	 * The default implementation of this method creates a new
+	 * {@link CompletableFuture} and calls
+	 * {@link #queue(Inquiry, Consumer, Consumer)}; the result handler provided to
+	 * {@link #queue(Inquiry, Consumer, Consumer)} completes the future with the
+	 * result value, and the exception handler provided completes the future with an
+	 * exceptional value. (There is no way for such calls to
+	 * {@link #queue(Inquiry, Consumer, Consumer)} to become aware that the
+	 * {@link CompletableFuture}, created in and returned by this method, is
+	 * cancelled, if it ever is, which is why care should be taken when passing
+	 * around {@link CompletableFuture}s returned by this method).
+	 * </p>
+	 * <p>
+	 * Implementations are free to implement
+	 * {@link CompletableFuture#cancel(boolean)}, either with or without regard to
+	 * the method's parameter.
+	 * </p>
+	 * 
+	 * @param <R>     The type of the result of the {@link Inquiry} being made.
+	 * @param inquiry The {@link Inquiry} to be made to the server.
+	 * @return A {@link CompletableFuture} that represents the result of invoking
+	 *         the {@link Inquiry}. Note that the default implementation of this
+	 *         method does not actually cancel the request being made to the server
+	 *         if {@link CompletableFuture#cancel(boolean)} is called (the default
+	 *         implementation of {@link CompletableFuture#cancel(boolean)} is used,
+	 *         so threads waiting on the {@link CompletableFuture} to complete will
+	 *         be interrupted by reason of cancellation, and other
+	 *         {@link CompletableFuture}s that branch from the returned future will
+	 *         receive notice of the cancellation, as expected).
+	 */
+	default <R> CompletableFuture<R> queueFuture(Inquiry<? extends R> inquiry) {
+		CompletableFuture<R> future = new CompletableFuture<>();
+		queue(inquiry, future::complete, future::completeExceptionally);
+		return future;
+	}
+
 	/**
 	 * <p>
 	 * Queues an {@link Inquiry} to be made on this {@link RequestQueue}'s internal,
