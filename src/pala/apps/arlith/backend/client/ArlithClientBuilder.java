@@ -3,7 +3,6 @@ package pala.apps.arlith.backend.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -15,9 +14,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.application.logging.Logger;
-import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
 import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
-import pala.apps.arlith.backend.client.requests.v3.RequestQueueBase;
+import pala.apps.arlith.backend.client.requests.v3.CancellableRequestQueueBase;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
@@ -321,7 +319,7 @@ public class ArlithClientBuilder {
 	 * @author Palanath
 	 *
 	 */
-	private static class RequestSubsystemImpl extends RequestQueueBase {
+	private static class RequestSubsystemImpl extends CancellableRequestQueueBase {
 
 		private final InetAddress host;
 		private final int port;
