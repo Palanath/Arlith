@@ -1,5 +1,6 @@
 package pala.apps.arlith.backend.client.requests.v3;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -37,6 +38,15 @@ import pala.apps.arlith.libraries.networking.Connection;
  * synchronizes over <code>this</code> when assuring that the queue thread is
  * prepared (and preparing it, if it isn't) so that the queued requests can be
  * made.
+ * </p>
+ * <p>
+ * Note that this class does not implement request cancellation (via
+ * {@link CompletableFuture#cancel(boolean)} on the {@link CompletableFuture}
+ * returned by {@link #queueFuture(Inquiry)}), so calls to
+ * {@link CompletableFuture#cancel(boolean)} on said {@link CompletableFuture}
+ * will cancel the {@link CompletableFuture} object (and any
+ * {@link CompletableFuture}s/threads waiting on its completion), but will not
+ * actually stop the represented request from taking place.
  * </p>
  * 
  * @author Palanath
