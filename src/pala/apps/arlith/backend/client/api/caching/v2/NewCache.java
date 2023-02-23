@@ -225,7 +225,12 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 *                                    that are made by the {@link Inquiry}, so
 	 *                                    this method may be overridden by subtypes
 	 *                                    to reify the types of exceptions thrown by
-	 *                                    this method.
+	 *                                    this method. Note that this exception will
+	 *                                    never be thrown if after a call to
+	 *                                    {@link #isPopulated()} returns
+	 *                                    <code>true</code>, as, once this
+	 *                                    {@link NewCache} is populated, it will
+	 *                                    never attempt to repopulate itself.
 	 */
 	public V get() throws CommunicationProtocolError {
 		// Check for current status.
