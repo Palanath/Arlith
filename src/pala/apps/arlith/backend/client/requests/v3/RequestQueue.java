@@ -38,7 +38,25 @@ public interface RequestQueue extends RequestSerializer {
 	 * <p>
 	 * Queues an {@link Inquiry} to be made on this {@link RequestQueue}'s internal,
 	 * dedicated thread. The {@link Inquiry} is added to the queue in the order that
-	 * it is received so, {@link Inquiry inquiries} that are queued before others
+	 * it is received, so {@link Inquiry inquiries} that are queued before others
+	 * are made before others.
+	 * </p>
+	 * <p>
+	 * The result of the {@link Inquiry} is ignored, and so are any exceptions if
+	 * the {@link Inquiry} raises an exception.
+	 * </p>
+	 * 
+	 * @param inquiry The {@link Inquiry} to make to the server.
+	 */
+	default void queue(Inquiry<?> inquiry) {
+		queue(inquiry, null);
+	}
+
+	/**
+	 * <p>
+	 * Queues an {@link Inquiry} to be made on this {@link RequestQueue}'s internal,
+	 * dedicated thread. The {@link Inquiry} is added to the queue in the order that
+	 * it is received, so {@link Inquiry inquiries} that are queued before others
 	 * are made before others. The provided {@link Consumer} is invoked once the
 	 * {@link Inquiry} completes to handle the result. The {@link Consumer} is
 	 * invoked on the same thread used for making requests to the server, and queued
