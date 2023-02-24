@@ -127,16 +127,6 @@ public class ArlithClient {
 	private final EventSubsystem eventSubsystem;
 	private final RequestQueue requestQueue;
 
-	private static <F, T, A extends List<T>> Function<ListValue<? extends F>, A> listfn(
-			Function<? super F, ? extends T> converter, Function<? super Integer, ? extends A> listMaker) {
-		return a -> {
-			A l = listMaker.apply(a.size());
-			for (F f : a)
-				l.add(converter.apply(f));
-			return l;
-		};
-	}
-
 	/**
 	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
 	 * and {@link RequestQueue}. The {@link EventSubsystem}'s {@link EventManager}
