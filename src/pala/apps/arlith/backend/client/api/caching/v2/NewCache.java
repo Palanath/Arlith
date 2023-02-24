@@ -2,6 +2,7 @@ package pala.apps.arlith.backend.client.api.caching.v2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -68,6 +69,13 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
  */
 public class NewCache<V> {// Temporarily rename to NewCache until all references to old Cache are gone.
 
+	/**
+	 * A task that is waiting on the completion of the currently operating attempt
+	 * to populate this {@link NewCache}.
+	 * 
+	 * @author Palanath
+	 *
+	 */
 	private interface Waiter {
 		/**
 		 * <p>
@@ -398,6 +406,73 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 		synchronized (this) {
 			waiter.awaken();
 		}
+	}
+
+	public CompletableFuture<V> future() {
+		CompletableFuture<V> f = new CompletableFuture<>();
+		Waiter w = new Waiter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void awaken() {
+				if (isPopulated())
+					f.complete(value);
+				else if (isRequesting()) {
+					query.waiters.add(this);
+				} else {
+					query.started = true;
+					Inquiry<?> inquiry;
+					try {
+						inquiry = query.inquirySupplier.get();
+					} catch (Exception e) {
+						f.completeExceptionally(e);
+						if (!query.waiters.isEmpty())
+							query.waiters.remove(0).awaken();
+						return;
+					}
+
+					query.requestQueue.queue(inquiry, a -> {
+						try {
+							value = ((Function<Object, V>) query.resultConverter).apply(a);
+						} catch (Exception e) {
+							f.completeExceptionally(e);
+							synchronized (NewCache.this) {
+								if (!query.waiters.isEmpty())
+									query.waiters.remove(0).awaken();
+							}
+							return;
+						}
+
+						List<Waiter> waiters;
+						synchronized (NewCache.this) {
+							waiters = query.waiters;
+							query = null;
+						}
+
+						try {
+							f.complete(value);
+						} finally {
+							synchronized (NewCache.this) {
+								for (Waiter w : waiters)
+									w.awaken();
+							}
+						}
+					}, a -> {
+						try {
+							f.completeExceptionally(a);
+						} catch (Exception e) {
+							synchronized (NewCache.this) {
+								if (!query.waiters.isEmpty())
+									query.waiters.remove(0).awaken();
+							}
+						}
+					});
+				}
+			}
+		};
+		synchronized (this) {
+			w.awaken();
+		}
+		return f;
 	}
 
 	/**
