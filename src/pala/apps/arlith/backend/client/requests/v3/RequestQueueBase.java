@@ -1,5 +1,6 @@
 package pala.apps.arlith.backend.client.requests.v3;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -38,6 +39,15 @@ import pala.apps.arlith.libraries.networking.Connection;
  * prepared (and preparing it, if it isn't) so that the queued requests can be
  * made.
  * </p>
+ * <p>
+ * Note that this class does not implement request cancellation (via
+ * {@link CompletableFuture#cancel(boolean)} on the {@link CompletableFuture}
+ * returned by {@link #queueFuture(Inquiry)}), so calls to
+ * {@link CompletableFuture#cancel(boolean)} on said {@link CompletableFuture}
+ * will cancel the {@link CompletableFuture} object (and any
+ * {@link CompletableFuture}s/threads waiting on its completion), but will not
+ * actually stop the represented request from taking place.
+ * </p>
  * 
  * @author Palanath
  *
@@ -53,7 +63,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 	private final Object connectionLock = new Object();
 
 	private volatile Thread queueThread;
-	private final LinkedBlockingQueue<Request<?>> requestQueue = new LinkedBlockingQueue<>();
+	protected final LinkedBlockingQueue<Request<?>> requestQueue = new LinkedBlockingQueue<>();
 
 	/**
 	 * <p>
@@ -75,7 +85,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		e.printStackTrace();
 	}
 
-	private class Request<R> {
+	protected class Request<R> {
 		private final Inquiry<? extends R> inquiry;
 		private final Consumer<? super R> resultHandler;
 		private final Consumer<? super Throwable> errorHandler;
@@ -99,7 +109,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		 * 
 		 * @throws Throwable
 		 */
-		private void perform() {
+		public void perform() {
 			R result;
 			try {
 				synchronized (connectionLock) {
@@ -138,7 +148,7 @@ public abstract class RequestQueueBase extends RequestSerializerBase implements 
 		assureQueueThreadReady();
 	}
 
-	private synchronized void assureQueueThreadReady() {
+	protected synchronized void assureQueueThreadReady() {
 		if (!isRunning())
 			throw new IllegalStateException("Cannot run queued inquiries while the RequestQueueBase is stopped.");
 		if (queueThread == null) {
