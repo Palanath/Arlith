@@ -3,6 +3,7 @@ package pala.apps.arlith.backend.client.api.caching.v2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -104,6 +105,23 @@ public class ListCache<O> extends NewCache<List<O>> {
 	public void queueUnmodifiable(Consumer<? super List<O>> resultHandler) {
 		super.queue(resultHandler == null ? null
 				: a -> resultHandler.accept(a == null ? null : Collections.unmodifiableList(a)));
+	}
+
+	/**
+	 * <p>
+	 * Returns a {@link CompletableFuture} that converts the result of
+	 * {@link #future()} to an unmodifiable list. This method returns:
+	 * </p>
+	 * 
+	 * <pre>
+	 * <code>super.future().thenApply(Collections::unmodifiableList)</code>
+	 * </pre>
+	 * 
+	 * @return The result of calling
+	 *         <code>super.future().thenApply(Collections::unmodifiableList)</code>.
+	 */
+	public CompletableFuture<List<O>> futureUnmodifiable() {
+		return super.future().thenApply(Collections::unmodifiableList);
 	}
 
 }
