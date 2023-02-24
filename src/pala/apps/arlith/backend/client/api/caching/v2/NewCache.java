@@ -12,6 +12,7 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.libs.generic.util.Box;
 
 /**
  * <p>
@@ -409,8 +410,16 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	}
 
 	public CompletableFuture<V> future() {
-		CompletableFuture<V> f = new CompletableFuture<>();
-		Waiter w = new Waiter() {
+		Box<Waiter> w = new Box<>();
+		CompletableFuture<V> f = new CompletableFuture<V>() {
+			@Override
+			public boolean cancel(boolean mayInterruptIfRunning) {
+				synchronized (NewCache.this) {
+					return query != null && query.waiters.remove(w.value) && super.cancel(mayInterruptIfRunning);
+				}
+			}
+		};
+		w.value = new Waiter() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void awaken() {
@@ -470,7 +479,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 			}
 		};
 		synchronized (this) {
-			w.awaken();
+			w.value.awaken();
 		}
 		return f;
 	}
