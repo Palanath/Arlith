@@ -1,5 +1,8 @@
 package pala.apps.arlith.libraries;
 
+import static pala.libs.generic.JavaTools.array;
+import static pala.libs.generic.JavaTools.hideCheckedExceptions;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -10,7 +13,6 @@ import java.util.function.Function;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
-import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 
 public final class CompletableFutureUtils {
@@ -328,10 +330,23 @@ public final class CompletableFutureUtils {
 	 *                          {@link CompletableFuture}.
 	 * @throws E1               If such an exception occurs during the asynchronous
 	 *                          computation represented by the
-	 *                          {@link CompletableFuture}.
+	 *                          {@link CompletableFuture}. This method's use comes
+	 *                          from this type, and the {@link Class} provided in
+	 *                          place of <code>e1</code>, being a checked exception.
 	 */
 	public static <V, E1 extends Throwable> V getValue(CompletableFuture<? extends V> future, Class<? extends E1> e1)
 			throws RuntimeException, Error, E1 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable> V getValue(CompletableFuture<? extends V> future,
+			Class<? extends E1> e1, Class<? extends E1> e2) throws RuntimeException, Error, E1, E2 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2)));
+	}
+
+	@SafeVarargs
+	private static <V> V getValue(CompletableFuture<? extends V> future,
+			Class<? extends Throwable>... exceptionsToUnwrap) throws Throwable {
 		try {
 			return future.get();
 		} catch (InterruptedException e) {
@@ -342,10 +357,11 @@ public final class CompletableFutureUtils {
 				throw (RuntimeException) c;
 			else if (c instanceof Error)
 				throw (Error) c;
-			else if (e1.isInstance(c))
-				throw e1.cast(c);
 			else
-				throw new RuntimeException(c);
+				for (Class<? extends Throwable> ex : exceptionsToUnwrap)
+					if (ex.isInstance(c))
+						throw ex.cast(c);
+			throw new RuntimeException(c);
 		}
 	}
 
