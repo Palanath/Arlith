@@ -29,6 +29,7 @@ import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
@@ -226,8 +227,9 @@ public class ArlithClient {
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws SyntaxError, RuntimeException, Error {
-		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class);
+			throws SyntaxError, RuntimeException, Error, RestrictedError {
+		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class,
+				RestrictedError.class);
 	}
 
 //	/**
