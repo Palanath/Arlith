@@ -7,13 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.RandomAccess;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import pala.apps.arlith.application.logging.Logger;
@@ -32,6 +29,7 @@ import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
@@ -54,6 +52,7 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
+import pala.apps.arlith.libraries.CompletableFutureUtils;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
@@ -227,22 +226,8 @@ public class ArlithClient {
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws CommunicationProtocolError, RuntimeException {
-		try {
-			return createCommunityRequest(name, icon, background).get();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		} catch (ExecutionException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof CommunicationProtocolError)
-				throw (CommunicationProtocolError) cause;
-			else if (cause instanceof RuntimeException)
-				throw (RuntimeException) cause;
-			else if (cause instanceof Error)
-				throw (Error) cause;
-			else
-				throw new RuntimeException(cause);
-		}
+			throws SyntaxError, RuntimeException, Error {
+		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class);
 	}
 
 //	/**
