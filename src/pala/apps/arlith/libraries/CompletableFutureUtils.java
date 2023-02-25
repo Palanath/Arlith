@@ -1,13 +1,17 @@
 package pala.apps.arlith.libraries;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 
 public final class CompletableFutureUtils {
 	private CompletableFutureUtils() {
@@ -247,6 +251,102 @@ public final class CompletableFutureUtils {
 			else
 				return errorHandler.apply(u);
 		}, executor);
+	}
+
+	/**
+	 * <p>
+	 * Convenience function used by {@link ArlithClient} to allow blocking
+	 * (synchronous) API methods to easily throw the types of
+	 * {@link CommunicationProtocolError}s specified by their respective request.
+	 * </p>
+	 * <p>
+	 * This method attempts to return <code>future.get()</code>, i.e., it attempts
+	 * to return the result of the {@link CompletableFuture} provided. If the
+	 * {@link CompletableFuture} did not complete correctly, the call to
+	 * {@link CompletableFuture#get()} either results in an
+	 * {@link InterruptedException} or an {@link ExecutionException}.
+	 * </p>
+	 * <ul>
+	 * <li><b>If this method encounters an {@link InterruptedException},</b> it
+	 * wraps the exception in a {@link RuntimeException} and throws the
+	 * {@link RuntimeException}. Otherwise,</li>
+	 * <li><b>If this method encounters an {@link ExecutionException},</b>
+	 * (indicating that the execution of the asynchronous task represented by the
+	 * {@link CompletableFuture} failed), this method acquires the cause of the
+	 * {@link ExecutionException}.
+	 * <ul>
+	 * <li><b>If the cause is a {@link RuntimeException}</b>, the cause is thrown
+	 * from this method.</li>
+	 * <li><b>If the cause is an {@link Error},</b> the cause is thrown from this
+	 * method.</li>
+	 * <li><b>If the cause is an instance of the provided {@link Throwable}
+	 * {@link Class},</b> the cause is thrown from this method.</li>
+	 * <li><b>Otherwise,</b> the cause is wrapped in a {@link RuntimeException} and
+	 * that {@link RuntimeException} is thrown from this method.</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * <p>
+	 * Since this function specifies in its <code>throws</code> clause the generic
+	 * type of exception provided by the caller, this method can conveniently allow
+	 * callers to extract the value from a {@link CompletableFuture} without the
+	 * need to include a <code>try</code>-<code>catch</code> construct
+	 * (boilerplate), and still throw specific exceptions.
+	 * </p>
+	 * <p>
+	 * An example use of this function is as follows:
+	 * </p>
+	 * 
+	 * <pre>
+	 * <code>public CompletableFuture&lt;Gift&gt; acquireGiftAsync() {
+	 * 	return requestQueue.{@link RequestQueue#queueFuture(pala.apps.arlith.backend.client.requests.Inquiry) queueFuture}(new AcquireGiftRequest()).thenApply(Gift::fromNetworkGiftValue);
+	 * }
+	 * 
+	 * public Gift acquireGift() throws NoGiftsGivenException, RuntimeException {
+	 * 	return {@link CompletableFutureUtils}.getValue(acquireGiftAsync(), NoGiftsGivenException.class);
+	 * }</code>
+	 * </pre>
+	 * 
+	 * @param <V>    The type of the result of the {@link CompletableFuture} to
+	 *               acquire the value from.
+	 * @param <E1>   The type of {@link Exception} that the
+	 *               {@link CompletableFuture} is expected to be able to encounter.
+	 * @param future The {@link CompletableFuture}, representing some asychronous
+	 *               computation.
+	 * @param e1     {@link Class} instance of the class <code>E1</code>, used by
+	 *               this method to check if an exception encountered by the
+	 *               {@link CompletableFuture} is of the type specified.
+	 * @return The result of the {@link CompletableFuture}.
+	 * @throws RuntimeException If such an exception occurs during the asynchronous
+	 *                          computation represented by the
+	 *                          {@link CompletableFuture}, if an unspecified
+	 *                          exception occurs during such computation, or if an
+	 *                          {@link InterruptedException} is thrown by
+	 *                          {@link CompletableFuture#get()}.
+	 * @throws Error            If such an exception occurs during the asynchronous
+	 *                          computation represented by the
+	 *                          {@link CompletableFuture}.
+	 * @throws E1               If such an exception occurs during the asynchronous
+	 *                          computation represented by the
+	 *                          {@link CompletableFuture}.
+	 */
+	public static <V, E1 extends Throwable> V getValue(CompletableFuture<? extends V> future, Class<? extends E1> e1)
+			throws RuntimeException, Error, E1 {
+		try {
+			return future.get();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (ExecutionException e) {
+			Throwable c = e.getCause();
+			if (c instanceof RuntimeException)
+				throw (RuntimeException) c;
+			else if (c instanceof Error)
+				throw (Error) c;
+			else if (e1.isInstance(c))
+				throw e1.cast(c);
+			else
+				throw new RuntimeException(c);
+		}
 	}
 
 }
