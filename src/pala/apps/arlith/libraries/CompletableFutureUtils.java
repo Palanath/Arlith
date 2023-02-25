@@ -340,8 +340,57 @@ public final class CompletableFutureUtils {
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable> V getValue(CompletableFuture<? extends V> future,
-			Class<? extends E1> e1, Class<? extends E1> e2) throws RuntimeException, Error, E1, E2 {
+			Class<? extends E1> e1, Class<? extends E2> e2) throws RuntimeException, Error, E1, E2 {
 		return hideCheckedExceptions(() -> getValue(future, array(e1, e2)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3) throws RuntimeException, Error, E1, E2, E3 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4) throws RuntimeException, Error, E1, E2, E3, E4 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5, e6)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7) throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5, e6, e7)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7, Class<? extends E8> e8)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, E8 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5, e6, e7, e8)));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable, E9 extends Throwable> V getValue(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7, Class<? extends E8> e8, Class<? extends E9> e9)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, E8, E9 {
+		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5, e6, e7, e8, e9)));
 	}
 
 	@SafeVarargs
