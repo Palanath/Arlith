@@ -160,7 +160,7 @@ public class ArlithClient {
 		this.requestQueue = requestQueue;
 
 		// Initialize caches with requestQueue.
-		joinedCommunities = new ListCache<>(new ListJoinedCommunitiesRequest(), this::getCommunity, requestQueue);
+		joinedCommunities = new ListCache<>(new ListJoinedCommunitiesRequest(), this::cache, requestQueue);
 		friends = new ListCache<>(new ListFriendsRequest(), a -> getUser(a.getId().getGid()), requestQueue);
 		incomingFriends = new ListCache<ClientUser>(new GetIncomingFriendRequestsRequest(), a -> getUser(a.getGid()),
 				requestQueue);
@@ -255,7 +255,7 @@ public class ArlithClient {
 				.queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
 						icon == null ? null : new PieceOMediaValue(icon),
 						background == null ? null : new PieceOMediaValue(background)))
-				.thenApply(this::getCommunity).thenApply(t -> {
+				.thenApply(this::cache).thenApply(t -> {
 					joinedCommunities.doIfPopulated(a -> a.add(t));
 					return t;
 				});
@@ -431,7 +431,7 @@ public class ArlithClient {
 	 * @param c The {@link CommunityValue} to load or get the object of.
 	 * @return The (possibly new) {@link ClientCommunity}.
 	 */
-	public ClientCommunity getCommunity(CommunityValue c) {
+	public ClientCommunity cache(CommunityValue c) {
 		ClientCommunity community;
 		synchronized (communities) {
 			if ((community = getLoadedCommunity(c.id())) == null)
