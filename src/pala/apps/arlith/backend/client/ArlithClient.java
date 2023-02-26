@@ -601,6 +601,31 @@ public class ArlithClient {
 		return user;
 	}
 
+	/**
+	 * <p>
+	 * Checks the cache for a user with the specified ID and, if found, returns it.
+	 * Otherwise, creates a new {@link ClientUser}, without properties, with the
+	 * specified {@link GID}, and returns it.
+	 * </p>
+	 * <p>
+	 * <b>This method is designed to be called by internal {@link ArlithClient} API
+	 * classes</b> that receive {@link GID}s from the server. It should <b>never</b>
+	 * be called with a {@link GID} that was not received from the server or does
+	 * not represent a user, as it will create a new {@link ClientUser} object for
+	 * the {@link GID} in such a case, whose server-querying methods will cause
+	 * errors. This method should only be called to get or create new
+	 * {@link ClientUser}s for {@link GID}s that are known to represent a user.
+	 * </p>
+	 * <p>
+	 * Note that the resulting {@link ClientUser} will not have many of its
+	 * properties assigned, including name, status, etc. Attempts to retrieve these
+	 * properties will query them from the server.
+	 * </p>
+	 * 
+	 * @param id The {@link GID} of the user to safely get an object of from the
+	 *           cache.
+	 * @return A (newly created), cached {@link ClientUser}.
+	 */
 	public ClientUser getUser(GID id) {
 		ClientUser user;
 		synchronized (users) {
