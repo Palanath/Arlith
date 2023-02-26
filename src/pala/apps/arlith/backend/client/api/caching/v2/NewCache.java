@@ -12,6 +12,7 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.libs.generic.JavaTools;
 import pala.libs.generic.util.Box;
 
 /**
@@ -214,6 +215,32 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 */
 	public boolean isPopulated() {
 		return query == null;
+	}
+
+	/**
+	 * Checks if this cache {@link #isPopulated() is populated}, and, if it is,
+	 * returns the value from the cache. Otherwise, returns <code>null</code>. This
+	 * method does not throw {@link CommunicationProtocolError}s because it never
+	 * causes the cache to populate.
+	 * 
+	 * @return The value in the cache, or <code>null</code> if the cache is not
+	 *         populated yet.
+	 */
+	public V getIfPopulated() {
+		return value;
+	}
+
+	/**
+	 * If this cache {@link #isPopulated() is populated}, this method passes the
+	 * value in the cache to the specified {@link Consumer}. Otherwise, this method
+	 * does nothing.
+	 * 
+	 * @param action The {@link Consumer} to receive the value in the cache, if
+	 *               populated.
+	 */
+	public void doIfPopulated(Consumer<? super V> action) {
+		if (isPopulated())
+			action.accept(value);
 	}
 
 	/**
