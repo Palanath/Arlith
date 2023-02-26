@@ -354,7 +354,7 @@ public class ArlithClient {
 				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Set<ClientUser>> getBunchOUsersRequest(GID... gids) {
+	public CompletableFuture<Set<ClientUser>> getBunchOUsersRequest(GID... gids) {
 		return getBunchOUsersRequest(JavaTools.iterable(gids));
 	}
 
