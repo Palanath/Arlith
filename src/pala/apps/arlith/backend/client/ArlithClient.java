@@ -504,15 +504,19 @@ public class ArlithClient {
 		return requestQueue;
 	}
 
+	public ClientThread update(ThreadValue thread) {
+		ClientThread thrd = cache(thread);
+		thrd.update(thread);
+		return thrd;
+	}
+
 	public ClientThread cache(ThreadValue thread) {
 		ClientThread thd;
 		synchronized (threads) {
-			thd = getLoadedThread(thread.id());
-			if (thd == null) {
+			if ((thd = getLoadedThread(thread.id())) == null) {
 				thd = new ClientThread(thread, this);
 				threads.put(thread.id(), thd);
-			} else
-				thd.update(thread);
+			}
 		}
 		return thd;
 	}
