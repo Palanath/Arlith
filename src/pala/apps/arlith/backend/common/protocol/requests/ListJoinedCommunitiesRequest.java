@@ -26,8 +26,8 @@ public class ListJoinedCommunitiesRequest extends SimpleCommunicationProtocolReq
 	}
 
 	@Override
-	public ListValue<CommunityValue> receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, AccessDeniedError,
+	public ListValue<CommunityValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, AccessDeniedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
