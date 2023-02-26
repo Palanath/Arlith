@@ -493,11 +493,11 @@ public class ArlithClient {
 	}
 
 	public ClientOwnUser getOwnUser() throws CommunicationProtocolError, RuntimeException {
-		return getOwnUserRequest().get();
+		return getValueWithDefaultExceptions(getOwnUserRequest());
 	}
 
-	public ActionInterface<ClientOwnUser> getOwnUserRequest() {
-		return self.get();
+	public CompletableFuture<ClientOwnUser> getOwnUserRequest() {
+		return self.future();
 	}
 
 	public RequestQueue getRequestQueue() {
