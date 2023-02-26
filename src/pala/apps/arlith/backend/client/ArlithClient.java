@@ -446,12 +446,14 @@ public class ArlithClient {
 		return eventSubsystem;
 	}
 
-	public List<ClientUser> getIncomingFriendRequests() throws CommunicationProtocolError, RuntimeException {
-		return getIncomingFriendRequestsRequest().get();
+	public List<ClientUser> getIncomingFriendRequests()
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getIncomingFriendRequestsRequest());
 	}
 
-	public ActionInterface<List<ClientUser>> getIncomingFriendRequestsRequest() {
-//		return incomingFriends.get
+	public CompletableFuture<List<ClientUser>> getIncomingFriendRequestsRequest() {
+		return incomingFriends.futureUnmodifiable();
 	}
 
 	public ClientCommunity getLoadedCommunity(GID id) {
