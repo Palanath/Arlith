@@ -29,6 +29,7 @@ import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
@@ -344,8 +345,10 @@ public class ArlithClient {
 		return getBunchOUsers(JavaTools.iterable(gids));
 	}
 
-	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids) throws CommunicationProtocolError, RuntimeException {
-		return getBunchOUsersRequest(gids).get();
+	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids) throws RuntimeException, AccessDeniedError,
+			ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError, Error {
+		return getValueWithDefaultExceptions(getBunchOUsersRequest(gids), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
 	public ActionInterface<Set<ClientUser>> getBunchOUsersRequest(GID... gids) {
@@ -354,55 +357,51 @@ public class ArlithClient {
 
 	/**
 	 * <p>
-	 * Returns a {@link List} of {@link ClientUser}s representing the users with IDs
-	 * returned by the provided {@link Iterable}. The order of elements in the
-	 * returned {@link Collection} (if iterated over) is not specified.
+	 * Returns a {@link Set} of {@link ClientUser}s representing the users with IDs
+	 * returned by the provided {@link Iterable}.
 	 * </p>
 	 * <p>
 	 * Upon being called, this method immediately collects all the users, whose IDs
 	 * are specified, that have already been loaded and are present in the cache.
 	 * Then, if all the users specified have been collected, the returned
-	 * {@link ActionInterface} will have already been completed successfully, in
-	 * which case the {@link ActionInterface#get()} method will immediately return
-	 * the {@link List} of {@link ClientUser}s. Otherwise, the returned
-	 * {@link ActionInterface} queries all the users that are not already cached and
-	 * then returns the list of all users requested.
+	 * {@link CompletableFuture} will have already been completed successfully.
+	 * Otherwise, the returned {@link CompletableFuture} queries all the users not
+	 * already in the cache (all the users this method failed to find), and then
+	 * adds those queried to those found in the cache, and returns the result. The
+	 * resulting {@link Set} contains exactly all users requested.
 	 * </p>
 	 * 
 	 * @param gids The {@link GID}s of the users to request.
-	 * @return An {@link ActionInterface} representing the request.
+	 * @return An {@link CompletableFuture} representing the request.
 	 */
-	public ActionInterface<Set<ClientUser>> getBunchOUsersRequest(Iterable<GID> gids) {
-		return getRequestSubsystem().executable(a -> {
-			// We'll keep track of all the users we already have and the users we don't.
-			Set<ClientUser> users = new HashSet<>();
-			Set<GID> unknownUsers = new HashSet<>();
+	public CompletableFuture<Set<ClientUser>> getBunchOUsersRequest(Iterable<? extends GID> gids) {
+		Set<ClientUser> users = new HashSet<>();
+		Set<GID> unqueriedUsers = new HashSet<>();
+		for (GID g : gids) {
+			ClientUser u;
 			synchronized (this.users) {
-				// Loop over all provided GIDs and find non-loaded users.
-				for (GID g : gids) {
-					ClientUser user = this.users.queue(g);
-					if (user != null)
-						users.add(user);
-					else
-						unknownUsers.add(g);
-				}
-
-				// If all the users were loaded, return. Otherwise, create the action of
-				// requesting the missing users from the server. After we receive those missing
-				// user Communication Protocol objects, convert them all to ClientUser objects
-				// (by loading them, using the constructor, then storing them in the cache), and
-				// also add them to the set of users we've already loaded. Then return that set.
-				if (unknownUsers.isEmpty())
-					return users;
-				else {
-					ListValue<UserValue> t = new GetBunchOUsersRequest(
-							new ListValue<>(JavaTools.mask(unknownUsers.iterator(), GIDValue::new))).inquire(a);
-					for (UserValue g : t)
-						this.users.put(g.id(), getUser(g));
-				}
+				u = this.users.get(g);
 			}
-			return users;
-		});
+			if (u != null)
+				users.add(u);
+			else
+				unqueriedUsers.add(g);
+		}
+		if (unqueriedUsers.isEmpty())
+			return CompletableFuture.completedFuture(users);
+		else
+			return getRequestQueue()
+					.queueFuture(new GetBunchOUsersRequest(
+							new ListValue<>(JavaTools.mask(unqueriedUsers.iterator(), GIDValue::new))))
+					/*
+					 * Cache all newly queried users, add them to the `users` set, and then return
+					 * the set.
+					 * 
+					 * Note that this::cache handles "caching conflicts" where, say, two calls to
+					 * this method simultaneously query and try to cache two different UserValues
+					 * for the same actual user. (It also synchronizes over the cache.)
+					 */
+					.thenApply(a -> JavaTools.addAll(a, this::cache, users));
 	}
 
 	public Collection<ClientThread> getCachedThreads() {
@@ -527,25 +526,43 @@ public class ArlithClient {
 
 	/**
 	 * <p>
-	 * Gets a {@link ClientUser} off of a {@link UserValue}. This is the goto
-	 * conversion function from the Communication Protocol to the Application Client
-	 * API regarding users.
+	 * Gets a {@link ClientUser} off of a {@link UserValue}. This method
+	 * synchronizes over the {@link #users user cache} and checks if a user with the
+	 * specified GID already exists. If so, it simply returns that user. If not, the
+	 * {@link UserValue} provided is used to build a new {@link ClientUser}, which
+	 * is then added to the cache and returned.
 	 * </p>
 	 * <p>
-	 * This gets the specified user from the cache, if it is conatined in the cache,
-	 * otherwise, it creates it, adds it to the cache, and returns it. This method
-	 * should be used for creating and obtaining users for cache consistency.
+	 * This method works off of the principle that the value of a cache entry should
+	 * only be set once, and that any updates to that cache entry will be propagated
+	 * from the server to the client, then to the cache, via events. If two calls
+	 * to, e.g., {@link #getBunchOUsers(GID...)} take place, and both end up
+	 * querying the same user, the second of those two method calls that calls
+	 * <i>this</i> method, will receive the {@link ClientUser} already built by the
+	 * first. I.e., the second {@link #getBunchOUsers(GID...)} request's "updated"
+	 * {@link UserValue} information is ignored and actually discarded. This is to
+	 * ensure consistency between users of the cache; values in the cache that are
+	 * already present should not be replaced so that there is never a case where
+	 * two, distinct {@link ClientUser} objects are floating around. (Because if one
+	 * changes due to an API invocation, e.g. unfriending it, the other will not
+	 * know to update its state.)
+	 * </p>
+	 * <p>
+	 * This method is designed to be called internally, by {@link ArlithClient} API
+	 * classes and code. If called externally, it may break the state of the
+	 * {@link ArlithClient} and all child objects.
 	 * </p>
 	 * 
 	 * @param u The {@link UserValue} to get the user of.
 	 * @return The (possibly new) {@link ClientUser}.
 	 * @author Palanath
 	 */
-	public ClientUser getUser(UserValue u) {
+	// TODO Move second paragraph of method documentation to class documentation and
+	// rephrase.
+	public ClientUser cache(UserValue u) {
 		ClientUser user;
 		synchronized (users) {
-			user = getLoadedUser(u.id());
-			if (user == null)
+			if ((user = getLoadedUser(u.id())) == null)
 				users.put(u.id(), user = new ClientUser(u.id(), this, u.username(), u.status(), u.messageCount(),
 						u.discriminant()));
 		}
