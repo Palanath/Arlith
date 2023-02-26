@@ -222,8 +222,9 @@ public class ArlithClient {
 	}
 
 	public CompletableFuture<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
-		return getRequestQueue().queueFuture(new CreateCommunityRequest(new TextValue(name), new PieceOMediaValue(icon),
-				new PieceOMediaValue(background))).thenApply(this::getCommunity);
+		return getRequestQueue().queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
+				icon == null ? null : new PieceOMediaValue(icon),
+				background == null ? null : new PieceOMediaValue(background))).thenApply(this::getCommunity);
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
@@ -435,15 +436,10 @@ public class ArlithClient {
 	public ClientCommunity getCommunity(CommunityValue c) {
 		ClientCommunity community;
 		synchronized (communities) {
-			community = getLoadedCommunity(c.id());
-			if (community == null) {
-				List<ClientThread> threads = new ArrayList<>(c.getThreads().size());
-				for (ThreadValue t : c.getThreads())
-					threads.add(getThread(t));
-				community = new ClientCommunity(c.id(), this, c.getName().getValue(), threads,
-						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size())));
-				communities.put(c.id(), community);
-			}
+			if ((community = getLoadedCommunity(c.id())) == null)
+				communities.put(c.id(), community = new ClientCommunity(c.id(), this, c.getName().getValue(),
+						JavaTools.addAll(c.getThreads(), this::getThread, new ArrayList<>(c.getThreads().size())),
+						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size()))));
 		}
 		return community;
 	}
@@ -457,7 +453,7 @@ public class ArlithClient {
 	}
 
 	public ActionInterface<List<ClientUser>> getIncomingFriendRequestsRequest() {
-		return incomingFriends.get
+//		return incomingFriends.get
 	}
 
 	public ClientCommunity getLoadedCommunity(GID id) {
