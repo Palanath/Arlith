@@ -14,6 +14,11 @@ import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.libs.generic.JavaTools;
 
 public final class CompletableFutureUtils {
 	private CompletableFutureUtils() {
@@ -391,6 +396,163 @@ public final class CompletableFutureUtils {
 			Class<? extends E7> e7, Class<? extends E8> e8, Class<? extends E9> e9)
 			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, E8, E9 {
 		return hideCheckedExceptions(() -> getValue(future, array(e1, e2, e3, e4, e5, e6, e7, e8, e9)));
+	}
+
+	public static <V> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future)
+			throws RuntimeException, Error, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array());
+	}
+
+	/**
+	 * <p>
+	 * Synonymous with {@link #getValue(CompletableFuture, Class)}, but with
+	 * already-specified, default exceptions:
+	 * </p>
+	 * <ul>
+	 * <li>{@link SyntaxError}</li>
+	 * <li>{@link ServerError}</li>
+	 * <li>{@link RestrictedError}</li>
+	 * <li>{@link RateLimitError}</li>
+	 * </ul>
+	 * <p>
+	 * Calling this method with exception class <code>E1</code> is equivalent to
+	 * calling one of the {@link #getValue(CompletableFuture, Class)} method
+	 * variants with <code>E1</code> and all four of the aforementioned default
+	 * exception types.
+	 * </p>
+	 * 
+	 * @param <V>    The result type of the {@link CompletableFuture} to extract the
+	 *               value of.
+	 * @param <E1>   The type of the specified exception to unwrap from the call to
+	 *               {@link CompletableFuture#get()}.
+	 * @param future The {@link CompletableFuture} to acquire the value of.
+	 * @param e1     The {@link Class} type of the exception to unwrap.
+	 * @return The result of the asynchronous action executed by the specified
+	 *         {@link CompletableFuture}.
+	 * @throws RuntimeException If the {@link CompletableFuture} computation
+	 *                          encounters a {@link RuntimeException} or a checked
+	 *                          exception is encountered that was specified to be
+	 *                          unwrapped.
+	 * @throws Error            If the {@link CompletableFuture} computation
+	 *                          encounters an {@link Error}.
+	 * @throws E1               If the {@link CompletableFuture} computation
+	 *                          encounters an <code>E1</code>.
+	 * @throws ServerError      If the {@link CompletableFuture} computation
+	 *                          encounters a {@link ServerError}.
+	 * @throws RestrictedError  If the {@link CompletableFuture} computation
+	 *                          encounters a {@link RestrictedError}.
+	 * @throws RateLimitError   If the {@link CompletableFuture} computation
+	 *                          encounters a {@link RateLimitError}.
+	 * @throws SyntaxError      If the {@link CompletableFuture} computation
+	 *                          encounters a {@link SyntaxError}.
+	 */
+	public static <V, E1 extends Throwable> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future,
+			Class<? extends E1> e1)
+			throws RuntimeException, Error, E1, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2)
+			throws RuntimeException, Error, E1, E2, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3)
+			throws RuntimeException, Error, E1, E2, E3, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4)
+			throws RuntimeException, Error, E1, E2, E3, E4, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5) throws RuntimeException, Error, E1,
+			E2, E3, E4, E5, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, ServerError, RestrictedError, RateLimitError,
+			SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7) throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, ServerError,
+			RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7, Class<? extends E8> e8) throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7,
+			E8, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7, e8));
+	}
+
+	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable, E9 extends Throwable> V getValueWithDefaultExceptions(
+			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
+			Class<? extends E7> e7, Class<? extends E8> e8, Class<? extends E9> e9) throws RuntimeException, Error, E1,
+			E2, E3, E4, E5, E6, E7, E8, E9, ServerError, RestrictedError, RateLimitError, SyntaxError {
+		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7, e8, e9));
+	}
+
+	/**
+	 * <p>
+	 * Calls {@link #getValue(CompletableFuture, Class...)} with additional default
+	 * exceptions:
+	 * </p>
+	 * <ul>
+	 * <li>{@link SyntaxError}</li>
+	 * <li>{@link ServerError}</li>
+	 * <li>{@link RestrictedError}</li>
+	 * <li>{@link RateLimitError}</li>
+	 * </ul>
+	 * <p>
+	 * since these errors are commonly raised by almost every request applicable to
+	 * {@link ArlithClient}.
+	 * </p>
+	 * <p>
+	 * This method also hides checked exceptions, and so does not declare that it
+	 * throws {@link Throwable}. Checked exceptions should be specified in the
+	 * <code>throws</code> clauses of
+	 * {@link #getValueWithDefaultExceptions(CompletableFuture, Class)} variants in
+	 * this class (generically).
+	 * </p>
+	 * 
+	 * @param <V>                The result type of the {@link CompletableFuture}.
+	 * @param future             The {@link CompletableFuture} representing the
+	 *                           asynchronous action to acquire the value of once
+	 *                           complete.
+	 * @param exceptionsToUnwrap The list of exceptions to unwrap from the
+	 *                           {@link CompletableFuture}'s
+	 *                           {@link CompletableFuture#get()} method call.
+	 * @return The result of the {@link CompletableFuture}.
+	 * @throws SyntaxError
+	 * @throws ServerError
+	 * @throws RestrictedError
+	 * @throws RateLimitError
+	 */
+	@SafeVarargs
+	private static <V> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future,
+			Class<? extends Throwable>... exceptionsToUnwrap)
+			throws SyntaxError, ServerError, RestrictedError, RateLimitError {
+		return hideCheckedExceptions(() -> getValue(future, JavaTools.combine(exceptionsToUnwrap, SyntaxError.class,
+				ServerError.class, RestrictedError.class, RateLimitError.class)));
 	}
 
 	@SafeVarargs
