@@ -28,6 +28,7 @@ import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
@@ -37,6 +38,7 @@ import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChanged
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateCommunityRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByNameRequest;
@@ -248,16 +250,14 @@ public class ArlithClient {
 						icon == null ? null : new PieceOMediaValue(icon),
 						background == null ? null : new PieceOMediaValue(background)))
 				.thenApply(this::getCommunity).thenApply(t -> {
-					if (joinedCommunities.isPopulated())
-						// Since the cache is already populated, it will not throw a
-						// CommunicationProtocolError (of any kind).
-						JavaTools.hideCheckedExceptions(joinedCommunities::get).add(t);
+					joinedCommunities.doIfPopulated(a -> a.add(t));
 					return t;
 				});
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws SyntaxError, RuntimeException, Error, RestrictedError {
+			throws SyntaxError, RestrictedError, RuntimeException, Error, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError {
 		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class,
 				RestrictedError.class);
 	}
@@ -272,7 +272,7 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID) throws CommunicationProtocolError, RuntimeException {
+	public void friend(GID userID) {
 		friendRequest(userID).get();
 	}
 
@@ -280,24 +280,52 @@ public class ArlithClient {
 		return friendRequest(user, disc).get();
 	}
 
-	public ActionInterface<Void> friendRequest(GID userID) {
-		return getRequestSubsystem().action(new FriendByGIDRequest(new GIDValue(userID))).then(t -> {
-			if (incomingFriends.isPopulated()) {
-				for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator.hasNext();) {
+	public CompletableFuture<Void> friendRequest(GID userID) {
+		return getRequestQueue().queueFuture(new FriendByGIDRequest(new GIDValue(userID))).thenApply(t -> {
+			/*
+			 * To maintain cache consistency, now that this user is friended, we remove from
+			 * list of incoming friend requests (if they were in the list) and add to list
+			 * of friends. If they were not, then we add them to the list of outgoing friend
+			 * requests.
+			 */
+			incomingFriends.doIfPopulated(a -> {
+				for (Iterator<ClientUser> iterator = a.iterator(); iterator.hasNext();) {
 					ClientUser u = iterator.next();
 					if (u.id().equals(userID)) {
+						// Promote from incoming friend req to added friend.
 						iterator.remove();
-						if (friends.isPopulated())
-							friends.getUsers().add(u);
+						friends.doIfPopulated(b -> b.add(u));
 						return;
 					}
 				}
-				// Add to outgoing list, if not already present.
-				if (outgoingFriends.isPopulated())
-					outgoingFriends.getUsers().add(getUser(userID));
-			}
+				/*
+				 * If they were not an incoming friend request, they are now an outgoing friend
+				 * request:
+				 */
+				outgoingFriends.doIfPopulated(b -> b.add(getUser(userID)));
+			});
+			return null;
 		});
 	}
+
+//	public ActionInterface<Void> friendRequest(GID userID) {
+//		return getRequestSubsystem().action(new FriendByGIDRequest(new GIDValue(userID))).then(t -> {
+//			if (incomingFriends.isPopulated()) {
+//				for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator.hasNext();) {
+//					ClientUser u = iterator.next();
+//					if (u.id().equals(userID)) {
+//						iterator.remove();
+//						if (friends.isPopulated())
+//							friends.getUsers().add(u);
+//						return;
+//					}
+//				}
+//				// Add to outgoing list, if not already present.
+//				if (outgoingFriends.isPopulated())
+//					outgoingFriends.getUsers().add(getUser(userID));
+//			}
+//		});
+//	}
 
 	public ActionInterface<GID> friendRequest(String user, String disc) {
 		return getRequestSubsystem().action(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
