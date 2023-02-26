@@ -485,11 +485,11 @@ public class ArlithClient {
 	}
 
 	public List<ClientUser> getOutgoingFriendRequests() throws CommunicationProtocolError, RuntimeException {
-		return getOutgoingFriendRequestsRequest().get();
+		return getValueWithDefaultExceptions(getOutgoingFriendRequestsRequest());
 	}
 
-	public ActionInterface<List<ClientUser>> getOutgoingFriendRequestsRequest() {
-		return outgoingFriends.get().then((Function<List<ClientUser>, List<ClientUser>>) Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> getOutgoingFriendRequestsRequest() {
+		return outgoingFriends.futureUnmodifiable();
 	}
 
 	public ClientOwnUser getOwnUser() throws CommunicationProtocolError, RuntimeException {
