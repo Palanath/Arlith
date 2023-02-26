@@ -222,9 +222,17 @@ public class ArlithClient {
 	}
 
 	public CompletableFuture<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
-		return getRequestQueue().queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
-				icon == null ? null : new PieceOMediaValue(icon),
-				background == null ? null : new PieceOMediaValue(background))).thenApply(this::getCommunity);
+		return getRequestQueue()
+				.queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
+						icon == null ? null : new PieceOMediaValue(icon),
+						background == null ? null : new PieceOMediaValue(background)))
+				.thenApply(this::getCommunity).thenApply(t -> {
+					if (joinedCommunities.isPopulated())
+						// Since the cache is already populated, it will not throw a
+						// CommunicationProtocolError (of any kind).
+						JavaTools.hideCheckedExceptions(joinedCommunities::get).add(t);
+					return t;
+				});
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
