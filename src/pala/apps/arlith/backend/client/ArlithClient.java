@@ -504,12 +504,35 @@ public class ArlithClient {
 		return requestQueue;
 	}
 
+	/**
+	 * Convenience method to update the cached thread specified by the provided
+	 * {@link ThreadValue} (or to cache the thread, if it is not already in the
+	 * cache), and then return the cached {@link ClientThread}. If the
+	 * {@link ClientThread} is in the cache, its
+	 * {@link ClientThread#update(ThreadValue)} method is called. Otherwise, it is
+	 * created off the provided {@link ThreadValue}, put in the cache, then
+	 * returned.
+	 * 
+	 * @param thread The {@link ThreadValue} representing the update.
+	 * @return The (possibly newly) cached {@link ClientThread} instance.
+	 */
 	public ClientThread update(ThreadValue thread) {
 		ClientThread thrd = cache(thread);
 		thrd.update(thread);
 		return thrd;
 	}
 
+	/**
+	 * Used for safely caching the specified {@link ThreadValue}. This method only
+	 * updates the cache if the specified thread is not already present in it. This
+	 * method will <b>not</b> update the cached thread with the specified
+	 * {@link ThreadValue} to permit this method to be safe against race conditions
+	 * (i.e., so that two distinct {@link ClientThread} objects are never made for
+	 * the same actual thread).
+	 * 
+	 * @param thread The {@link ThreadValue} representing the thread to cache.
+	 * @return The (newly) cached {@link ClientThread} instance.
+	 */
 	public ClientThread cache(ThreadValue thread) {
 		ClientThread thd;
 		synchronized (threads) {
