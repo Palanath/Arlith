@@ -54,8 +54,8 @@ public class GetBunchOUsersRequest extends SimpleCommunicationProtocolRequest<Li
 	}
 
 	@Override
-	public ListValue<UserValue> receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, AccessDeniedError, ObjectNotFoundError,
+	public ListValue<UserValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, AccessDeniedError, ObjectNotFoundError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
