@@ -2,7 +2,9 @@ package pala.apps.arlith.backend.common.protocol.requests;
 
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CommunityValue;
@@ -158,11 +160,12 @@ public class CreateCommunityRequest extends CommunicationProtocolRequest<Communi
 	}
 
 	@Override
-	public CommunityValue receiveResponse(Connection client) throws IllegalCommunicationProtocolException, SyntaxError,
-			RestrictedError, CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
+	public CommunityValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, RestrictedError, ServerError, RateLimitError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
-		} catch (SyntaxError | RestrictedError e) {
+		} catch (SyntaxError | RestrictedError | ServerError | RateLimitError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);

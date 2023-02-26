@@ -1,6 +1,5 @@
 package pala.apps.arlith.backend.client;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import pala.apps.arlith.application.logging.Logger;
@@ -28,13 +28,20 @@ import pala.apps.arlith.backend.client.events.EventSubsystem;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateCommunityRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByNameRequest;
@@ -51,10 +58,13 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
+import pala.apps.arlith.libraries.CompletableFutureUtils;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
+
+import static pala.apps.arlith.libraries.CompletableFutureUtils.*;
 
 public class ArlithClient {
 
@@ -218,25 +228,11 @@ public class ArlithClient {
 		}, requestQueue);
 	}
 
-	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws CommunicationProtocolError, RuntimeException {
-		return createCommunityRequest(name, icon, background).get();
-	}
-
 	/**
 	 * <p>
 	 * Creates a new Community using the provided name. The icon and background are
 	 * <i>both</i> optional. To not provide an icon or background, supply
-	 * <code>null</code> for either's {@link InputStream} argument. The sizes of the
-	 * icon and background are required to populate the fields of the respective
-	 * {@link PieceOMediaValue} objects created, but the server <b>currently does
-	 * not use</b> the size field of the {@link PieceOMediaValue}. It is recommended
-	 * to just set the values to the actual size, if known, of the media being
-	 * uploaded. If either media is not being uploaded (i.e. the
-	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-	 * then it is recommended to supply <code>-1</code> for the media size.
-	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-	 * then
+	 * <code>null</code> for either's <code>byte[]</code> argument.
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
@@ -251,24 +247,23 @@ public class ArlithClient {
 	 *                   network. The
 	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
 	 *                   should not be used by other code.
-	 * @return An {@link ActionInterface} wrapping the request.
+	 * @return A {@link CompletableFuture} representing the request.
 	 */
-	public ActionInterface<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
-		return getRequestSubsystem().executable(a -> {
-			CommunityValue t = new CreateCommunityRequest(new TextValue(name),
-					icon == null ? null : new PieceOMediaValue(icon),
-					background == null ? null : new PieceOMediaValue(background)).inquire(a);
-			List<ClientThread> threads = new ArrayList<>();
-			for (ThreadValue th : t.getThreads())
-				threads.add(getThread(th));
-			List<GID> members = new ArrayList<>();
-			JavaTools.addAll(t.getMembers(), GIDValue::getGid, members);
-			ClientCommunity community = new ClientCommunity(t.getId().getGid(), this, t.getName().getValue(), threads,
-					members);
-			if (joinedCommunities.isPopulated())
-				joinedCommunities.poll().add(community);
-			return community;
-		});
+	public CompletableFuture<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
+		return getRequestQueue()
+				.queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
+						icon == null ? null : new PieceOMediaValue(icon),
+						background == null ? null : new PieceOMediaValue(background)))
+				.thenApply(this::getCommunity).thenApply(t -> {
+					joinedCommunities.doIfPopulated(a -> a.add(t));
+					return t;
+				});
+	}
+
+	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
+			throws SyntaxError, RestrictedError, ServerError, RateLimitError, RuntimeException, Error,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
+		return getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
 	}
 
 	<T extends CommunicationProtocolEvent> void fire(EventType<T> type, T event) {
@@ -281,30 +276,40 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID) throws CommunicationProtocolError, RuntimeException {
-		friendRequest(userID).get();
+	public void friend(GID userID) throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError,
+			SyntaxError, RuntimeException, Error {
+		getValueWithDefaultExceptions(friendRequest(userID), ObjectNotFoundError.class);
 	}
 
 	public GID friend(String user, String disc) throws CommunicationProtocolError, RuntimeException {
 		return friendRequest(user, disc).get();
 	}
 
-	public ActionInterface<Void> friendRequest(GID userID) {
-		return getRequestSubsystem().action(new FriendByGIDRequest(new GIDValue(userID))).then(t -> {
-			if (incomingFriends.isPopulated()) {
-				for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator.hasNext();) {
+	public CompletableFuture<Void> friendRequest(GID userID) {
+		return getRequestQueue().queueFuture(new FriendByGIDRequest(new GIDValue(userID))).thenApply(t -> {
+			/*
+			 * To maintain cache consistency, now that this user is friended, we remove from
+			 * list of incoming friend requests (if they were in the list) and add to list
+			 * of friends. If they were not, then we add them to the list of outgoing friend
+			 * requests.
+			 */
+			incomingFriends.doIfPopulated(a -> {
+				for (Iterator<ClientUser> iterator = a.iterator(); iterator.hasNext();) {
 					ClientUser u = iterator.next();
 					if (u.id().equals(userID)) {
+						// Promote from incoming friend req to added friend.
 						iterator.remove();
-						if (friends.isPopulated())
-							friends.getUsers().add(u);
+						friends.doIfPopulated(b -> b.add(u));
 						return;
 					}
 				}
-				// Add to outgoing list, if not already present.
-				if (outgoingFriends.isPopulated())
-					outgoingFriends.getUsers().add(getUser(userID));
-			}
+				/*
+				 * If they were not an incoming friend request, they are now an outgoing friend
+				 * request:
+				 */
+				outgoingFriends.doIfPopulated(b -> b.add(getUser(userID)));
+			});
+			return null;
 		});
 	}
 
@@ -426,15 +431,10 @@ public class ArlithClient {
 	public ClientCommunity getCommunity(CommunityValue c) {
 		ClientCommunity community;
 		synchronized (communities) {
-			community = getLoadedCommunity(c.id());
-			if (community == null) {
-				List<ClientThread> threads = new ArrayList<>(c.getThreads().size());
-				for (ThreadValue t : c.getThreads())
-					threads.add(getThread(t));
-				community = new ClientCommunity(c.id(), this, c.getName().getValue(), threads,
-						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size())));
-				communities.put(c.id(), community);
-			}
+			if ((community = getLoadedCommunity(c.id())) == null)
+				communities.put(c.id(), community = new ClientCommunity(c.id(), this, c.getName().getValue(),
+						JavaTools.addAll(c.getThreads(), this::getThread, new ArrayList<>(c.getThreads().size())),
+						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size()))));
 		}
 		return community;
 	}
@@ -448,7 +448,7 @@ public class ArlithClient {
 	}
 
 	public ActionInterface<List<ClientUser>> getIncomingFriendRequestsRequest() {
-		return incomingFriends.get
+//		return incomingFriends.get
 	}
 
 	public ClientCommunity getLoadedCommunity(GID id) {

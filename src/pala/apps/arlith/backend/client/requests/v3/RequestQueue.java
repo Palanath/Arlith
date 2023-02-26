@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 
 /**
  * <p>
@@ -158,10 +160,13 @@ public interface RequestQueue extends RequestSerializer {
 	 * </p>
 	 * </p>
 	 * <ul>
-	 * <li>If the {@link Inquiry} results in a {@link Throwable} exception of any
+	 * <li>If the {@link Inquiry} itself raises a {@link Throwable} exception of any
 	 * kind, the exception is provided to the specified <code>errorHandler</code>.
 	 * Otherwise, the result is provided to the <code>resultHandler</code>
-	 * {@link Consumer}.</li>
+	 * {@link Consumer}. Note that {@link UnknownCommStateException}s and
+	 * {@link BlockException}s are <i>captured and handled by the
+	 * {@link RequestQueue}</i> and are thus <b>never</b> provided to the exception
+	 * handler.</li>
 	 * <li>If the {@link Consumer} that is invoked results in an exception, the
 	 * excpetion is ignored.</li>
 	 * </ul>

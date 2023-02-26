@@ -6,6 +6,8 @@ import pala.apps.arlith.backend.common.protocol.errors.AlreadyInCommunityError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.InvalidMediaError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeEmailRequest;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
 /**
@@ -14,6 +16,9 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
  * organize inquiries made over a {@link CommunicationConnection} (or set of
  * {@link CommunicationConnection}s) and maintain stability of the connection(s)
  * (i.e., assure that no two threads interleave network calls/inquiries).
+ * {@link RequestSerializer}s do not propagate
+ * {@link UnknownCommStateException}s or {@link BlockException}s to calling code
+ * in any way.
  * </p>
  * <p>
  * It is a requirement for the server's request connections that {@link Inquiry
@@ -43,6 +48,15 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
  * {@link #start() start} and {@link #stop() stop} states, the {@link #start()}
  * and {@link #stop()} methods may be implemented to do nothing, or throw a
  * {@link RuntimeException}, although the former is generally preferred.
+ * </p>
+ * <p>
+ * {@link UnknownCommStateException}s and {@link BlockException}s that occur
+ * over the connection are captured by the {@link RequestSerializer} and cause
+ * the {@link RequestSerializer} to reopen the connection and reattempt to make
+ * the {@link Inquiry} to the server. They are thereby never passed to the
+ * caller, however a {@link RequestSerializer} class may allow client code to
+ * specify an exception handler for these two exceptions, or in some other way,
+ * be notified of such exceptions.
  * </p>
  * 
  * @author Palanath
