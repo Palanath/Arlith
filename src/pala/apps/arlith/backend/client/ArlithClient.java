@@ -634,9 +634,9 @@ public class ArlithClient {
 	}
 
 	public List<ClientCommunity> listJoinedCommunities()
-			throws AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
-			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
-		return getValueWithDefaultExceptions(listJoinedCommunitiesRequest(), AccessDeniedError.class);
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(listJoinedCommunitiesRequest());
 	}
 
 	public CompletableFuture<List<ClientCommunity>> listJoinedCommunitiesRequest() {
@@ -649,17 +649,51 @@ public class ArlithClient {
 	 * 
 	 * @return An unmodifiable view of the list of users who are friended with the
 	 *         logged in user.
-	 * @throws CommunicationProtocolError If the list has not yet been requested
-	 *                                    from the server so it is requested, and
-	 *                                    that request fails with a
-	 *                                    {@link CommunicationProtocolError}.
-	 * @throws RuntimeException           If the list has not yet been requested
-	 *                                    from the server so it is requested, and
-	 *                                    that request fails with a
-	 *                                    {@link RuntimeException}.
+	 * @throws Error                                  If an {@link Error} occurs
+	 *                                                during the request.
+	 * @throws CommunicationProtocolConstructionError If reconstructing the server's
+	 *                                                response into Java objects
+	 *                                                fails.
+	 * @throws IllegalCommunicationProtocolException  If, specifically, the server
+	 *                                                responds with an exception
+	 *                                                that it should not have for
+	 *                                                this request.
+	 * @throws SyntaxError                            If the server thinks request
+	 *                                                being made is syntactically
+	 *                                                incorrect. (This can usually
+	 *                                                happen if the protocol changes
+	 *                                                between versions, and the
+	 *                                                server and client are running
+	 *                                                those different versions.)
+	 * @throws RateLimitError                         If the server is rate limiting
+	 *                                                the client.
+	 * @throws RestrictedError                        If the server denies
+	 *                                                permission to the client to
+	 *                                                run this request (this is
+	 *                                                invoked for this request if
+	 *                                                the user is not logged in, and
+	 *                                                should not happen for the
+	 *                                                client).
+	 * @throws ServerError                            If an internal error that the
+	 *                                                server does not expect occurs
+	 *                                                on the server's end. This
+	 *                                                means the server failed to run
+	 *                                                the request; not that it
+	 *                                                didn't want to.
+	 * @throws CommunicationProtocolError             If the list has not yet been
+	 *                                                requested from the server so
+	 *                                                it is requested, and that
+	 *                                                request fails with a
+	 *                                                {@link CommunicationProtocolError}.
+	 * @throws RuntimeException                       If the list has not yet been
+	 *                                                requested from the server so
+	 *                                                it is requested, and that
+	 *                                                request fails with a
+	 *                                                {@link RuntimeException}.
 	 */
-	public List<ClientUser> listFriends() throws CommunicationProtocolError, RuntimeException {
-		return listFriendsRequest().get();
+	public List<ClientUser> listFriends() throws ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(listFriendsRequest());
 	}
 
 	public CompletableFuture<List<ClientUser>> listFriendsRequest() {
