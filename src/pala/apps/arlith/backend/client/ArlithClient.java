@@ -436,7 +436,7 @@ public class ArlithClient {
 		synchronized (communities) {
 			if ((community = getLoadedCommunity(c.id())) == null)
 				communities.put(c.id(), community = new ClientCommunity(c.id(), this, c.getName().getValue(),
-						JavaTools.addAll(c.getThreads(), this::getThread, new ArrayList<>(c.getThreads().size())),
+						JavaTools.addAll(c.getThreads(), this::cache, new ArrayList<>(c.getThreads().size())),
 						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size()))));
 		}
 		return community;
@@ -504,7 +504,7 @@ public class ArlithClient {
 		return requestQueue;
 	}
 
-	public ClientThread getThread(ThreadValue thread) {
+	public ClientThread cache(ThreadValue thread) {
 		ClientThread thd;
 		synchronized (threads) {
 			thd = getLoadedThread(thread.id());

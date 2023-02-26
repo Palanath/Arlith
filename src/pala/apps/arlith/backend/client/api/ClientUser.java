@@ -137,7 +137,7 @@ public class ClientUser extends SimpleClientObject implements Named {
 	}
 
 	protected final Cache<ClientThread> dmThread = new ClientCache.ClientCacheMaker<>(client()::getRequestSubsystem,
-			a -> client().getThread(new OpenDirectConversationRequest(new GIDValue(id())).inquire(a).getGid()));
+			a -> client().cache(new OpenDirectConversationRequest(new GIDValue(id())).inquire(a).getGid()));
 	protected final WatchableCache<Image> profileIcon = new WatchableCache<>(client()::getRequestSubsystem, a -> {
 		GetProfileIconRequest req = new GetProfileIconRequest(new GIDValue(id()));
 		req.sendRequest(a);
