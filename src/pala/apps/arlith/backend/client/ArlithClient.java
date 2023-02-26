@@ -221,6 +221,27 @@ public class ArlithClient {
 		}, requestQueue);
 	}
 
+	/**
+	 * <p>
+	 * Creates a new Community using the provided name. The icon and background are
+	 * <i>both</i> optional. To not provide an icon or background, supply
+	 * <code>null</code> for either's <code>byte[]</code> argument.
+	 * </p>
+	 * 
+	 * @param name       The name of the community.
+	 * @param icon       The icon data itself, or <code>null</code> if no icon is
+	 *                   being supplied. This will be read from once this request
+	 *                   gets processed and is actually sent over the network. The
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
+	 *                   supplied should not be used by other code.
+	 * @param background The background data itself, or <code>null</code> if no
+	 *                   background is being supplied. This will be read from once
+	 *                   this request gets processed and is actually sent over the
+	 *                   network. The
+	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
+	 *                   should not be used by other code.
+	 * @return A {@link CompletableFuture} representing the request.
+	 */
 	public CompletableFuture<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
 		return getRequestQueue()
 				.queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
@@ -240,54 +261,6 @@ public class ArlithClient {
 		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class,
 				RestrictedError.class);
 	}
-
-//	/**
-//	 * <p>
-//	 * Creates a new Community using the provided name. The icon and background are
-//	 * <i>both</i> optional. To not provide an icon or background, supply
-//	 * <code>null</code> for either's {@link InputStream} argument. The sizes of the
-//	 * icon and background are required to populate the fields of the respective
-//	 * {@link PieceOMediaValue} objects created, but the server <b>currently does
-//	 * not use</b> the size field of the {@link PieceOMediaValue}. It is recommended
-//	 * to just set the values to the actual size, if known, of the media being
-//	 * uploaded. If either media is not being uploaded (i.e. the
-//	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-//	 * then it is recommended to supply <code>-1</code> for the media size.
-//	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-//	 * then
-//	 * </p>
-//	 * 
-//	 * @param name       The name of the community.
-//	 * @param icon       The icon data itself, or <code>null</code> if no icon is
-//	 *                   being supplied. This will be read from once this request
-//	 *                   gets processed and is actually sent over the network. The
-//	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
-//	 *                   supplied should not be used by other code.
-//	 * @param background The background data itself, or <code>null</code> if no
-//	 *                   background is being supplied. This will be read from once
-//	 *                   this request gets processed and is actually sent over the
-//	 *                   network. The
-//	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
-//	 *                   should not be used by other code.
-//	 * @return An {@link ActionInterface} wrapping the request.
-//	 */
-//	public ActionInterface<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
-//		return getRequestSubsystem().executable(a -> {
-//			CommunityValue t = new CreateCommunityRequest(new TextValue(name),
-//					icon == null ? null : new PieceOMediaValue(icon),
-//					background == null ? null : new PieceOMediaValue(background)).inquire(a);
-//			List<ClientThread> threads = new ArrayList<>();
-//			for (ThreadValue th : t.getThreads())
-//				threads.add(getThread(th));
-//			List<GID> members = new ArrayList<>();
-//			JavaTools.addAll(t.getMembers(), GIDValue::getGid, members);
-//			ClientCommunity community = new ClientCommunity(t.getId().getGid(), this, t.getName().getValue(), threads,
-//					members);
-//			if (joinedCommunities.isPopulated())
-//				joinedCommunities.poll().add(community);
-//			return community;
-//		});
-//	}
 
 	<T extends CommunicationProtocolEvent> void fire(EventType<T> type, T event) {
 		eventManager.fire(type, event);
