@@ -262,8 +262,8 @@ public class ArlithClient {
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws SyntaxError, RestrictedError, ServerError, RateLimitError, RuntimeException, Error,
-			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
 		return getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
 	}
 
@@ -277,13 +277,15 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID) throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError,
-			SyntaxError, RuntimeException, Error {
+	public void friend(GID userID)
+			throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		getValueWithDefaultExceptions(friendRequest(userID), ObjectNotFoundError.class);
 	}
 
-	public GID friend(String user, String disc) throws ObjectNotFoundError, ServerError, RestrictedError,
-			RateLimitError, SyntaxError, RuntimeException, Error {
+	public GID friend(String user, String disc)
+			throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		return getValueWithDefaultExceptions(friendRequest(user, disc), ObjectNotFoundError.class);
 	}
 
@@ -345,8 +347,9 @@ public class ArlithClient {
 		return getBunchOUsers(JavaTools.iterable(gids));
 	}
 
-	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids) throws RuntimeException, AccessDeniedError,
-			ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError, Error {
+	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids)
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		return getValueWithDefaultExceptions(getBunchOUsersRequest(gids), AccessDeniedError.class,
 				ObjectNotFoundError.class);
 	}
