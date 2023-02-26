@@ -636,15 +636,14 @@ public class ArlithClient {
 		return user;
 	}
 
-	public List<ClientCommunity> listJoinedCommunities() throws CommunicationProtocolError, RuntimeException {
-		return listJoinedCommunitiesRequest().get();
+	public List<ClientCommunity> listJoinedCommunities()
+			throws AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(listJoinedCommunitiesRequest(), AccessDeniedError.class);
 	}
 
-	public ActionInterface<List<ClientCommunity>> listJoinedCommunitiesRequest() {
-		return joinedCommunities.get()// This get call handles synchronization and querying the server.
-				.then((Function<List<ClientCommunity>, List<ClientCommunity>>) Collections::unmodifiableList);
-		// Making the list unmodifiable does not need to be done in a synchronized
-		// fashion.
+	public CompletableFuture<List<ClientCommunity>> listJoinedCommunitiesRequest() {
+		return joinedCommunities.futureUnmodifiable();
 	}
 
 	/**
