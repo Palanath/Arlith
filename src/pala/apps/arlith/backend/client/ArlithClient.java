@@ -1,5 +1,7 @@
 package pala.apps.arlith.backend.client;
 
+import static pala.apps.arlith.libraries.CompletableFutureUtils.getValueWithDefaultExceptions;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.application.logging.LoggingUtilities;
@@ -25,7 +26,6 @@ import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotificatio
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
-import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
@@ -59,13 +59,10 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.libraries.CompletableFutureUtils;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
-
-import static pala.apps.arlith.libraries.CompletableFutureUtils.*;
 
 public class ArlithClient {
 
@@ -665,8 +662,8 @@ public class ArlithClient {
 		return listFriendsRequest().get();
 	}
 
-	public ActionInterface<List<ClientUser>> listFriendsRequest() {
-		return friends.get().then((Function<List<ClientUser>, List<ClientUser>>) Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> listFriendsRequest() {
+		return friends.futureUnmodifiable();
 	}
 
 	void reconnect() {
