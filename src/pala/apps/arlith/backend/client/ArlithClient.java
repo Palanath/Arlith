@@ -30,7 +30,10 @@ import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
@@ -60,6 +63,8 @@ import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventType;
+
+import static pala.apps.arlith.libraries.CompletableFutureUtils.*;
 
 public class ArlithClient {
 
@@ -256,10 +261,9 @@ public class ArlithClient {
 	}
 
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws SyntaxError, RestrictedError, RuntimeException, Error, IllegalCommunicationProtocolException,
-			CommunicationProtocolConstructionError {
-		return CompletableFutureUtils.getValue(createCommunityRequest(name, icon, background), SyntaxError.class,
-				RestrictedError.class);
+			throws SyntaxError, RestrictedError, ServerError, RateLimitError, RuntimeException, Error,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
+		return CompletableFutureUtils.getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
 	}
 
 	<T extends CommunicationProtocolEvent> void fire(EventType<T> type, T event) {
@@ -272,8 +276,10 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID) {
-		friendRequest(userID).get();
+	public void friend(GID userID)
+			throws SyntaxError, RateLimitError, ServerError, ObjectNotFoundError, RuntimeException, Error {
+		getValue(friendRequest(userID), SyntaxError.class, RateLimitError.class, ServerError.class,
+				ObjectNotFoundError.class);
 	}
 
 	public GID friend(String user, String disc) throws CommunicationProtocolError, RuntimeException {
