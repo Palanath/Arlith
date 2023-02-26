@@ -37,7 +37,7 @@ public class GetOwnUserRequest extends SimpleCommunicationProtocolRequest<UserVa
 
 	@Override
 	public UserValue receiveResponse(Connection client)
-			throws CommunicationProtocolError, SyntaxError, RateLimitError, ServerError, RestrictedError,
+			throws SyntaxError, RateLimitError, ServerError, RestrictedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
