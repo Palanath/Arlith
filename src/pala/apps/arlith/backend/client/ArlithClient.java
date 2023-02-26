@@ -263,7 +263,7 @@ public class ArlithClient {
 	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
 			throws SyntaxError, RestrictedError, ServerError, RateLimitError, RuntimeException, Error,
 			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
-		return CompletableFutureUtils.getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
+		return getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
 	}
 
 	<T extends CommunicationProtocolEvent> void fire(EventType<T> type, T event) {
@@ -276,10 +276,9 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID)
-			throws SyntaxError, RateLimitError, ServerError, ObjectNotFoundError, RuntimeException, Error {
-		getValue(friendRequest(userID), SyntaxError.class, RateLimitError.class, ServerError.class,
-				ObjectNotFoundError.class);
+	public void friend(GID userID) throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError,
+			SyntaxError, RuntimeException, Error {
+		getValueWithDefaultExceptions(friendRequest(userID), ObjectNotFoundError.class);
 	}
 
 	public GID friend(String user, String disc) throws CommunicationProtocolError, RuntimeException {
@@ -313,25 +312,6 @@ public class ArlithClient {
 			return null;
 		});
 	}
-
-//	public ActionInterface<Void> friendRequest(GID userID) {
-//		return getRequestSubsystem().action(new FriendByGIDRequest(new GIDValue(userID))).then(t -> {
-//			if (incomingFriends.isPopulated()) {
-//				for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator.hasNext();) {
-//					ClientUser u = iterator.next();
-//					if (u.id().equals(userID)) {
-//						iterator.remove();
-//						if (friends.isPopulated())
-//							friends.getUsers().add(u);
-//						return;
-//					}
-//				}
-//				// Add to outgoing list, if not already present.
-//				if (outgoingFriends.isPopulated())
-//					outgoingFriends.getUsers().add(getUser(userID));
-//			}
-//		});
-//	}
 
 	public ActionInterface<GID> friendRequest(String user, String disc) {
 		return getRequestSubsystem().action(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
