@@ -281,8 +281,9 @@ public class ArlithClient {
 		getValueWithDefaultExceptions(friendRequest(userID), ObjectNotFoundError.class);
 	}
 
-	public GID friend(String user, String disc) throws CommunicationProtocolError, RuntimeException {
-		return friendRequest(user, disc).get();
+	public GID friend(String user, String disc) throws ObjectNotFoundError, ServerError, RestrictedError,
+			RateLimitError, SyntaxError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(friendRequest(user, disc), ObjectNotFoundError.class);
 	}
 
 	public CompletableFuture<Void> friendRequest(GID userID) {
@@ -313,24 +314,24 @@ public class ArlithClient {
 		});
 	}
 
-	public ActionInterface<GID> friendRequest(String user, String disc) {
-		return getRequestSubsystem().action(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
-				.then((Function<GIDValue, GID>) t -> {
-					if (incomingFriends.isPopulated()) {
-						for (Iterator<ClientUser> iterator = incomingFriends.get().iterator(); iterator.hasNext();) {
+	public CompletableFuture<GID> friendRequest(String user, String disc) {
+		return getRequestQueue().queueFuture(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
+				.thenApply(a -> {
+					// Same as friendByGID above
+					incomingFriends.doIfPopulated(b -> {
+						for (Iterator<ClientUser> iterator = b.iterator(); iterator.hasNext();) {
 							ClientUser u = iterator.next();
-							if (u.id().equals(t.getGid())) {
+							if (u.id().equals(a.getGid())) {
+								// Promote from incoming friend req to added friend.
 								iterator.remove();
-								if (friends.isPopulated())
-									friends.get().add(u);
-								return u.id();
+								friends.doIfPopulated(c -> c.add(u));
+								return;
 							}
 						}
-						// Add to outgoing list, if not already present.
-						if (outgoingFriends.isPopulated())
-							outgoingFriends.get().add(getUser(t.getGid()));
-					}
-					return t.getGid();
+						outgoingFriends.doIfPopulated(c -> c.add(getUser(a.getGid())));
+					});
+
+					return a.getGid();
 				});
 	}
 
