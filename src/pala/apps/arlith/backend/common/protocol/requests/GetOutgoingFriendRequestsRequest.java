@@ -33,7 +33,7 @@ public class GetOutgoingFriendRequestsRequest extends SimpleCommunicationProtoco
 
 	@Override
 	public ListValue<GIDValue> receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError,
+			throws SyntaxError, RateLimitError, ServerError, RestrictedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
