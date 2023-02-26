@@ -13,11 +13,13 @@ import java.util.function.Function;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.libs.generic.JavaTools;
 
 public final class CompletableFutureUtils {
@@ -399,7 +401,8 @@ public final class CompletableFutureUtils {
 	}
 
 	public static <V> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future)
-			throws RuntimeException, Error, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			throws RuntimeException, Error, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array());
 	}
 
@@ -413,7 +416,15 @@ public final class CompletableFutureUtils {
 	 * <li>{@link ServerError}</li>
 	 * <li>{@link RestrictedError}</li>
 	 * <li>{@link RateLimitError}</li>
+	 * <li style="color:
+	 * #21726A;">{@link IllegalCommunicationProtocolException}</li>
+	 * <li style="color:
+	 * #21726A;">{@link CommunicationProtocolConstructionError}</li>
 	 * </ul>
+	 * <p>
+	 * <span style="color: red;">Note</span> that the bottom two exceptions are
+	 * {@link RuntimeException}s and are thus unchecked.
+	 * </p>
 	 * <p>
 	 * Calling this method with exception class <code>E1</code> is equivalent to
 	 * calling one of the {@link #getValue(CompletableFuture, Class)} method
@@ -429,53 +440,79 @@ public final class CompletableFutureUtils {
 	 * @param e1     The {@link Class} type of the exception to unwrap.
 	 * @return The result of the asynchronous action executed by the specified
 	 *         {@link CompletableFuture}.
-	 * @throws RuntimeException If the {@link CompletableFuture} computation
-	 *                          encounters a {@link RuntimeException} or a checked
-	 *                          exception is encountered that was specified to be
-	 *                          unwrapped.
-	 * @throws Error            If the {@link CompletableFuture} computation
-	 *                          encounters an {@link Error}.
-	 * @throws E1               If the {@link CompletableFuture} computation
-	 *                          encounters an <code>E1</code>.
-	 * @throws ServerError      If the {@link CompletableFuture} computation
-	 *                          encounters a {@link ServerError}.
-	 * @throws RestrictedError  If the {@link CompletableFuture} computation
-	 *                          encounters a {@link RestrictedError}.
-	 * @throws RateLimitError   If the {@link CompletableFuture} computation
-	 *                          encounters a {@link RateLimitError}.
-	 * @throws SyntaxError      If the {@link CompletableFuture} computation
-	 *                          encounters a {@link SyntaxError}.
+	 * @throws RuntimeException                       If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link RuntimeException} or a
+	 *                                                checked exception is
+	 *                                                encountered that was specified
+	 *                                                to be unwrapped.
+	 * @throws Error                                  If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters an
+	 *                                                {@link Error}.
+	 * @throws E1                                     If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters an
+	 *                                                <code>E1</code>.
+	 * @throws ServerError                            If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link ServerError}.
+	 * @throws RestrictedError                        If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link RestrictedError}.
+	 * @throws RateLimitError                         If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link RateLimitError}.
+	 * @throws SyntaxError                            If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link SyntaxError}.
+	 * @throws IllegalCommunicationProtocolException  If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters an
+	 *                                                {@link IllegalCommunicationProtocolException}.
+	 * @throws CommunicationProtocolConstructionError If the
+	 *                                                {@link CompletableFuture}
+	 *                                                computation encounters a
+	 *                                                {@link CommunicationProtocolConstructionError}.
 	 */
 	public static <V, E1 extends Throwable> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future,
-			Class<? extends E1> e1)
-			throws RuntimeException, Error, E1, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E1> e1) throws RuntimeException, Error, E1, ServerError, RestrictedError, RateLimitError,
+			SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2)
-			throws RuntimeException, Error, E1, E2, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			throws RuntimeException, Error, E1, E2, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
-			Class<? extends E3> e3)
-			throws RuntimeException, Error, E1, E2, E3, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E3> e3) throws RuntimeException, Error, E1, E2, E3, ServerError, RestrictedError,
+			RateLimitError, SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
 			Class<? extends E3> e3, Class<? extends E4> e4)
-			throws RuntimeException, Error, E1, E2, E3, E4, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			throws RuntimeException, Error, E1, E2, E3, E4, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
-			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5) throws RuntimeException, Error, E1,
-			E2, E3, E4, E5, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, ServerError, RestrictedError, RateLimitError,
+			SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5));
 	}
 
@@ -483,31 +520,34 @@ public final class CompletableFutureUtils {
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
 			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6)
 			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, ServerError, RestrictedError, RateLimitError,
-			SyntaxError {
+			SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
 			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
-			Class<? extends E7> e7) throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, ServerError,
-			RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E7> e7)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, ServerError, RestrictedError, RateLimitError,
+			SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
 			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
-			Class<? extends E7> e7, Class<? extends E8> e8) throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7,
-			E8, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E7> e7, Class<? extends E8> e8)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, E8, ServerError, RestrictedError,
+			RateLimitError, SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7, e8));
 	}
 
 	public static <V, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable, E5 extends Throwable, E6 extends Throwable, E7 extends Throwable, E8 extends Throwable, E9 extends Throwable> V getValueWithDefaultExceptions(
 			CompletableFuture<? extends V> future, Class<? extends E1> e1, Class<? extends E2> e2,
 			Class<? extends E3> e3, Class<? extends E4> e4, Class<? extends E5> e5, Class<? extends E6> e6,
-			Class<? extends E7> e7, Class<? extends E8> e8, Class<? extends E9> e9) throws RuntimeException, Error, E1,
-			E2, E3, E4, E5, E6, E7, E8, E9, ServerError, RestrictedError, RateLimitError, SyntaxError {
+			Class<? extends E7> e7, Class<? extends E8> e8, Class<? extends E9> e9)
+			throws RuntimeException, Error, E1, E2, E3, E4, E5, E6, E7, E8, E9, ServerError, RestrictedError,
+			RateLimitError, SyntaxError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return getValueWithDefaultExceptions(future, array(e1, e2, e3, e4, e5, e6, e7, e8, e9));
 	}
 
@@ -521,6 +561,8 @@ public final class CompletableFutureUtils {
 	 * <li>{@link ServerError}</li>
 	 * <li>{@link RestrictedError}</li>
 	 * <li>{@link RateLimitError}</li>
+	 * <li>{@link IllegalCommunicationProtocolException}</li>
+	 * <li>{@link CommunicationProtocolConstructionError}</li>
 	 * </ul>
 	 * <p>
 	 * since these errors are commonly raised by almost every request applicable to
@@ -546,11 +588,13 @@ public final class CompletableFutureUtils {
 	 * @throws ServerError
 	 * @throws RestrictedError
 	 * @throws RateLimitError
+	 * @throws IllegalCommunicationProtocolException
+	 * @throws CommunicationProtocolConstructionError
 	 */
 	@SafeVarargs
 	private static <V> V getValueWithDefaultExceptions(CompletableFuture<? extends V> future,
-			Class<? extends Throwable>... exceptionsToUnwrap)
-			throws SyntaxError, ServerError, RestrictedError, RateLimitError {
+			Class<? extends Throwable>... exceptionsToUnwrap) throws SyntaxError, ServerError, RestrictedError,
+			RateLimitError, IllegalCommunicationProtocolException, CommunicationProtocolConstructionError {
 		return hideCheckedExceptions(() -> getValue(future, JavaTools.combine(exceptionsToUnwrap, SyntaxError.class,
 				ServerError.class, RestrictedError.class, RateLimitError.class)));
 	}
