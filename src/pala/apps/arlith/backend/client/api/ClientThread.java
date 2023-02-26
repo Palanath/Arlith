@@ -82,7 +82,7 @@ public class ClientThread extends SimpleClientObject implements Named {
 		protected List<ClientUser> queryFromServer(CommunicationConnection connection)
 				throws CommunicationProtocolError, RuntimeException {
 			return JavaTools.addAll(new GetThreadMembersRequest(new GIDValue(id())).inquire(connection),
-					client()::getUser, new ArrayList<>());
+					client()::cache, new ArrayList<>());
 		}
 	};
 

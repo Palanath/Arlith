@@ -175,7 +175,7 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	 * 
 	 * @return A brand new {@link Set} that was populated by converting each value
 	 *         in {@link #getMemberIDs()} to a {@link ClientUser} using
-	 *         {@link #client()}.{@link ArlithClient#getUser(pala.apps.arlith.backend.common.protocol.types.UserValue)}.
+	 *         {@link #client()}.{@link ArlithClient#cache(pala.apps.arlith.backend.common.protocol.types.UserValue)}.
 	 * @throws CommunicationProtocolError If a {@link CommunicationProtocolError}
 	 *                                    occurs during the querying of any
 	 *                                    {@link UserValue}s.
