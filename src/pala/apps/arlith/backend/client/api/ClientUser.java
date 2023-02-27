@@ -2,6 +2,8 @@ package pala.apps.arlith.backend.client.api;
 
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -9,8 +11,8 @@ import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.Cache;
 import pala.apps.arlith.backend.client.api.caching.ClientCache;
-import pala.apps.arlith.backend.client.api.caching.WatchableCache;
-import pala.apps.arlith.backend.client.api.caching.WatchableCache.Populator;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
+import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
@@ -26,6 +28,7 @@ import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.apps.arlith.libraries.streams.InputStream;
 import pala.apps.arlith.libraries.watchables.Variable;
 import pala.apps.arlith.libraries.watchables.View;
+import pala.apps.arlith.libraries.watchables.Watchable;
 
 public class ClientUser extends SimpleClientObject implements Named {
 
@@ -78,25 +81,6 @@ public class ClientUser extends SimpleClientObject implements Named {
 	protected final WatchableCache<String> username, status, discriminant;
 	protected final WatchableCache<Long> messageCount;
 
-	{
-		Populator pop = new Populator() {
-
-			@Override
-			public void populate(CommunicationConnection connection)
-					throws CommunicationProtocolError, RuntimeException {
-				UserValue inq = new GetUserRequest(new GIDValue(id())).inquire(connection);
-				username.populate(inq.username());
-				status.populate(inq.status());
-				messageCount.populate(inq.messageCount());
-				discriminant.populate(inq.discriminant());
-			}
-		};
-		username = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		status = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		messageCount = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		discriminant = new WatchableCache<>(client()::getRequestSubsystem, pop);
-	}
-
 	/**
 	 * <p>
 	 * This function gets the {@link Image} contained in the {@link PieceOMediaValue
@@ -137,61 +121,70 @@ public class ClientUser extends SimpleClientObject implements Named {
 		}
 	}
 
-	protected final Cache<ClientThread> dmThread = new ClientCache.ClientCacheMaker<>(client()::getRequestSubsystem,
-			a -> client().update(new OpenDirectConversationRequest(new GIDValue(id())).inquire(a).getGid()));
-	protected final WatchableCache<Image> profileIcon = new WatchableCache<>(client()::getRequestSubsystem, a -> {
-		GetProfileIconRequest req = new GetProfileIconRequest(new GIDValue(id()));
-		req.sendRequest(a);
-		PieceOMediaValue m = req.receiveResponse(a);
-		// The media is optional; this user might not have a pfp (in which case we need
-		// to calculate one).
+	protected final NewCache<ClientThread> dmThread = new NewCache<>(
+			new OpenDirectConversationRequest(new GIDValue(id())), a -> client().getThread(a.getGid()),
+			client().getRequestQueue());
 
-		return getProfileImage(m, getIdentifier());
-	});
+	/**
+	 * {@link WatchableCache} of the user's profile icon. Contains <code>null</code>
+	 * until queried. Upon successful population, the cache will contain either an
+	 * {@link Image} returned from the server or a newly made {@link WritableImage}
+	 * made from {@link #getProfileImage(PieceOMediaValue, String)} with this
+	 * {@link ClientUser}'s {@link #idHex()} as an identifier.
+	 */
+	protected final WatchableCache<Image> profileIcon = new WatchableCache<>(
+			new GetProfileIconRequest(new GIDValue(id())), a -> getProfileImage(a, idHex()),
+			client().getRequestQueue());
 
-	public View<String> usernameView() {
+	public Watchable<String> usernameView() {
 		return username.getView();
 	}
 
-	public View<String> statusView() {
+	public Watchable<String> statusView() {
 		return status.getView();
 	}
 
-	public View<Long> messageCountView() {
+	public Watchable<Long> messageCountView() {
 		return messageCount.getView();
 	}
 
-	public View<String> discriminantView() {
+	public Watchable<String> discriminantView() {
 		return discriminant.getView();
 	}
 
-	public View<Image> profileIconView() {
+	public Watchable<Image> profileIconView() {
 		return profileIcon.getView();
 	}
 
-	/**
-	 * Boolean to denote whether this user has a profile icon set. This does not
-	 * denote whether one the pfi of this user has been requested and obtained
-	 * successfully. That information can be determined with the expression:
-	 * <code>(profileIcon != null)</code>.
-	 */
-	private final Variable<Boolean> hasProfileIcon = new Variable<>(false);
-
-	public View<Boolean> hasProfileIconView() {
-		return hasProfileIcon.getView();
+	public Watchable<Boolean> hasProfileIconView() {
+		return profileIcon.expression(a -> !(a instanceof WritableImage));
 	}
 
 	public ClientUser(GID gid, ArlithClient client) {
 		super(gid, client);
+
+		Function<UserValue, UserValue> update = uv -> {
+			username.updateItem(uv.username());
+			status.updateItem(uv.status());
+			messageCount.updateItem(uv.messageCount());
+			discriminant.updateItem(uv.discriminant());
+			return uv;
+		};
+		GetUserRequest req = new GetUserRequest(new GIDValue(id()));
+
+		username = new WatchableCache<>(req, update.andThen(UserValue::username), client().getRequestQueue());
+		status = new WatchableCache<>(req, update.andThen(UserValue::status), client().getRequestQueue());
+		messageCount = new WatchableCache<>(req, update.andThen(UserValue::messageCount), client().getRequestQueue());
+		discriminant = new WatchableCache<>(req, update.andThen(UserValue::discriminant), client().getRequestQueue());
 	}
 
 	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount,
 			String discriminant) {
 		this(gid, client);
-		this.username.populate(username);
-		this.status.populate(status);
-		this.messageCount.populate(messageCount);
-		this.discriminant.populate(discriminant);
+		this.username = new WatchableCache<>(username);
+		this.status = new WatchableCache<>(status);
+		this.messageCount = new WatchableCache<>(messageCount);
+		this.discriminant = new WatchableCache<>(discriminant);
 	}
 
 	public ActionInterface<String> getNameRequest() {
