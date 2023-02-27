@@ -53,6 +53,8 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 				.queueFuture(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).thenApply(a -> {
 					hasIcon.set(a != null);
 					if (a == null) {
+						// TODO Base default image off of community name (using hash) in the same way
+						// that PFPs are derived.
 						WritableImage img = new WritableImage(1, 1);
 						icon.set(img);
 
@@ -67,32 +69,16 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 				});
 	}
 
-//	public ActionInterface<Image> getIconRequest() {
-//		// TODO Caching!
-//		return client().getRequestSubsystem()
-//				.action(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).then(t -> {
-//					hasIcon.set(t != null);
-//					if (t == null) {
-//						WritableImage img = new WritableImage(1, 1);
-//						icon.set(img);
-//						double namehash = 0;
-//						for (char c : getName().toCharArray())
-//							namehash += c;
-//						namehash /= getName().length();
-//						img.getPixelWriter().setColor(0, 0, Color.hsb(namehash * 360, 1, 1));
-//					} else
-//						icon.set(new Image(new ByteArrayInputStream(t.getMedia())));
-//					return icon.getValue();
-//				});
-//	}
-
-	public ActionInterface<Image> getBackgroundImageRequest() {
-		// TODO Check cache for backgroundImage.get();
-		return client().getRequestSubsystem()
-				.action(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("background-image"))).then(a -> {
+	public CompletableFuture<Image> getBackgroundImageRequest() {
+		return client().getRequestQueue()
+				.queueFuture(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("background-image")))
+				.thenApply(a -> {
 					hasBackgroundImage.set(a != null);
-					if (hasBackgroundImage.getValue())
+					if (a != null)
 						backgroundImage.set(new Image(new ByteArrayInputStream(a.getMedia())));
+					else
+						// Set to default value.
+						backgroundImage.set(null);
 					return backgroundImage.getValue();
 				});
 	}
