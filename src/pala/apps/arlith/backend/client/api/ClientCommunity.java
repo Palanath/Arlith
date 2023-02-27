@@ -11,7 +11,13 @@ import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.MediaNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.GetCommunityImageRequest;
@@ -20,6 +26,8 @@ import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
 import pala.apps.arlith.libraries.watchables.Variable;
 import pala.apps.arlith.libraries.watchables.View;
+
+import static pala.apps.arlith.libraries.CompletableFutureUtils.*;
 
 public class ClientCommunity extends SimpleClientObject implements Named {
 	public ClientCommunity(GID gid, ArlithClient client, String name, List<ClientThread> threads, List<GID> members) {
@@ -83,8 +91,9 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 				});
 	}
 
-	public Image getIcon() throws CommunicationProtocolError, RuntimeException {
-		return getIconRequest().get();
+	public Image getIcon() throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getIconRequest(), MediaNotFoundError.class);
 	}
 
 	public boolean hasIcon() throws CommunicationProtocolError, RuntimeException {
@@ -93,8 +102,10 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		return hasIcon.getValue();
 	}
 
-	public Image getBackgroundImage() throws CommunicationProtocolError, RuntimeException {
-		return getBackgroundImageRequest().get();
+	public Image getBackgroundImage()
+			throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getBackgroundImageRequest(), MediaNotFoundError.class);
 	}
 
 	public boolean hasBackgroundImage() throws CommunicationProtocolError, RuntimeException {
