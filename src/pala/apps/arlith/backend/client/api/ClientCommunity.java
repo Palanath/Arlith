@@ -37,6 +37,7 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		memberIDs = members;
 	}
 
+	// These need to be rethought.
 	protected final Variable<Image> icon = new Variable<>(), backgroundImage = new Variable<>();
 	private final Variable<Boolean> hasIcon = new Variable<>(), hasBackgroundImage = new Variable<>();
 
@@ -96,7 +97,8 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		return getValueWithDefaultExceptions(getIconRequest(), MediaNotFoundError.class);
 	}
 
-	public boolean hasIcon() throws CommunicationProtocolError, RuntimeException {
+	public boolean hasIcon() throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		if (icon.getValue() == null)
 			getIcon();
 		return hasIcon.getValue();
@@ -117,9 +119,14 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	public void receiveLazyImageChangedEvent(LazyCommunityImageChangedEvent event) {
 		switch (event.getType().getValue()) {
 		case "icon":
-			if (icon != null)
+			if (icon.getValue() != null)
 				try {
 					// Force request pfp. (Ignore cache.)
+					client().getRequestQueue()
+							.queueFuture(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon")))
+							.thenAccept(a -> {
+
+							});
 					client().getRequestSubsystem()
 							.action(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).then(a -> {
 								icon.set(new Image(new ByteArrayInputStream(a.getMedia())));
