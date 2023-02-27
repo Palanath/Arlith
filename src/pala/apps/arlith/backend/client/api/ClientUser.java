@@ -1,5 +1,7 @@
 package pala.apps.arlith.backend.client.api;
 
+import static pala.apps.arlith.libraries.CompletableFutureUtils.getValueWithDefaultExceptions;
+
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CompletableFuture;
@@ -9,25 +11,29 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.client.api.caching.Cache;
-import pala.apps.arlith.backend.client.api.caching.ClientCache;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.MediaNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.GetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.requests.GetUserRequest;
 import pala.apps.arlith.backend.common.protocol.requests.OpenDirectConversationRequest;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.apps.arlith.libraries.streams.InputStream;
-import pala.apps.arlith.libraries.watchables.Variable;
-import pala.apps.arlith.libraries.watchables.View;
 import pala.apps.arlith.libraries.watchables.Watchable;
 
 public class ClientUser extends SimpleClientObject implements Named {
@@ -80,6 +86,22 @@ public class ClientUser extends SimpleClientObject implements Named {
 
 	protected final WatchableCache<String> username, status, discriminant;
 	protected final WatchableCache<Long> messageCount;
+
+	{
+		Function<UserValue, UserValue> update = uv -> {
+			((ClientUser) this).username.updateItem(uv.username());
+			((ClientUser) this).status.updateItem(uv.status());
+			((ClientUser) this).messageCount.updateItem(uv.messageCount());
+			((ClientUser) this).discriminant.updateItem(uv.discriminant());
+			return uv;
+		};
+		GetUserRequest req = new GetUserRequest(new GIDValue(id()));
+
+		username = new WatchableCache<>(req, update.andThen(UserValue::username), client().getRequestQueue());
+		status = new WatchableCache<>(req, update.andThen(UserValue::status), client().getRequestQueue());
+		messageCount = new WatchableCache<>(req, update.andThen(UserValue::messageCount), client().getRequestQueue());
+		discriminant = new WatchableCache<>(req, update.andThen(UserValue::discriminant), client().getRequestQueue());
+	}
 
 	/**
 	 * <p>
@@ -162,33 +184,19 @@ public class ClientUser extends SimpleClientObject implements Named {
 
 	public ClientUser(GID gid, ArlithClient client) {
 		super(gid, client);
-
-		Function<UserValue, UserValue> update = uv -> {
-			username.updateItem(uv.username());
-			status.updateItem(uv.status());
-			messageCount.updateItem(uv.messageCount());
-			discriminant.updateItem(uv.discriminant());
-			return uv;
-		};
-		GetUserRequest req = new GetUserRequest(new GIDValue(id()));
-
-		username = new WatchableCache<>(req, update.andThen(UserValue::username), client().getRequestQueue());
-		status = new WatchableCache<>(req, update.andThen(UserValue::status), client().getRequestQueue());
-		messageCount = new WatchableCache<>(req, update.andThen(UserValue::messageCount), client().getRequestQueue());
-		discriminant = new WatchableCache<>(req, update.andThen(UserValue::discriminant), client().getRequestQueue());
 	}
 
 	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount,
 			String discriminant) {
 		this(gid, client);
-		this.username = new WatchableCache<>(username);
-		this.status = new WatchableCache<>(status);
-		this.messageCount = new WatchableCache<>(messageCount);
-		this.discriminant = new WatchableCache<>(discriminant);
+		this.username.updateItem(username);
+		this.status.updateItem(status);
+		this.messageCount.updateItem(messageCount);
+		this.discriminant.updateItem(discriminant);
 	}
 
-	public ActionInterface<String> getNameRequest() {
-		return username.get();
+	public CompletableFuture<String> getNameRequest() {
+		return username.future();
 	}
 
 	/**
@@ -211,52 +219,66 @@ public class ClientUser extends SimpleClientObject implements Named {
 		return name + getDiscriminant();
 	}
 
-	public String getName() throws CommunicationProtocolError, RuntimeException {
-		return getNameRequest().get();
+	public String getName()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getNameRequest(), AccessDeniedError.class, ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<String> getStatusRequest() {
-		return status.get();
+	public CompletableFuture<String> getStatusRequest() {
+		return status.future();
 	}
 
-	public String getStatus() throws CommunicationProtocolError, RuntimeException {
-		return getStatusRequest().get();
+	public String getStatus()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getStatusRequest(), AccessDeniedError.class, ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Long> getMessageCountRequest() {
-		return messageCount.get();
+	public CompletableFuture<Long> getMessageCountRequest() {
+		return messageCount.future();
 	}
 
-	public long getMessageCount() throws CommunicationProtocolError, RuntimeException {
-		return getMessageCountRequest().get();
+	public long getMessageCount()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getMessageCountRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<String> getDiscriminantRequest() {
-		return discriminant.get();
+	public CompletableFuture<String> getDiscriminantRequest() {
+		return discriminant.future();
 	}
 
-	public String getDiscriminant() throws CommunicationProtocolError, RuntimeException {
-		return getDiscriminantRequest().get();
+	public String getDiscriminant()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getDiscriminantRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Void> friendRequest() {
+	public CompletableFuture<Void> friendRequest() {
 		return client().friendRequest(id());
 	}
 
-	public void friend() throws CommunicationProtocolError, RuntimeException {
+	public void friend() throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		client().friend(id());
 	}
 
-	public ActionInterface<ClientThread> openDirectConversationRequest() {
-		return dmThread.get();
+	public CompletableFuture<ClientThread> openDirectConversationRequest() {
+		return dmThread.future();
 	}
 
-	public ClientThread openDirectConversation() throws CommunicationProtocolError, RuntimeException {
-		return openDirectConversationRequest().get();
+	public ClientThread openDirectConversation()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(openDirectConversationRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
 	public void receiveStatusChangeEvent(StatusChangedEvent event) {
-		status.update(event.getNewStatus().getValue());
+		status.updateItem(event.getNewStatus().getValue());
 	}
 
 	public void receiveLazyProfileIconChangeEvent(LazyProfileIconChangedEvent event) {
@@ -287,40 +309,38 @@ public class ClientUser extends SimpleClientObject implements Named {
 	 * </p>
 	 */
 	protected final void refreshProfileIcon() {
-		if (profileIcon != null)
-			try {
-				PieceOMediaValue m = client().getRequestSubsystem()
-						.action(new GetProfileIconRequest(new GIDValue(id()))).get();
-				profileIcon.update(getProfileImage(m, getIdentifier()));
-			} catch (RuntimeException | CommunicationProtocolError e) {
-				B: {
-					try {
-						client().getLogger()
-								.err("Failed to obtain the changed profile icon of the user " + username.get() == null
-										? String.valueOf(id())
-										: username.get().get());
-					} catch (CommunicationProtocolError | RuntimeException e1) {
-						e1.addSuppressed(e);
-						client().getLogger().err(e1);
-						break B;
-					}
-					client().getLogger().err(e);
-				}
-			}
+		if (profileIcon.isPopulated()) {
+			client().getRequestQueue().queueFuture(new GetProfileIconRequest(new GIDValue(id())))
+					.thenAccept(a -> profileIcon.updateItem(getProfileImage(a, idHex()))).exceptionally(a -> {
+						try {
+							client().getLogger().err(
+									"Failed to obtain the changed profile icon of the user " + username.get() == null
+											? String.valueOf(id())
+											: getName());
+						} catch (CommunicationProtocolError | RuntimeException e) {
+							e.addSuppressed(a);
+							client().getLogger().err("Failed to obtain the changed profile icon of user with ID: "
+									+ idHex() + ". Also failed to obtain their username.");
+							client().getLogger().err(e);
+						}
+						return null;
+					});
+		}
 	}
 
-	public Image getProfileIcon() throws CommunicationProtocolError, RuntimeException {
-		return getProfileIconRequest().get();
+	public Image getProfileIcon() throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getProfileIconRequest(), MediaNotFoundError.class);
 	}
 
-	public boolean hasProfileIcon() throws CommunicationProtocolError, RuntimeException {
-		if (profileIcon.get() == null)
-			getProfileIcon();
-		return hasProfileIcon.getValue();
+	public boolean hasProfileIcon()
+			throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return !(getProfileIcon() instanceof WritableImage);
 	}
 
-	public ActionInterface<Image> getProfileIconRequest() {
-		return profileIcon.get();
+	public CompletableFuture<Image> getProfileIconRequest() {
+		return profileIcon.future();
 	}
 
 }
