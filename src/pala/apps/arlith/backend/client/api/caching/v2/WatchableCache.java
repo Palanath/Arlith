@@ -1,10 +1,12 @@
 package pala.apps.arlith.backend.client.api.caching.v2;
 
+import java.lang.ref.WeakReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
+import pala.apps.arlith.libraries.watchables.View;
 import pala.apps.arlith.libraries.watchables.Watchable;
 import pala.apps.arlith.libraries.watchables.Watcher;
 import pala.apps.arlith.libraries.watchables.WatcherRegistry;
@@ -84,6 +86,19 @@ public class WatchableCache<V> extends NewCache<V> implements Watchable<V> {
 	@Override
 	public void unregister(Watcher<? super V> watcher) {
 		registry.unregister(watcher);
+	}
+
+	private WeakReference<View<V>> view;
+
+	public View<V> getView() {
+		if (view != null) {
+			View<V> v = view.get();
+			if (v != null)
+				return v;
+		}
+		View<V> v = View.view(this);
+		view = new WeakReference<>(v);
+		return v;
 	}
 
 }
