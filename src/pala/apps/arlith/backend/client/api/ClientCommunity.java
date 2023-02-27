@@ -3,6 +3,7 @@ package pala.apps.arlith.backend.client.api;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -47,24 +48,43 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		return hasBackgroundImage.getView();
 	}
 
-	public ActionInterface<Image> getIconRequest() {
-		// TODO Caching!
-		return client().getRequestSubsystem()
-				.action(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).then(t -> {
-					hasIcon.set(t != null);
-					if (t == null) {
+	public CompletableFuture<Image> getIconRequest() {
+		return client().getRequestQueue()
+				.queueFuture(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).thenApply(a -> {
+					hasIcon.set(a != null);
+					if (a == null) {
 						WritableImage img = new WritableImage(1, 1);
 						icon.set(img);
+
 						double namehash = 0;
 						for (char c : getName().toCharArray())
 							namehash += c;
 						namehash /= getName().length();
 						img.getPixelWriter().setColor(0, 0, Color.hsb(namehash * 360, 1, 1));
 					} else
-						icon.set(new Image(new ByteArrayInputStream(t.getMedia())));
+						icon.set(new Image(new ByteArrayInputStream(a.getMedia())));
 					return icon.getValue();
 				});
 	}
+
+//	public ActionInterface<Image> getIconRequest() {
+//		// TODO Caching!
+//		return client().getRequestSubsystem()
+//				.action(new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon"))).then(t -> {
+//					hasIcon.set(t != null);
+//					if (t == null) {
+//						WritableImage img = new WritableImage(1, 1);
+//						icon.set(img);
+//						double namehash = 0;
+//						for (char c : getName().toCharArray())
+//							namehash += c;
+//						namehash /= getName().length();
+//						img.getPixelWriter().setColor(0, 0, Color.hsb(namehash * 360, 1, 1));
+//					} else
+//						icon.set(new Image(new ByteArrayInputStream(t.getMedia())));
+//					return icon.getValue();
+//				});
+//	}
 
 	public ActionInterface<Image> getBackgroundImageRequest() {
 		// TODO Check cache for backgroundImage.get();
