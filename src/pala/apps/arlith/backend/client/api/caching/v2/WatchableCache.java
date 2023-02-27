@@ -90,6 +90,11 @@ public class WatchableCache<V> extends NewCache<V> implements Watchable<V> {
 
 	private WeakReference<View<V>> view;
 
+	@Override
+	public View<V> view() {
+		return getView();
+	}
+
 	public View<V> getView() {
 		if (view != null) {
 			View<V> v = view.get();
