@@ -189,9 +189,12 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * not empty, its value is replaced with the one specified.
 	 * </p>
 	 * <p>
-	 * This method is intended to be used to allow the client to update the cache
-	 * once the value it represents changes on the server and the server sends a
-	 * notification (event) to the client.
+	 * This method is exposed with the intent to allow the client to update the
+	 * cache once the value it represents changes on the server and the server sends
+	 * a notification (event) to the client. This method should be called whenever
+	 * the cache's value is changed (either from being populated or from subsequent
+	 * update). {@link NewCache}'s logic calls this method any time the value in the
+	 * cache is changed.
 	 * </p>
 	 * <p>
 	 * After a call to this method, the {@link NewCache} will never attempt to query
@@ -200,7 +203,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * 
 	 * @param item The item to populate the {@link NewCache} with.
 	 */
-	public void updateItem(V item) {
+	public synchronized void updateItem(V item) {
 		this.value = item;
 		query = null;
 	}
@@ -296,7 +299,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 		// No thread was requesting and the cache was not populated; make the request.
 		V v;
 		try {
-			v = value = query.run();
+			updateItem(v = query.run());
 		} catch (Throwable e) {
 			// If an error occurs, the next object should be given the chance to make its
 			// query.
@@ -309,7 +312,6 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 		}
 		synchronized (this) {
 			List<Waiter> waiters = query.waiters;
-			query = null;
 			for (Waiter w : waiters)
 				w.awaken();
 		}
@@ -389,7 +391,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 					query.requestQueue.queue(i, t -> {
 
 						try {
-							value = ((Function<Object, V>) query.resultConverter).apply(t);
+							updateItem(((Function<Object, V>) query.resultConverter).apply(t));
 						} catch (Exception e) {
 							try {
 								if (errorHandler != null)
@@ -407,7 +409,6 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 						List<Waiter> waiters;
 						synchronized (NewCache.this) {
 							waiters = query.waiters;
-							query = null;
 						}
 						try {
 							resultHandler.accept(value);
@@ -471,7 +472,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 
 					query.requestQueue.queue(inquiry, a -> {
 						try {
-							value = ((Function<Object, V>) query.resultConverter).apply(a);
+							updateItem(((Function<Object, V>) query.resultConverter).apply(a));
 						} catch (Exception e) {
 							f.completeExceptionally(e);
 							synchronized (NewCache.this) {
@@ -484,7 +485,6 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 						List<Waiter> waiters;
 						synchronized (NewCache.this) {
 							waiters = query.waiters;
-							query = null;
 						}
 
 						try {
@@ -524,7 +524,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 	 * @param value The value to construct the {@link NewCache} with.
 	 */
 	public NewCache(V value) {
-		this.value = value;
+		updateItem(value);
 	}
 
 	/**
