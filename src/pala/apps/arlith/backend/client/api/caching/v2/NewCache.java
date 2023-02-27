@@ -184,14 +184,18 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 
 	/**
 	 * <p>
-	 * Updates the {@link NewCache} to hold the specified value. If the
-	 * {@link NewCache} previously was empty, this method changes its state. If the
-	 * {@link NewCache} previously was non-empty, this method updates it so that the
-	 * value it holds is the one specified.
+	 * Updates the {@link NewCache} to hold the specified value. If the cache was
+	 * previously empty, it becomes populated with the specified value. If it was
+	 * not empty, its value is replaced with the one specified.
+	 * </p>
+	 * <p>
+	 * This method is intended to be used to allow the client to update the cache
+	 * once the value it represents changes on the server and the server sends a
+	 * notification (event) to the client.
 	 * </p>
 	 * <p>
 	 * After a call to this method, the {@link NewCache} will never attempt to query
-	 * from the server.
+	 * from the server again.
 	 * </p>
 	 * 
 	 * @param item The item to populate the {@link NewCache} with.
