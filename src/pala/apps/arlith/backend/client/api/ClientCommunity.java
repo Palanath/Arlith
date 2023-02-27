@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
+import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
@@ -37,9 +38,17 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		memberIDs = members;
 	}
 
+
 	// These need to be rethought.
-	protected final Variable<Image> icon = new Variable<>(), backgroundImage = new Variable<>();
-	private final Variable<Boolean> hasIcon = new Variable<>(), hasBackgroundImage = new Variable<>();
+	protected final WatchableCache<Image> icon = new WatchableCache<>(
+			() -> new GetCommunityImageRequest(new GIDValue(id()), new TextValue("icon")), a -> {
+				hasIcon.set(a != null);
+				return null;
+			},
+			client().getRequestQueue()),
+			backgroundImage = new WatchableCache<>(
+					() -> new GetCommunityImageRequest(new GIDValue(id()), new TextValue("background-image")),
+					a -> null, client().getRequestQueue());
 
 	public View<Image> iconView() {
 		return icon.getView();
