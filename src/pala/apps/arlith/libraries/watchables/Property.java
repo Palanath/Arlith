@@ -1,23 +1,9 @@
 package pala.apps.arlith.libraries.watchables;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Property<V> extends WatcherRegistry<V> implements Watchable<V> {
-
-	private WeakReference<View<V>> view;
-
-	public View<V> getView() {
-		if (view != null) {
-			View<V> v = view.get();
-			if (v != null)
-				return v;
-		}
-		View<V> v = View.view(this);
-		view = new WeakReference<>(v);
-		return v;
-	}
 
 	private final BindableImpl<V> bindImpl = BindableImpl.bindable(this::change);
 
