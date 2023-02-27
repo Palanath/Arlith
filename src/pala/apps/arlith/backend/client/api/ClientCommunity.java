@@ -110,7 +110,9 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 		return getValueWithDefaultExceptions(getBackgroundImageRequest(), MediaNotFoundError.class);
 	}
 
-	public boolean hasBackgroundImage() throws CommunicationProtocolError, RuntimeException {
+	public boolean hasBackgroundImage()
+			throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		if (backgroundImage.getValue() == null)
 			getBackgroundImage();
 		return hasBackgroundImage.getValue();
