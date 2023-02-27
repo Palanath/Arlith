@@ -68,8 +68,8 @@ public class GetCommunityImageRequest extends CommunicationProtocolRequest<Piece
 	}
 
 	@Override
-	public PieceOMediaValue receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, MediaNotFoundError,
+	public PieceOMediaValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, MediaNotFoundError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
