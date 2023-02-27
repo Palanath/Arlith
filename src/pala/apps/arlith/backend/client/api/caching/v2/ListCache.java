@@ -64,6 +64,11 @@ public class ListCache<O> extends NewCache<List<O>> {
 		return value == null ? null : Collections.unmodifiableList(value);
 	}
 
+	public List<O> getUnmodifiableIfPopulated() {
+		List<O> value = getIfPopulated();
+		return value == null ? null : Collections.unmodifiableList(value);
+	}
+
 	/**
 	 * <p>
 	 * Same as {@link #queue(Consumer, Consumer)}, but the {@link List} provided to
