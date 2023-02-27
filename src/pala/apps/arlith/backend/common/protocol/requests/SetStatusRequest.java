@@ -51,7 +51,7 @@ public class SetStatusRequest extends SimpleCommunicationProtocolRequest<Complet
 
 	@Override
 	public CompletionValue receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError,
+			throws SyntaxError, RateLimitError, ServerError, RestrictedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
