@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
+import pala.apps.arlith.backend.client.api.caching.v2.ListCache;
 import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
@@ -35,8 +36,8 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	public ClientCommunity(GID gid, ArlithClient client, String name, List<ClientThread> threads, List<GID> members) {
 		super(gid, client);
 		this.name = new WatchableCache<>(name);
-		this.threads = threads;
-		memberIDs = members;
+		this.threads = new ListCache<>(threads);
+		memberIDs = new ListCache<>(members);
 	}
 
 	private static WritableImage autogenerateIcon(GID id) {
@@ -180,15 +181,15 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	}
 
 	private final WatchableCache<String> name;
-	private final List<ClientThread> threads;
-	private final List<GID> memberIDs;
+	private final ListCache<ClientThread> threads;
+	private final ListCache<GID> memberIDs;
 
 	public Watchable<String> nameView() {
 		return name.getView();
 	}
 
 	public int getMemberCount() {
-		return memberIDs.size();
+		return memberIDs.getIfPopulated().size();
 	}
 
 	public String getName() {
@@ -196,11 +197,11 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	}
 
 	public List<ClientThread> getThreads() {
-		return threads;
+		return threads.getUnmodifiableIfPopulated();
 	}
 
 	public List<GID> getMemberIDs() {
-		return memberIDs;
+		return memberIDs.getUnmodifiableIfPopulated();
 	}
 
 	// TODO Add a getUsersInBulk method or smth to the Cli and then use it in the
@@ -267,7 +268,7 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 	public Set<ClientUser> getMembers()
 			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
 			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
-		return client().getBunchOUsers(memberIDs);
+		return client().getBunchOUsers(memberIDs.getUnmodifiableIfPopulated());
 	}
 
 	/**
@@ -336,7 +337,7 @@ public class ClientCommunity extends SimpleClientObject implements Named {
 			to = getMemberCount();
 		if (from < 0)
 			from = 0;
-		return client().getBunchOUsers(memberIDs.subList(from, to));
+		return client().getBunchOUsers(memberIDs.getUnmodifiableIfPopulated().subList(from, to));
 	}
 
 	@Override
