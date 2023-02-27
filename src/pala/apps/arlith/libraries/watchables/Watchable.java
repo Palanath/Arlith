@@ -14,6 +14,10 @@ public interface Watchable<V> {
 		return Mask.mask(this, converter);
 	}
 
+	default Mask<V, Boolean> nonNull() {
+		return expression(a -> a != null);
+	}
+
 	default <X> Mask<V, X> weakExpression(Function<V, X> converter) {
 		return Mask.weakMask(this, converter);
 	}
