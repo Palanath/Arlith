@@ -1,12 +1,20 @@
 package pala.apps.arlith.backend.client.api;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.ClientCache;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeEmailRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ChangePhoneNumberRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ChangeUsernameRequest;
@@ -19,34 +27,27 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
+import static pala.apps.arlith.libraries.CompletableFutureUtils.*;
+
 public class ClientOwnUser extends ClientUser {
 
-	private ClientCache<String> email = new ClientCache<String>(client()::getRequestSubsystem) {
-
-		@Override
-		protected String queryFromServer(CommunicationConnection connection) throws CommunicationProtocolError, RuntimeException {
-			return new GetEmailRequest().inquire(connection).getValue();
-		}
-	}, phoneNumber = new ClientCache<String>(client()::getRequestSubsystem) {
-
-		@Override
-		protected String queryFromServer(CommunicationConnection connection) throws CommunicationProtocolError, RuntimeException {
-			return new GetPhoneNumberRequest().inquire(connection).getValue();
-		}
-	};
+	private final NewCache<String> email = new NewCache<>(new GetEmailRequest(), TextValue::getValue,
+			client().getRequestQueue()),
+			phoneNumber = new NewCache<>(new GetPhoneNumberRequest(), TextValue::getValue, client().getRequestQueue());
 
 	public ClientOwnUser(GID gid, ArlithClient client, String username, String status, long messageCount,
 			String discriminant) {
 		super(gid, client, username, status, messageCount, discriminant);
 	}
 
-	public ActionInterface<Void> setStatusRequest(String status) {
-		return client().getRequestSubsystem().action(new SetStatusRequest(new TextValue(status)))
-				.then((Consumer<CompletionValue>) a -> this.status.update(status));
+	public CompletableFuture<Void> setStatusRequest(String status) {
+		return client().getRequestQueue().queueFuture(new SetStatusRequest(new TextValue(status)))
+				.thenAccept(a -> this.status.updateItem(status));
 	}
 
-	public void setStatus(String status) throws CommunicationProtocolError, RuntimeException {
-		setStatusRequest(status).get();
+	public void setStatus(String status) throws ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		getValueWithDefaultExceptions(setStatusRequest(status));
 	}
 
 	// TODO Fix.
