@@ -64,6 +64,17 @@ public class ClientUser extends SimpleClientObject implements Named {
 		return i;
 	}
 
+	public static Image getBaseProfileIcon(double hueShift) {
+		Image i = getBaseProfileIcon();
+		WritableImage img = new WritableImage((int) i.getWidth(), (int) i.getHeight());
+		for (int j = 0; j < img.getWidth(); j++)
+			for (int j2 = 0; j2 < img.getHeight(); j2++) {
+				Color c = i.getPixelReader().getColor(j, j2);
+				img.getPixelWriter().setColor(j, j2, Color.hsb(hueShift, 1, c.getBrightness(), c.getOpacity()));
+			}
+		return img;
+	}
+
 	protected final WatchableCache<String> username, status, discriminant;
 	protected final WatchableCache<Long> messageCount;
 
@@ -118,21 +129,11 @@ public class ClientUser extends SimpleClientObject implements Named {
 		if (m != null)
 			return new Image(new ByteArrayInputStream(m.getMedia()));
 		else {
-			Image i = getBaseProfileIcon();
-			WritableImage img = new WritableImage((int) i.getWidth(), (int) i.getHeight());
-
 			double namehash = 0;
 			for (char c : identifier.toCharArray())
 				namehash += c;
-			namehash /= identifier.length();
 
-			double hueshift = namehash * 360;
-			for (int j = 0; j < img.getWidth(); j++)
-				for (int j2 = 0; j2 < img.getHeight(); j2++) {
-					Color c = i.getPixelReader().getColor(j, j2);
-					img.getPixelWriter().setColor(j, j2, Color.hsb(hueshift, 1, c.getBrightness(), c.getOpacity()));
-				}
-			return img;
+			return getBaseProfileIcon(namehash / identifier.length() * 360);
 		}
 	}
 
