@@ -12,7 +12,6 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.libs.generic.JavaTools;
 import pala.libs.generic.util.Box;
 
 /**
