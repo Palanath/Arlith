@@ -51,8 +51,8 @@ public class OpenDirectConversationRequest extends SimpleCommunicationProtocolRe
 	}
 
 	@Override
-	public GIDValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
-			RestrictedError, ObjectNotFoundError, AccessDeniedError,
+	public GIDValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError, RestrictedError,
+			ObjectNotFoundError, AccessDeniedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
