@@ -18,4 +18,12 @@ public interface Watchable<V> {
 		return Mask.weakMask(this, converter);
 	}
 
+	default View<V> view() {
+		return View.view(this);
+	}
+
+	default View<V> weakView() {
+		return View.weakView(this);
+	}
+
 }
