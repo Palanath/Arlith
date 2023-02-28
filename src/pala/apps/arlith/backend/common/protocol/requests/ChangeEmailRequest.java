@@ -154,8 +154,8 @@ public class ChangeEmailRequest extends SimpleCommunicationProtocolRequest<Compl
 	}
 
 	@Override
-	public CompletionValue receiveResponse(Connection client)
-			throws RateLimitError, SyntaxError, ServerError, ChangeEmailError, IllegalCommunicationProtocolException,
+	public CompletionValue receiveResponse(Connection client) throws RateLimitError, SyntaxError, ServerError,
+			RestrictedError, ChangeEmailError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
