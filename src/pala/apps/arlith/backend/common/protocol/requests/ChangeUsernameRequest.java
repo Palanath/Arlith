@@ -5,6 +5,7 @@ import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolErro
 import pala.apps.arlith.backend.common.protocol.errors.EntityInUseError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
@@ -51,10 +52,11 @@ public class ChangeUsernameRequest extends SimpleCommunicationProtocolRequest<Te
 
 	@Override
 	public TextValue receiveResponse(Connection client) throws RestrictedError, SyntaxError, RateLimitError,
-			EntityInUseError, CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
+			EntityInUseError, ServerError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
-		} catch (RestrictedError | SyntaxError | RateLimitError | EntityInUseError e) {
+		} catch (RestrictedError | SyntaxError | RateLimitError | ServerError | EntityInUseError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);
