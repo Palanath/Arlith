@@ -159,7 +159,7 @@ public class ChangeEmailRequest extends SimpleCommunicationProtocolRequest<Compl
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
-		} catch (RateLimitError | SyntaxError | ServerError | ChangeEmailError e) {
+		} catch (RateLimitError | SyntaxError | RestrictedError | ServerError | ChangeEmailError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);
