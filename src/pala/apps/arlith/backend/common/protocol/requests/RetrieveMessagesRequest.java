@@ -67,8 +67,8 @@ public class RetrieveMessagesRequest extends SimpleCommunicationProtocolRequest<
 	}
 
 	@Override
-	public ListValue<MessageValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError,
-			ServerError, RestrictedError, ObjectNotFoundError, AccessDeniedError,
+	public ListValue<MessageValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, ObjectNotFoundError, AccessDeniedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
