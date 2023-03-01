@@ -3,6 +3,7 @@ package pala.apps.arlith.backend.common.protocol.requests;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
 import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
@@ -66,7 +67,7 @@ public class SendMessageRequest extends SimpleCommunicationProtocolRequest<Messa
 
 	@Override
 	public MessageValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
-			RestrictedError, AccessDeniedError, IllegalCommunicationProtocolException,
+			RestrictedError, ObjectNotFoundError, AccessDeniedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
