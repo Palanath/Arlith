@@ -65,8 +65,8 @@ public class SendMessageRequest extends SimpleCommunicationProtocolRequest<Messa
 	}
 
 	@Override
-	public MessageValue receiveResponse(Connection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, AccessDeniedError,
+	public MessageValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, AccessDeniedError, IllegalCommunicationProtocolException,
 			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
