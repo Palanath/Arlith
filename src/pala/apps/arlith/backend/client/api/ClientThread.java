@@ -72,6 +72,14 @@ public class ClientThread extends SimpleClientObject implements Named {
 			client().getRequestQueue());
 
 	private static final int REQUEST_BATCH_SIZE = 50;
+	/**
+	 * The cache of this {@link ClientThread}'s messages. This {@link List} is
+	 * synchronized. The very first message in the list represents the latest
+	 * message, i.e., as messages are sent, they are appended to the front of the
+	 * list.
+	 * 
+	 * TODO Verify this by checking client UI code.
+	 */
 	private final List<ClientMessage> messages = Collections.synchronizedList(new ArrayList<>());
 	private final ListCache<ClientUser> members = new ListCache<>(new GetThreadMembersRequest(new GIDValue(id())),
 			client()::cache, client().getRequestQueue());
@@ -151,6 +159,31 @@ public class ClientThread extends SimpleClientObject implements Named {
 		ArrayList<ClientMessage> res = new ArrayList<>(messages.subList(realFrom, realTo));
 		Collections.reverse(res);
 		return res;
+	}
+
+	public CompletableFuture<List<ClientMessage>> getRangeRequest(int from, int to) {
+		int total = messages.size();
+		CompletableFuture<?> prev;
+		if (from > to)
+			throw new IllegalArgumentException("Invalid range.");
+		else if (from == to)
+			return CompletableFuture.completedFuture(Collections.emptyList());
+		else
+			prev = to > total ? requestEarlierRequest(to - total) : CompletableFuture.completedFuture(null);
+		return prev.thenApply(a -> {
+			int t = messages.size(), rt = to, rf = from;
+			if (rt > t)
+				rt = t;
+			if (rf < 0)
+				rf = 0;
+
+			rf = t - rf;
+			rt = t - rt;
+
+			ArrayList<ClientMessage> res = new ArrayList<>(messages.subList(rf, rt));
+			Collections.reverse(res);
+			return res;
+		});
 	}
 
 	public int loadedSize() {
