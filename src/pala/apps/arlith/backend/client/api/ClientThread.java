@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
-import java.util.function.Function;
 
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.ListCache;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
-import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
@@ -137,11 +134,15 @@ public class ClientThread extends SimpleClientObject implements Named {
 	// Although the following two messages do not return CompletableFutures or have
 	// "request" counterparts, they still contact the server and make a request.
 
-	public List<ClientMessage> getLatest(int messages) {
+	public List<ClientMessage> getLatest(int messages)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		return getRange(0, messages);
 	}
 
-	public List<ClientMessage> getRange(int from, int to) {
+	public List<ClientMessage> getRange(int from, int to)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		int total = messages.size();
 		if (from > to)
 			throw new IllegalArgumentException("Invalid range.");
@@ -413,7 +414,6 @@ public class ClientThread extends SimpleClientObject implements Named {
 	 *                             this method represents.
 	 * @throws RuntimeException    If some, arbitrary {@link RuntimeException}
 	 *                             occurs while requesting earlier messages.
-	 *                             connection.
 	 */
 	public ClientMessage getMessage(GID message) throws SyntaxError, RateLimitError, ServerError, RestrictedError,
 			ObjectNotFoundError, AccessDeniedError, RuntimeException {
