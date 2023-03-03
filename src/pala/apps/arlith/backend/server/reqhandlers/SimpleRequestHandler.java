@@ -11,14 +11,22 @@ import pala.libs.generic.json.JSONObject;
 
 public abstract class SimpleRequestHandler<R extends CommunicationProtocolRequest<?>> implements RequestHandler {
 
-	private final Function<JSONObject, R> reifier;
+	public interface SRHFunc<F, T> {
+		T perform(F from) throws ClassCastException, UnknownCommStateException, BlockException;
 
-	public SimpleRequestHandler(Function<JSONObject, R> reifier) {
+		static <F, T> SRHFunc<F, T> from(Function<? super F, ? extends T> func) {
+			return func::apply;
+		}
+	}
+
+	private final SRHFunc<? super JSONObject, ? extends R> reifier;
+
+	public SimpleRequestHandler(SRHFunc<? super JSONObject, ? extends R> reifier) {
 		this.reifier = reifier;
 	}
 
-	public R reify(JSONObject req) {
-		return reifier.apply(req);
+	public R reify(JSONObject req) throws ClassCastException, UnknownCommStateException, BlockException {
+		return reifier.perform(req);
 	}
 
 	protected abstract void handle(R r, RequestConnection client)
