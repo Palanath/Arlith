@@ -235,6 +235,7 @@ public interface RequestConnection extends ClientConnection {
 	 */
 	default void sendError(CommunicationProtocolError error) throws UnknownCommStateException {
 		ArlithServer.getThreadLogger().err("Sending an error to the client: " + error.getClass().getSimpleName());
+		ArlithServer.getThreadLogger().err("vvv Error Message Below vvv");
 		ArlithServer.getThreadLogger().err(error);
 		error.send(getConnection());
 	}
