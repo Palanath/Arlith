@@ -1,8 +1,19 @@
 package pala.apps.arlith.backend.common.protocol.requests;
 
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.ChangeEmailError;
+import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -88,6 +99,19 @@ public class ChangePhoneNumberRequest extends SimpleCommunicationProtocolRequest
 	 */
 	public void setPhoneNumber(TextValue phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	@Override
+	public CompletionValue receiveResponse(Connection client) throws SyntaxError, RestrictedError, RateLimitError,
+			ServerError, CreateAccountError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
+		try {
+			return super.receiveResponse(client);
+		} catch (RateLimitError | SyntaxError | ServerError | RestrictedError | CreateAccountError e) {
+			throw e;
+		} catch (CommunicationProtocolError e) {
+			throw new IllegalCommunicationProtocolException(e);
+		}
 	}
 
 }

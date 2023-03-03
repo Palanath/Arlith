@@ -19,6 +19,8 @@ import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.Utilities.EmailIssue;
 import pala.apps.arlith.libraries.Utilities.PhoneNumberIssue;
 import pala.apps.arlith.libraries.Utilities.UsernameIssue;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
 /**
@@ -287,7 +289,7 @@ public class LogInScene extends ClientGUIFrontend.UserInterface implements LogIn
 	@Override
 	public void triggerLogIn() {
 		ArlithFrontend.getGuiLogger().dbg("Attempting to log in...");
-		presentation.lockUIForLoggingIn();
+		presentation.lockUI();
 		ArlithFrontend.getGuiLogger().dbg("(1) GUI Locked");
 		Thread t = new Thread(() -> {
 			String un = presentation.getInputValue(Input.LOGIN_IDENTIFIER),
@@ -302,20 +304,27 @@ public class LogInScene extends ClientGUIFrontend.UserInterface implements LogIn
 			} catch (LoginError e) {
 				presentation.showLoginProblem(e.getLoginError());
 				ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error: " + e.getLoginError());
-				presentation.unlockUIForLoggingIn();
+				presentation.unlockUI();
 				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
 				return;
 			} catch (LoginFailureException e) {
 				presentation.showLogInFailure(e);
-				presentation.unlockUIForLoggingIn();
+				presentation.unlockUI();
 				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
 				return;
 			} catch (MalformedServerResponseException e) {
 				ArlithFrontend.getGuiLogger().dbg("(E) Encountered log in error; " + e.getLocalizedMessage());
 				ArlithFrontend.getGuiLogger().err(e);
-				presentation.unlockUIForLoggingIn();
+				presentation.unlockUI();
 				ArlithFrontend.getGuiLogger().dbg("(L) Unlocking GUI...");
 				return;
+			} catch (BlockException | UnknownCommStateException e) {
+				ArlithFrontend.getGuiLogger().err(e);
+				presentation.unlockUI();
+				return;
+			} catch (Throwable e) {
+				presentation.unlockUI();
+				throw e;
 			}
 
 			getFrontend().setClient(client);

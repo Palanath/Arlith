@@ -1,14 +1,15 @@
 package pala.apps.arlith.backend.client.api;
 
+import static pala.apps.arlith.libraries.CompletableFutureUtils.getValueWithDefaultExceptions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
 
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.client.api.caching.Cache;
-import pala.apps.arlith.backend.client.api.caching.ClientCache;
-import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
+import pala.apps.arlith.backend.client.api.caching.v2.ListCache;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
@@ -19,6 +20,7 @@ import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.GetThreadMembersRequest;
 import pala.apps.arlith.backend.common.protocol.requests.GetThreadRequest;
 import pala.apps.arlith.backend.common.protocol.requests.RetrieveMessagesBeforeRequest;
@@ -30,8 +32,6 @@ import pala.apps.arlith.backend.common.protocol.types.ListValue;
 import pala.apps.arlith.backend.common.protocol.types.MessageValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
-import pala.libs.generic.JavaTools;
 import pala.libs.generic.generators.Generator;
 import pala.libs.generic.generators.NullstopGenerator;
 
@@ -55,36 +55,31 @@ import pala.libs.generic.generators.NullstopGenerator;
  *
  */
 public class ClientThread extends SimpleClientObject implements Named {
+
 	public ClientThread(GID gid, ArlithClient client) {
 		super(gid, client);
 	}
 
 	public ClientThread(ThreadValue thread, ArlithClient client) {
 		this(thread.id(), client);
-		this.name.populate(thread.name());
+		this.name.updateItem(thread.name());
 	}
 
-	private final Cache<String> name = new ClientCache<String>(() -> client().getRequestSubsystem()) {
+	private final NewCache<String> name = new NewCache<>(new GetThreadRequest(new GIDValue(id())), ThreadValue::name,
+			client().getRequestQueue());
 
-		@Override
-		protected String queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			return new GetThreadRequest(new GIDValue(id())).inquire(connection).name();
-		}
-	};
-//	private final Variable<String> name = new Variable<>();
 	private static final int REQUEST_BATCH_SIZE = 50;
+	/**
+	 * The cache of this {@link ClientThread}'s messages. This {@link List} is
+	 * synchronized. The very first message in the list represents the latest
+	 * message, i.e., as messages are sent, they are appended to the front of the
+	 * list.
+	 * 
+	 * TODO Verify this by checking client UI code.
+	 */
 	private final List<ClientMessage> messages = Collections.synchronizedList(new ArrayList<>());
-	private final Cache<List<ClientUser>> members = new ClientCache<List<ClientUser>>(
-			() -> client().getRequestSubsystem()) {
-
-		@Override
-		protected List<ClientUser> queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			return JavaTools.addAll(new GetThreadMembersRequest(new GIDValue(id())).inquire(connection),
-					client()::getUser, new ArrayList<>());
-		}
-	};
+	private final ListCache<ClientUser> members = new ListCache<>(new GetThreadMembersRequest(new GIDValue(id())),
+			client()::cache, client().getRequestQueue());
 
 	private volatile boolean reachedEnd;
 
@@ -109,15 +104,17 @@ public class ClientThread extends SimpleClientObject implements Named {
 //		}, () -> localityChecker.apply(this));
 //	}
 
-	public synchronized List<ClientUser> getMembers() throws CommunicationProtocolError, RuntimeException {
-		return getMembersRequest().get();
+	public List<ClientUser> getMembers()
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getMembersRequest(), ObjectNotFoundError.class, AccessDeniedError.class);
 	}
 
-	public synchronized ActionInterface<List<ClientUser>> getMembersRequest() {
-		return members.get().then((Function<List<ClientUser>, List<ClientUser>>) Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> getMembersRequest() {
+		return members.futureUnmodifiable();
 	}
 
-	public synchronized ClientMessage getMessageFromMessageValue(MessageValue msg) {
+	public ClientMessage getMessageFromMessageValue(MessageValue msg) {
 		if (!id().equals(msg.getOwnerThread().getGid()))
 			throw new IllegalArgumentException(
 					"You must provide a MessageValue that represents a message which belongs to this thread.");
@@ -137,13 +134,15 @@ public class ClientThread extends SimpleClientObject implements Named {
 	// Although the following two messages do not return CompletableFutures or have
 	// "request" counterparts, they still contact the server and make a request.
 
-	public synchronized List<ClientMessage> getLatest(int messages) throws SyntaxError, RateLimitError, ServerError,
-			RestrictedError, ObjectNotFoundError, AccessDeniedError, RuntimeException {
+	public List<ClientMessage> getLatest(int messages)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		return getRange(0, messages);
 	}
 
-	public synchronized List<ClientMessage> getRange(int from, int to) throws SyntaxError, RateLimitError, ServerError,
-			RestrictedError, ObjectNotFoundError, AccessDeniedError, RuntimeException {
+	public List<ClientMessage> getRange(int from, int to)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		int total = messages.size();
 		if (from > to)
 			throw new IllegalArgumentException("Invalid range.");
@@ -161,6 +160,31 @@ public class ClientThread extends SimpleClientObject implements Named {
 		ArrayList<ClientMessage> res = new ArrayList<>(messages.subList(realFrom, realTo));
 		Collections.reverse(res);
 		return res;
+	}
+
+	public CompletableFuture<List<ClientMessage>> getRangeRequest(int from, int to) {
+		int total = messages.size();
+		CompletableFuture<?> prev;
+		if (from > to)
+			throw new IllegalArgumentException("Invalid range.");
+		else if (from == to)
+			return CompletableFuture.completedFuture(Collections.emptyList());
+		else
+			prev = to > total ? requestEarlierRequest(to - total) : CompletableFuture.completedFuture(null);
+		return prev.thenApply(a -> {
+			int t = messages.size(), rt = to, rf = from;
+			if (rt > t)
+				rt = t;
+			if (rf < 0)
+				rf = 0;
+
+			rf = t - rf;
+			rt = t - rt;
+
+			ArrayList<ClientMessage> res = new ArrayList<>(messages.subList(rf, rt));
+			Collections.reverse(res);
+			return res;
+		});
 	}
 
 	public int loadedSize() {
@@ -237,54 +261,84 @@ public class ClientThread extends SimpleClientObject implements Named {
 		return Collections.unmodifiableList(messages.subList(from, to));
 	}
 
-	private int requestEarlier(int messages) throws SyntaxError, RateLimitError, ServerError, RestrictedError,
-			ObjectNotFoundError, AccessDeniedError, RuntimeException {
+//	private int requestEarlier(int messages) {
+//		if (reachedEnd)
+//			return 0;
+//		ListValue<MessageValue> res;
+//		try {
+//			if (this.messages.isEmpty())
+//				res = client().getRequestSubsystem()
+//						.action(new RetrieveMessagesRequest(new GIDValue(id()), new IntegerValue(messages))).get();
+//			else
+//				res = client().getRequestSubsystem().action(new RetrieveMessagesBeforeRequest(new GIDValue(id()),
+//						new IntegerValue(messages), new GIDValue(this.messages.get(0).id()))).get();
+//		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | ObjectNotFoundError
+//				| AccessDeniedError e) {
+//			throw e;
+//		} catch (CommunicationProtocolError e) {
+//			throw new IllegalCommunicationProtocolException(e);
+//		}
+//		List<ClientMessage> msg = new ArrayList<>(res.size());
+//		for (MessageValue a : res)
+//			msg.add(new ClientMessage(a.getId().getGid(), a.content(), a.getSenderUser().getGid(),
+//					a.getOwnerThread().getGid(), client()));
+//		this.messages.addAll(0, msg);
+//		if (res.size() < messages)
+//			reachedEnd = true;
+//		return res.size();
+//	}
+
+	private CompletableFuture<Integer> requestEarlierRequest(int messages) {
 		if (reachedEnd)
-			return 0;
-		ListValue<MessageValue> res;
-		try {
-			if (this.messages.isEmpty())
-				res = client().getRequestSubsystem()
-						.action(new RetrieveMessagesRequest(new GIDValue(id()), new IntegerValue(messages))).get();
-			else
-				res = client().getRequestSubsystem().action(new RetrieveMessagesBeforeRequest(new GIDValue(id()),
-						new IntegerValue(messages), new GIDValue(this.messages.get(0).id()))).get();
-		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | ObjectNotFoundError
-				| AccessDeniedError e) {
-			throw e;
-		} catch (CommunicationProtocolError e) {
-			throw new IllegalCommunicationProtocolException(e);
-		}
-		List<ClientMessage> msg = new ArrayList<>(res.size());
-		for (MessageValue a : res)
-			msg.add(new ClientMessage(a.getId().getGid(), a.content(), a.getSenderUser().getGid(),
-					a.getOwnerThread().getGid(), client()));
-		this.messages.addAll(0, msg);
-		if (res.size() < messages)
-			reachedEnd = true;
-		return res.size();
+			return CompletableFuture.completedFuture(0);
+		CompletableFuture<ListValue<MessageValue>> res;
+		if (this.messages.isEmpty())
+			res = client().getRequestQueue()
+					.queueFuture(new RetrieveMessagesRequest(new GIDValue(id()), new IntegerValue(messages)));
+		else
+			res = client().getRequestQueue().queueFuture(new RetrieveMessagesBeforeRequest(new GIDValue(id()),
+					new IntegerValue(messages), new GIDValue(this.messages.get(0).id())));
+		return res.thenApply(a -> {
+			List<ClientMessage> msgs = new ArrayList<>(a.size());
+			for (MessageValue mv : a)
+				msgs.add(new ClientMessage(mv, client()));
+			this.messages.addAll(0, msgs);
+			if (a.size() < messages)
+				reachedEnd = true;
+			return null;
+		});
 	}
 
-	public ActionInterface<ClientMessage> sendMessageRequest(String text) {
-		return client().getRequestSubsystem().action(new SendMessageRequest(new GIDValue(id()), new TextValue(text)))
-				.then((Function<MessageValue, ClientMessage>) a -> {
-					ClientMessage message = new ClientMessage(a, client());
-					synchronized (this) {
-						messages.add(message);
-					}
-					return message;
+	private int requestEarlier(int messages)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(requestEarlierRequest(messages), ObjectNotFoundError.class,
+				AccessDeniedError.class);
+	}
+
+	public CompletableFuture<ClientMessage> sendMessageRequest(String text) {
+		return client().getRequestQueue().queueFuture(new SendMessageRequest(new GIDValue(id()), new TextValue(text)))
+				.thenApply(a -> {
+					ClientMessage c = new ClientMessage(a, client());
+					// TODO Synchronize
+					messages.add(c);
+					return c;
 				});
 	}
 
-	public ClientMessage sendMessage(String text) throws CommunicationProtocolError, RuntimeException {
-		return sendMessageRequest(text).get();
+	public ClientMessage sendMessage(String text)
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(sendMessageRequest(text), ObjectNotFoundError.class,
+				AccessDeniedError.class);
 	}
 
 	/**
 	 * <p>
-	 * Called by the {@link ArlithClient} that owns this {@link ClientThread} when notice
-	 * that a new message has been made in this thread is received from the server
-	 * by the client. This method adds that message to this {@link ClientThread}.
+	 * Called by the {@link ArlithClient} that owns this {@link ClientThread} when
+	 * notice that a new message has been made in this thread is received from the
+	 * server by the client. This method adds that message to this
+	 * {@link ClientThread}.
 	 * </p>
 	 * <p>
 	 * Please note that no check is made to ensure that the provided event
@@ -315,12 +369,14 @@ public class ClientThread extends SimpleClientObject implements Named {
 		}
 	}
 
-	public ActionInterface<String> getNameRequest() {
-		return name.get();
+	public CompletableFuture<String> getNameRequest() {
+		return name.future();
 	}
 
-	public String getName() throws CommunicationProtocolError, RuntimeException {
-		return getNameRequest().get();
+	public String getName()
+			throws ObjectNotFoundError, AccessDeniedError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getNameRequest(), ObjectNotFoundError.class, AccessDeniedError.class);
 	}
 
 	/**
@@ -358,7 +414,6 @@ public class ClientThread extends SimpleClientObject implements Named {
 	 *                             this method represents.
 	 * @throws RuntimeException    If some, arbitrary {@link RuntimeException}
 	 *                             occurs while requesting earlier messages.
-	 *                             connection.
 	 */
 	public ClientMessage getMessage(GID message) throws SyntaxError, RateLimitError, ServerError, RestrictedError,
 			ObjectNotFoundError, AccessDeniedError, RuntimeException {
@@ -394,13 +449,14 @@ public class ClientThread extends SimpleClientObject implements Named {
 	 * but not all of its properties (i.e., its name) were queried from the server
 	 * yet. This is actually the usual way that most threads are retrieved. However,
 	 * in some cases, these {@link ClientThread} objects may already exist in a
-	 * {@link ArlithClient} but the {@link ArlithClient} may later receive a {@link ThreadValue}
-	 * representing these same, loaded threads from the server. In this case, the
-	 * threads' names (and other properties, if any more), may not have been set in
-	 * the {@link ClientThread} objects but have been received from the server in
-	 * the {@link ThreadValue} objects. This method is called by the client in this
-	 * case to set those received properties, so that the client doesn't have to
-	 * make another request if it needs the already received information later on.
+	 * {@link ArlithClient} but the {@link ArlithClient} may later receive a
+	 * {@link ThreadValue} representing these same, loaded threads from the server.
+	 * In this case, the threads' names (and other properties, if any more), may not
+	 * have been set in the {@link ClientThread} objects but have been received from
+	 * the server in the {@link ThreadValue} objects. This method is called by the
+	 * client in this case to set those received properties, so that the client
+	 * doesn't have to make another request if it needs the already received
+	 * information later on.
 	 * </p>
 	 * <p>
 	 * This method simply checks if {@link #name} has been set. If it hasn't, then
@@ -413,7 +469,7 @@ public class ClientThread extends SimpleClientObject implements Named {
 	 */
 	public void update(ThreadValue thread) {
 		if (!name.isPopulated())
-			name.populate(thread.name());
+			name.updateItem(thread.name());
 	}
 
 }

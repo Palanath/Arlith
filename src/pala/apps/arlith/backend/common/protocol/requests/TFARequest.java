@@ -12,7 +12,9 @@ import pala.apps.arlith.backend.common.protocol.errors.TFARequiredError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -50,9 +52,10 @@ public class TFARequest extends SimpleCommunicationProtocolRequest<AuthTokenValu
 	}
 
 	@Override
-	public AuthTokenValue receiveResponse(CommunicationConnection client)
+	public AuthTokenValue receiveResponse(Connection client)
 			throws TFAError, TFARequiredError, SyntaxError, RateLimitError, ServerError,
-			InvalidConnectionStateError, RestrictedError, IllegalCommunicationProtocolException {
+			InvalidConnectionStateError, RestrictedError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		// TODO Auto-generated method stub
 		try {
 			return super.receiveResponse(client);

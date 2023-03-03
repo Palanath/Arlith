@@ -1,31 +1,40 @@
 package pala.apps.arlith.backend.client.api;
 
+import static pala.apps.arlith.libraries.CompletableFutureUtils.getValueWithDefaultExceptions;
+
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
-import pala.apps.arlith.backend.client.api.caching.Cache;
-import pala.apps.arlith.backend.client.api.caching.ClientCache;
-import pala.apps.arlith.backend.client.api.caching.WatchableCache;
-import pala.apps.arlith.backend.client.api.caching.WatchableCache.Populator;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
+import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
 import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.MediaNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.GetProfileIconRequest;
 import pala.apps.arlith.backend.common.protocol.requests.GetUserRequest;
 import pala.apps.arlith.backend.common.protocol.requests.OpenDirectConversationRequest;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.apps.arlith.libraries.streams.InputStream;
-import pala.apps.arlith.libraries.watchables.Variable;
-import pala.apps.arlith.libraries.watchables.View;
+import pala.apps.arlith.libraries.watchables.Watchable;
 
 public class ClientUser extends SimpleClientObject implements Named {
 
@@ -64,26 +73,34 @@ public class ClientUser extends SimpleClientObject implements Named {
 		return i;
 	}
 
+	public static Image getBaseProfileIcon(double hueShift) {
+		Image i = getBaseProfileIcon();
+		WritableImage img = new WritableImage((int) i.getWidth(), (int) i.getHeight());
+		for (int j = 0; j < img.getWidth(); j++)
+			for (int j2 = 0; j2 < img.getHeight(); j2++) {
+				Color c = i.getPixelReader().getColor(j, j2);
+				img.getPixelWriter().setColor(j, j2, Color.hsb(hueShift, 1, c.getBrightness(), c.getOpacity()));
+			}
+		return img;
+	}
+
 	protected final WatchableCache<String> username, status, discriminant;
 	protected final WatchableCache<Long> messageCount;
 
 	{
-		Populator pop = new Populator() {
-
-			@Override
-			public void populate(CommunicationConnection connection)
-					throws CommunicationProtocolError, RuntimeException {
-				UserValue inq = new GetUserRequest(new GIDValue(id())).inquire(connection);
-				username.populate(inq.username());
-				status.populate(inq.status());
-				messageCount.populate(inq.messageCount());
-				discriminant.populate(inq.discriminant());
-			}
+		Function<UserValue, UserValue> update = uv -> {
+			((ClientUser) this).username.updateItem(uv.username());
+			((ClientUser) this).status.updateItem(uv.status());
+			((ClientUser) this).messageCount.updateItem(uv.messageCount());
+			((ClientUser) this).discriminant.updateItem(uv.discriminant());
+			return uv;
 		};
-		username = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		status = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		messageCount = new WatchableCache<>(client()::getRequestSubsystem, pop);
-		discriminant = new WatchableCache<>(client()::getRequestSubsystem, pop);
+		GetUserRequest req = new GetUserRequest(new GIDValue(id()));
+
+		username = new WatchableCache<>(req, update.andThen(UserValue::username), client().getRequestQueue());
+		status = new WatchableCache<>(req, update.andThen(UserValue::status), client().getRequestQueue());
+		messageCount = new WatchableCache<>(req, update.andThen(UserValue::messageCount), client().getRequestQueue());
+		discriminant = new WatchableCache<>(req, update.andThen(UserValue::discriminant), client().getRequestQueue());
 	}
 
 	/**
@@ -118,66 +135,51 @@ public class ClientUser extends SimpleClientObject implements Named {
 		if (m != null)
 			return new Image(new ByteArrayInputStream(m.getMedia()));
 		else {
-			Image i = getBaseProfileIcon();
-			WritableImage img = new WritableImage((int) i.getWidth(), (int) i.getHeight());
-
 			double namehash = 0;
 			for (char c : identifier.toCharArray())
 				namehash += c;
-			namehash /= identifier.length();
 
-			double hueshift = namehash * 360;
-			for (int j = 0; j < img.getWidth(); j++)
-				for (int j2 = 0; j2 < img.getHeight(); j2++) {
-					Color c = i.getPixelReader().getColor(j, j2);
-					img.getPixelWriter().setColor(j, j2, Color.hsb(hueshift, 1, c.getBrightness(), c.getOpacity()));
-				}
-			return img;
+			return getBaseProfileIcon(namehash / identifier.length() * 360);
 		}
 	}
 
-	protected final Cache<ClientThread> dmThread = new ClientCache.ClientCacheMaker<>(client()::getRequestSubsystem,
-			a -> client().getThread(new OpenDirectConversationRequest(new GIDValue(id())).inquire(a).getGid()));
-	protected final WatchableCache<Image> profileIcon = new WatchableCache<>(client()::getRequestSubsystem, a -> {
-		GetProfileIconRequest req = new GetProfileIconRequest(new GIDValue(id()));
-		req.sendRequest(a);
-		PieceOMediaValue m = req.receiveResponse(a);
-		// The media is optional; this user might not have a pfp (in which case we need
-		// to calculate one).
+	protected final NewCache<ClientThread> dmThread = new NewCache<>(
+			new OpenDirectConversationRequest(new GIDValue(id())), a -> client().getThread(a.getGid()),
+			client().getRequestQueue());
 
-		return getProfileImage(m, getIdentifier());
-	});
+	/**
+	 * {@link WatchableCache} of the user's profile icon. Contains <code>null</code>
+	 * until queried. Upon successful population, the cache will contain either an
+	 * {@link Image} returned from the server or a newly made {@link WritableImage}
+	 * made from {@link #getProfileImage(PieceOMediaValue, String)} with this
+	 * {@link ClientUser}'s {@link #idHex()} as an identifier.
+	 */
+	protected final WatchableCache<Image> profileIcon = new WatchableCache<>(
+			new GetProfileIconRequest(new GIDValue(id())), a -> getProfileImage(a, idHex()),
+			client().getRequestQueue());
 
-	public View<String> usernameView() {
+	public Watchable<String> usernameView() {
 		return username.getView();
 	}
 
-	public View<String> statusView() {
+	public Watchable<String> statusView() {
 		return status.getView();
 	}
 
-	public View<Long> messageCountView() {
+	public Watchable<Long> messageCountView() {
 		return messageCount.getView();
 	}
 
-	public View<String> discriminantView() {
+	public Watchable<String> discriminantView() {
 		return discriminant.getView();
 	}
 
-	public View<Image> profileIconView() {
+	public Watchable<Image> profileIconView() {
 		return profileIcon.getView();
 	}
 
-	/**
-	 * Boolean to denote whether this user has a profile icon set. This does not
-	 * denote whether one the pfi of this user has been requested and obtained
-	 * successfully. That information can be determined with the expression:
-	 * <code>(profileIcon != null)</code>.
-	 */
-	private final Variable<Boolean> hasProfileIcon = new Variable<>(false);
-
-	public View<Boolean> hasProfileIconView() {
-		return hasProfileIcon.getView();
+	public Watchable<Boolean> hasProfileIconView() {
+		return profileIcon.expression(a -> !(a instanceof WritableImage));
 	}
 
 	public ClientUser(GID gid, ArlithClient client) {
@@ -187,14 +189,14 @@ public class ClientUser extends SimpleClientObject implements Named {
 	public ClientUser(GID gid, ArlithClient client, String username, String status, long messageCount,
 			String discriminant) {
 		this(gid, client);
-		this.username.populate(username);
-		this.status.populate(status);
-		this.messageCount.populate(messageCount);
-		this.discriminant.populate(discriminant);
+		this.username.updateItem(username);
+		this.status.updateItem(status);
+		this.messageCount.updateItem(messageCount);
+		this.discriminant.updateItem(discriminant);
 	}
 
-	public ActionInterface<String> getNameRequest() {
-		return username.get();
+	public CompletableFuture<String> getNameRequest() {
+		return username.future();
 	}
 
 	/**
@@ -217,52 +219,66 @@ public class ClientUser extends SimpleClientObject implements Named {
 		return name + getDiscriminant();
 	}
 
-	public String getName() throws CommunicationProtocolError, RuntimeException {
-		return getNameRequest().get();
+	public String getName()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getNameRequest(), AccessDeniedError.class, ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<String> getStatusRequest() {
-		return status.get();
+	public CompletableFuture<String> getStatusRequest() {
+		return status.future();
 	}
 
-	public String getStatus() throws CommunicationProtocolError, RuntimeException {
-		return getStatusRequest().get();
+	public String getStatus()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getStatusRequest(), AccessDeniedError.class, ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Long> getMessageCountRequest() {
-		return messageCount.get();
+	public CompletableFuture<Long> getMessageCountRequest() {
+		return messageCount.future();
 	}
 
-	public long getMessageCount() throws CommunicationProtocolError, RuntimeException {
-		return getMessageCountRequest().get();
+	public long getMessageCount()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getMessageCountRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<String> getDiscriminantRequest() {
-		return discriminant.get();
+	public CompletableFuture<String> getDiscriminantRequest() {
+		return discriminant.future();
 	}
 
-	public String getDiscriminant() throws CommunicationProtocolError, RuntimeException {
-		return getDiscriminantRequest().get();
+	public String getDiscriminant()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getDiscriminantRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Void> friendRequest() {
+	public CompletableFuture<Void> friendRequest() {
 		return client().friendRequest(id());
 	}
 
-	public void friend() throws CommunicationProtocolError, RuntimeException {
+	public void friend() throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
 		client().friend(id());
 	}
 
-	public ActionInterface<ClientThread> openDirectConversationRequest() {
-		return dmThread.get();
+	public CompletableFuture<ClientThread> openDirectConversationRequest() {
+		return dmThread.future();
 	}
 
-	public ClientThread openDirectConversation() throws CommunicationProtocolError, RuntimeException {
-		return openDirectConversationRequest().get();
+	public ClientThread openDirectConversation()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(openDirectConversationRequest(), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
 	public void receiveStatusChangeEvent(StatusChangedEvent event) {
-		status.update(event.getNewStatus().getValue());
+		status.updateItem(event.getNewStatus().getValue());
 	}
 
 	public void receiveLazyProfileIconChangeEvent(LazyProfileIconChangedEvent event) {
@@ -293,40 +309,38 @@ public class ClientUser extends SimpleClientObject implements Named {
 	 * </p>
 	 */
 	protected final void refreshProfileIcon() {
-		if (profileIcon != null)
-			try {
-				PieceOMediaValue m = client().getRequestSubsystem()
-						.action(new GetProfileIconRequest(new GIDValue(id()))).get();
-				profileIcon.update(getProfileImage(m, getIdentifier()));
-			} catch (RuntimeException | CommunicationProtocolError e) {
-				B: {
-					try {
-						client().getLogger()
-								.err("Failed to obtain the changed profile icon of the user " + username.get() == null
-										? String.valueOf(id())
-										: username.get().get());
-					} catch (CommunicationProtocolError | RuntimeException e1) {
-						e1.addSuppressed(e);
-						client().getLogger().err(e1);
-						break B;
-					}
-					client().getLogger().err(e);
-				}
-			}
+		if (profileIcon.isPopulated()) {
+			client().getRequestQueue().queueFuture(new GetProfileIconRequest(new GIDValue(id())))
+					.thenAccept(a -> profileIcon.updateItem(getProfileImage(a, idHex()))).exceptionally(a -> {
+						try {
+							client().getLogger().err(
+									"Failed to obtain the changed profile icon of the user " + username.get() == null
+											? String.valueOf(id())
+											: getName());
+						} catch (CommunicationProtocolError | RuntimeException e) {
+							e.addSuppressed(a);
+							client().getLogger().err("Failed to obtain the changed profile icon of user with ID: "
+									+ idHex() + ". Also failed to obtain their username.");
+							client().getLogger().err(e);
+						}
+						return null;
+					});
+		}
 	}
 
-	public Image getProfileIcon() throws CommunicationProtocolError, RuntimeException {
-		return getProfileIconRequest().get();
+	public Image getProfileIcon() throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getProfileIconRequest(), MediaNotFoundError.class);
 	}
 
-	public boolean hasProfileIcon() throws CommunicationProtocolError, RuntimeException {
-		if (profileIcon.get() == null)
-			getProfileIcon();
-		return hasProfileIcon.getValue();
+	public boolean hasProfileIcon()
+			throws MediaNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return !(getProfileIcon() instanceof WritableImage);
 	}
 
-	public ActionInterface<Image> getProfileIconRequest() {
-		return profileIcon.get();
+	public CompletableFuture<Image> getProfileIconRequest() {
+		return profileIcon.future();
 	}
 
 }

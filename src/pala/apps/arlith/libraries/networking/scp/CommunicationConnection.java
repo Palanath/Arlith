@@ -19,6 +19,7 @@ import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Communicator;
 import pala.apps.arlith.libraries.networking.Connection;
 import pala.apps.arlith.libraries.networking.UnknownCommStateException;
+import pala.apps.arlith.libraries.networking.encryption.EncryptedConnection;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.libraries.streams.InputStream;
 import pala.apps.arlith.libraries.streams.OutputStream;
@@ -26,6 +27,27 @@ import pala.libs.generic.events.EventManager;
 import pala.libs.generic.events.EventSystem;
 import pala.libs.generic.json.JSONValue;
 
+/**
+ * <p>
+ * A {@link Connection} implementation that restarts itself in the case of
+ * failure. When {@link #start() started}, this class creates a new
+ * {@link Communicator} that connects to the specified {@link #setPort(int)
+ * port} and {@link #setAddress(InetAddress) address}. Whenever a
+ * <code>send</code> or <code>read</code> method is called while the object is
+ * in operation, if the method results in a connection error, the
+ * {@link Communicator} implementation is {@link #restartConnectionOnError()
+ * restarted} and the method is retried until it succeeds (or until the
+ * {@link CommunicationConnection} is {@link #close() closed}).
+ * </p>
+ * <p>
+ * Note that this class uses a {@link Communicator} to perform the actual
+ * underlying communicating, so the data sent and received is encrypted using
+ * the protocols of {@link EncryptedConnection}.
+ * </p>
+ * 
+ * @author Palanath
+ *
+ */
 public class CommunicationConnection implements EventSystem<ClientEvent>, Connection {
 
 	// TODO Add reading method that takes a max size param.
@@ -151,74 +173,92 @@ public class CommunicationConnection implements EventSystem<ClientEvent>, Connec
 			}
 	}
 
+	@Override
 	public void writeVariableBlock(InputStream is) {
 		write((AtomicWrite) a -> a.writeVariableBlock(is));
 	}
 
+	@Override
 	public void writeVariableBlock(byte[] b) {
 		write(a -> a.writeVariableBlock(b));
 	}
 
+	@Override
 	public void readVariableBlock(OutputStream acceptor) {
 		write(a -> a.readVariableBlock(acceptor));
 	}
 
+	@Override
 	public byte[] readBlockShort() {
 		return act(Communicator::readBlockShort);
 	}
 
+	@Override
 	public byte[] readBlockShort(short maxLen) {
 		return act(a -> a.readBlockShort(maxLen));
 	}
 
+	@Override
 	public byte[] readBlockLong() {
 		return act(Communicator::readBlockLong);
 	}
 
+	@Override
 	public byte[] readBlockLong(int maxLen) {
 		return act(a -> a.readBlockLong(maxLen));
 	}
 
+	@Override
 	public void writeBlockShort(byte[] b) {
 		write(a -> a.writeBlockShort(b));
 	}
 
+	@Override
 	public void writeBlock(byte[] b) {
 		write(a -> a.writeBlock(b));
 	}
 
+	@Override
 	public void sendStringShort(String s) {
 		write(a -> a.sendStringShort(s));
 	}
 
+	@Override
 	public void sendString(String s) {
 		write(a -> a.sendString(s));
 	}
 
+	@Override
 	public String readStringShort() {
 		return act(Communicator::readStringShort);
 	}
 
+	@Override
 	public String readStringShort(int lim) {
 		return act(a -> a.readStringShort(lim));
 	}
 
+	@Override
 	public String readString() {
 		return act(Communicator::readString);
 	}
 
+	@Override
 	public String readString(int lim) {
 		return act(a -> a.readString(lim));
 	}
 
+	@Override
 	public void sendJSON(JSONValue value) {
 		write(a -> a.sendJSON(value));
 	}
 
+	@Override
 	public JSONValue readJSON() {
 		return act(Communicator::readJSON);
 	}
 
+	@Override
 	public JSONValue readJSON(int lim) {
 		return act(a -> a.readJSON(lim));
 	}
@@ -294,6 +334,7 @@ public class CommunicationConnection implements EventSystem<ClientEvent>, Connec
 		}
 	}
 
+	@Override
 	public void close() {
 		Socket s = sock;
 		sock = null;

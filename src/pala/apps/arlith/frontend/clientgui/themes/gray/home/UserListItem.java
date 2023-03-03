@@ -1,12 +1,17 @@
 package pala.apps.arlith.frontend.clientgui.themes.gray.home;
 
-import java.time.Duration;
+import static pala.libs.generic.strings.StringTools.format;
+import static pala.libs.generic.strings.StringTools.NumberUnit.SECONDS;
 
+import java.math.BigInteger;
+
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,11 +23,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import pala.libs.generic.strings.StringTools.NumberUnit;
 
 public class UserListItem {
 
+	private static final boolean geq(BigInteger first, NumberUnit second) {
+		return first.compareTo(second.getAmt()) >= 0;
+	}
+
 	private static final Color LAST_MESSAGE_COLOR = Color.gray(.5412),
 			TIME_SINCE_LAST_MESSAGE_COLOR = Color.color(.21176470588, .55294117647, 0);
+
+	/**
+	 * The time in seconds from the epoch since the last message in the channel
+	 * associated with this {@link UserListItem} was sent.
+	 */
+	private final ObjectProperty<Long> timeSinceLastMessage = new SimpleObjectProperty<>();
 
 	private final ImageView icon = new ImageView();
 	{
@@ -39,8 +55,35 @@ public class UserListItem {
 		HBox.setHgrow(spacer, Priority.SOMETIMES);
 	}
 	private final Text time = new Text();
+
+	private static final NumberUnit YEARS = NumberUnit.YEARS.adjust(SECONDS),
+			MONTHS = NumberUnit.MONTHS.adjust(SECONDS), WEEKS = NumberUnit.WEEKS.adjust(SECONDS),
+			DAYS = NumberUnit.DAYS.adjust(SECONDS), HOURS = NumberUnit.HOURS.adjust(SECONDS),
+			MINUTES = NumberUnit.MINUTES.adjust(SECONDS);
 	{
 		time.setFill(TIME_SINCE_LAST_MESSAGE_COLOR);
+		time.textProperty().bind(Bindings.createStringBinding(() -> {
+			if (getTimeSinceLastMessage() == null)
+				return "";
+			BigInteger t = BigInteger.valueOf(getTimeSinceLastMessage());
+			String res;
+			if (geq(t, YEARS))
+				// Show years & months.
+				res = format(t, " ", MONTHS, YEARS);
+			else if (geq(t, MONTHS))
+				res = format(t, " ", DAYS, MONTHS);
+			else if (geq(t, WEEKS))
+				res = format(t, " ", DAYS, WEEKS);
+			else if (geq(t, DAYS))
+				res = format(t, " ", DAYS);
+			else if (geq(t, HOURS))
+				res = format(t, " ", MINUTES, HOURS);
+			else if (geq(t, MINUTES))
+				res = format(t, " ", MINUTES);
+			else
+				res = "<1m";
+			return res + " ago";
+		}, timeSinceLastMessageProperty()));
 	}
 	private final HBox header = new HBox(name, spacer, time);
 	private final Label lastMessage = new Label();
@@ -62,8 +105,16 @@ public class UserListItem {
 		root.setPrefHeight(32);
 	}
 
-	private final ObjectProperty<Duration> timeSinceLastMessage = new SimpleObjectProperty<Duration>();
-	// TODO Bind time's text property with a function of timeSinceLastMessage
+	/**
+	 * The root element which contains the whole of this {@link UserListItem}'s
+	 * graphical node hierarchy. This element can be added to another {@link Parent}
+	 * to allow the {@link UserListItem} to be shown.
+	 * 
+	 * @return The root node of this {@link UserListItem}.
+	 */
+	public HBox getRoot() {
+		return root;
+	}
 
 	public final ObjectProperty<Image> profileIconProperty() {
 		return icon.imageProperty();
@@ -89,15 +140,15 @@ public class UserListItem {
 		this.usernameProperty().set(username);
 	}
 
-	public final ObjectProperty<Duration> timeSinceLastMessageProperty() {
+	public final ObjectProperty<Long> timeSinceLastMessageProperty() {
 		return this.timeSinceLastMessage;
 	}
 
-	public final Duration getTimeSinceLastMessage() {
+	public final Long getTimeSinceLastMessage() {
 		return this.timeSinceLastMessageProperty().get();
 	}
 
-	public final void setTimeSinceLastMessage(final Duration timeSinceLastMessage) {
+	public final void setTimeSinceLastMessage(final Long timeSinceLastMessage) {
 		this.timeSinceLastMessageProperty().set(timeSinceLastMessage);
 	}
 

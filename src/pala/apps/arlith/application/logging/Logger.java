@@ -132,4 +132,36 @@ public interface Logger {
 		}
 	};
 
+	/**
+	 * Prints all logged messages except error messages to {@link System#out
+	 * stdout}. Error messages are printed to {@link System#err sdterr} .
+	 */
+	static Logger STD = new Logger() {
+
+		@Override
+		public void wrn(String text) {
+			System.out.println(text);
+		}
+
+		@Override
+		public void std(String text) {
+			System.out.println(text);
+		}
+
+		@Override
+		public void print(String text) {
+			System.out.println(text);
+		}
+
+		@Override
+		public void err(String text) {
+			System.err.println(text);
+		}
+
+		@Override
+		public void dbg(String text) {
+			System.out.println(text);
+		}
+	};
+
 }

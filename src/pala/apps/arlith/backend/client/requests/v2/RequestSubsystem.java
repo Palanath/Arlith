@@ -7,7 +7,28 @@ import pala.apps.arlith.backend.client.requests.Inquiry;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
-public interface RequestSubsystemInterface {
+/**
+ * <p>
+ * The subsystem underlying Arlith's client that handles all requests the client
+ * makes to the server. A {@link RequestSubsystem} manages a
+ * {@link CommunicationConnection}, (or possibly even a set of
+ * {@link CommunicationConnection}s), to the server, through which
+ * {@link Inquiry Inquiries} are sent and responses are received.
+ * </p>
+ * <p>
+ * {@link RequestSubsystem}s are used to manage and organize the sending of
+ * requests over the connection(s) (assuring that no two <i>send</i> calls are
+ * made in a row over the same connection, without an interposed <i>receive</i>
+ * call; synchronizing code executing on the connection, etc.), to facilitate
+ * sending requests and receiving responses by the client without having to
+ * worry about organization and synchronization.
+ * </p>
+ * 
+ * @author Palanath
+ *
+ */
+public interface RequestSubsystem {
+
 	/**
 	 * Produces an {@link ActionInterface} that represents the act of making the
 	 * specified {@link Inquiry} to the server. If this inquiry fails, the
@@ -28,8 +49,8 @@ public interface RequestSubsystemInterface {
 	 * {@link ActionInterface} may have already completed with the value specified,
 	 * although implementations can choose to determine whether this
 	 * {@link ActionInterface} is returned having been completed, or if it must be
-	 * queued in the {@link RequestSubsystemInterface} (and, thus, "executed" by a
-	 * thread). This method does not fail (except for VM runtime errors), and the
+	 * queued in the {@link RequestSubsystem} (and, thus, "executed" by a thread).
+	 * This method does not fail (except for VM runtime errors), and the
 	 * {@link ActionInterface} itself should never complete exceptionally (also
 	 * except for VM runtime errors).
 	 * </p>

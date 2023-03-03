@@ -20,6 +20,7 @@ public interface Watcher<V> {
 	 * {@link #watch(Object, Object, Watchable)} calls
 	 * {@link #watch(Object, Object)} if information pertaining to the
 	 * {@link Watchable} that changed is not needed during response to the change.
+	 * </p>
 	 * 
 	 * @param previousValue The previous value of the {@link Watchable}.
 	 * @param newValue      The new value of the {@link Watchable}.

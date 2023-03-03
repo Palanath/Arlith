@@ -12,7 +12,9 @@ import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -152,11 +154,12 @@ public class ChangeEmailRequest extends SimpleCommunicationProtocolRequest<Compl
 	}
 
 	@Override
-	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws RateLimitError, SyntaxError, ServerError, ChangeEmailError, IllegalCommunicationProtocolException {
+	public CompletionValue receiveResponse(Connection client) throws RateLimitError, SyntaxError, ServerError,
+			RestrictedError, ChangeEmailError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
-		} catch (RateLimitError | SyntaxError | ServerError | ChangeEmailError e) {
+		} catch (RateLimitError | SyntaxError | RestrictedError | ServerError | ChangeEmailError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);

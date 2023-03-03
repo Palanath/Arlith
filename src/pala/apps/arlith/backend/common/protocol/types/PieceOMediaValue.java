@@ -91,13 +91,16 @@ public class PieceOMediaValue implements CommunicationProtocolType {
 	 * {@link CommunicationProtocolRequest#build(JSONObject)} method, for example,
 	 * {@link SetProfileIconRequest#build(JSONObject)}. Then the auxiliary data is
 	 * sent in the
-	 * {@link SetProfileIconRequest#sendAuxiliaryData(CommunicationConnection)} method.
+	 * {@link SetProfileIconRequest#sendAuxiliaryData(CommunicationConnection)}
+	 * method.
 	 * </p>
 	 * 
-	 * @param connection
+	 * @param connection The {@link Connection} to send the auxiliary data over.
+	 * @throws UnknownCommStateException If an {@link UnknownCommStateException}
+	 *                                   occurs while attempting to write to the
+	 *                                   provided {@link Connection}.
 	 */
-	@SuppressWarnings("javadoc")
-	public void sendAuxiliaryData(CommunicationConnection connection) {
+	public void sendAuxiliaryData(Connection connection) throws UnknownCommStateException {
 		connection.writeBlock(media);
 	}
 

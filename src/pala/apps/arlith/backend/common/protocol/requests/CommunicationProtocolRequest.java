@@ -11,8 +11,9 @@ import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
+import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Connection;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -38,9 +39,9 @@ import pala.libs.generic.json.JSONValue;
  * <p>
  * {@link CommunicationProtocolRequest}s may then, <i>optionally</i>, send
  * additional data, (referred to as <i>auxiliary data</i>), to the server
- * through {@link #sendAuxiliaryData(CommunicationConnection)}. For requests that
- * need this, this is most often images, videos, audio data, or other forms of
- * bulk or arbitrary data.
+ * through {@link #sendAuxiliaryData(Connection)}. For requests that need this,
+ * this is most often images, videos, audio data, or other forms of bulk or
+ * arbitrary data.
  * </p>
  * <p>
  * Thereby, not all {@link CommunicationProtocolRequest}s can be represented
@@ -76,7 +77,7 @@ import pala.libs.generic.json.JSONValue;
  * classes would have constructors that would populate the request to a valid
  * state. (So a {@link ChangeEmailRequest} would have a constructor that takes
  * an email.) Some classes would have multiple constructors, for convenience, or
- * if they could be parameterized in multiple ways.
+ * if such objects could be parameterized in multiple ways.
  * <ul>
  * <li>The constructor(s) would (each) call either
  * {@link #CommunicationProtocolRequest(TextValue)} or
@@ -95,35 +96,36 @@ import pala.libs.generic.json.JSONValue;
  * for chaining convenience.</li>
  * <li><b>A {@link #build(JSONObject)} override</b> that adds all of the
  * JSON-able arguments of the request to the JSON package.</li>
- * <li><b>Possibly, a {@link #sendAuxiliaryData(CommunicationConnection)} override
- * that sends additional data over the network.</b></li>
- * <li><b>A {@link #parseReturnValue(JSONValue, CommunicationConnection)}
- * override</b> that receives the JSON response package and the connection from
- * which the response is being received and parses the <code>R</code> response
- * value from the server. That method <i>should not modify the state of this
- * object</i> and can only return a {@link CommunicationProtocolType}, so typically it either
- * looks like a call <code>new R(json)</code> if no auxiliary data is being
- * received in the server's response or <code>new R(json, connection)</code> if
- * auxiliary data is needed to build the response {@link CommunicationProtocolType}, where
+ * <li><b>Possibly, a {@link #sendAuxiliaryData(Connection)} override that sends
+ * additional data over the network.</b></li>
+ * <li><b>A {@link #parseReturnValue(JSONValue, Connection)} override</b> that
+ * receives the JSON response package and the connection from which the response
+ * is being received and parses the <code>R</code> response value from the
+ * server. That method <i>should not modify the state of this object</i> and can
+ * only return a {@link CommunicationProtocolType}, so typically it either looks
+ * like a call <code>new R(json)</code> if no auxiliary data is being received
+ * in the server's response or <code>new R(json, connection)</code> if auxiliary
+ * data is needed to build the response {@link CommunicationProtocolType}, where
  * <code>json</code> is the received JSON response package and
  * <code>connection</code> is the connection over which the request is being
  * received.</li>
- * <li><b>An override of {@link #receiveResponse(CommunicationConnection)}</b> that
+ * <li><b>An override of {@link #receiveResponse(Connection)}</b> that
  * <code>throws</code> the types of {@link CommunicationProtocolError}s that the
- * server is allowed to respond with, as well {@link IllegalCommunicationProtocolException}. The
- * method's behavior should be changed to simply <code>try</code> a call to the
- * super method,
- * {@link CommunicationProtocolRequest#receiveResponse(CommunicationConnection)},
- * and then <code>catch</code> the types of {@link CommunicationProtocolError}s
- * the server is allowed to respond with and explicitly rethrow them. The
+ * server is allowed to respond with, as well
+ * {@link IllegalCommunicationProtocolException}. The method's behavior should
+ * be changed to simply <code>try</code> a call to the super method,
+ * {@link CommunicationProtocolRequest#receiveResponse(Connection)}, and then
+ * <code>catch</code> the types of {@link CommunicationProtocolError}s the
+ * server is allowed to respond with and explicitly rethrow them. The
  * <code>try</code> block should then <code>catch</code> all other
- * {@link CommunicationProtocolError}s and throw an {@link IllegalCommunicationProtocolException}
- * wrapping them. For example, for a request that can throw
- * {@link SyntaxError}s, {@link ServerError}s, {@link RateLimitError}s, and
- * {@link ObjectNotFoundError}s, the method would look like this:
+ * {@link CommunicationProtocolError}s and throw an
+ * {@link IllegalCommunicationProtocolException} wrapping them. For example, for
+ * a request that can throw {@link SyntaxError}s, {@link ServerError}s,
+ * {@link RateLimitError}s, and {@link ObjectNotFoundError}s, the method would
+ * look like this:
  * 
  * <pre>
- * <code>public R receiveResponse({@link CommunicationConnection} client) throws {@link SyntaxError}, {@link ServerError},
+ * <code>public R receiveResponse({@link Connection} client) throws {@link SyntaxError}, {@link ServerError},
  * 		{@link RateLimitError}, {@link ObjectNotFoundError}, {@link IllegalCommunicationProtocolException} {
  * 	try {
  * 		return super.receiveResponse(client);
@@ -268,8 +270,8 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	 * </p>
 	 * <p>
 	 * This JSON package is created and sent <i>first</i> when
-	 * {@link #sendRequest(CommunicationConnection)} is called. This method can be
-	 * called multiple times freely, and should not modify the state of this object.
+	 * {@link #sendRequest(Connection)} is called. This method can be called
+	 * multiple times freely, and should not modify the state of this object.
 	 * </p>
 	 * 
 	 * @return A new {@link JSONObject} that represents the JSON package to be sent
@@ -305,12 +307,15 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	/**
 	 * Sends this {@link CommunicationProtocolRequest} over the connection to the
 	 * server. This method sends the {@link CommunicationProtocolRequest}'s JSON
-	 * data package and then calls {@link #sendAuxiliaryData(CommunicationConnection)}
-	 * to send any auxiliary data that the request may need to forward to the
-	 * server.
+	 * data package and then calls {@link #sendAuxiliaryData(Connection)} to send
+	 * any auxiliary data that the request may need to forward to the server.
+	 * 
+	 * @throws UnknownCommStateException If sending the request over the provided
+	 *                                   {@link Connection} results in an
+	 *                                   {@link UnknownCommStateException}.
 	 */
 	@Override
-	public final void sendRequest(CommunicationConnection client) {
+	public final void sendRequest(Connection client) throws UnknownCommStateException {
 		client.sendJSON(json());
 		sendAuxiliaryData(client);
 	}
@@ -328,8 +333,11 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	 * @param connection The connection over which to send the data. Read methods on
 	 *                   this object should not be called as per the specification
 	 *                   of this class.
+	 * @throws UnknownCommStateException If an {@link UnknownCommStateException}
+	 *                                   occurs while attempting to write to the
+	 *                                   provided {@link Connection}.
 	 */
-	protected void sendAuxiliaryData(CommunicationConnection connection) {
+	protected void sendAuxiliaryData(Connection connection) throws UnknownCommStateException {
 
 	}
 
@@ -349,14 +357,20 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	 * 
 	 * @param json       The {@link JSONValue} representing the server's response
 	 *                   value for this request.
-	 * @param connection The {@link CommunicationConnection} for reading any auxiliary
-	 *                   data.
+	 * @param connection The {@link Connection} for reading any auxiliary data.
 	 * @return The parsed response from the server.
+	 * @throws BlockException            If a {@link BlockException} occurs while
+	 *                                   attempting to read from the provided
+	 *                                   {@link Connection}.
+	 * @throws UnknownCommStateException If an {@link UnknownCommStateException}
+	 *                                   occurs while attempting to read from the
+	 *                                   provided {@link Connection}.
 	 */
-	protected abstract R parseReturnValue(JSONValue json, CommunicationConnection connection);
+	protected abstract R parseReturnValue(JSONValue json, Connection connection)
+			throws UnknownCommStateException, BlockException;
 
-	private R parseResult(JSONValue value, CommunicationConnection connection)
-			throws CommunicationProtocolError, CommunicationProtocolConstructionError {
+	private R parseResult(JSONValue value, Connection connection) throws CommunicationProtocolError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		CommunicationProtocolErrorDiscerner.checkErrors(value);
 		return parseReturnValue(value, connection);
 	}
@@ -366,20 +380,20 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	 * {@inheritDoc}
 	 * </p>
 	 * <p>
-	 * This method reads the JSON response sent back by the server and throws an
+	 * This method reads the JSON response sent back by the server and throws a
 	 * {@link CommunicationProtocolError} if it represents one. If it does not
 	 * represent an error (if the server did not send back an error), then this
 	 * method provides the read {@link JSONValue} to
-	 * {@link #parseReturnValue(JSONValue, CommunicationConnection)}, along with the
-	 * connection itself in case
-	 * {@link #parseReturnValue(JSONValue, CommunicationConnection)} needs to read any
-	 * auxiliary data from the connection. The result of
-	 * {@link #parseReturnValue(JSONValue, CommunicationConnection)} is returned.
+	 * {@link #parseReturnValue(JSONValue, Connection)}, along with the connection
+	 * itself in case {@link #parseReturnValue(JSONValue, Connection)} needs to read
+	 * any auxiliary data from the connection. The result of
+	 * {@link #parseReturnValue(JSONValue, Connection)} is returned.
 	 * </p>
 	 * <p>
 	 * This method should be overridden only so that final children can reify the
 	 * exception types of the method's <code>throws</code> clause. Such overrides
-	 * should
+	 * should be similar to the following:
+	 * </p>
 	 * 
 	 * <pre>
 	 * <code>try {
@@ -391,12 +405,24 @@ public abstract class CommunicationProtocolRequest<R extends CommunicationProtoc
 	 * }</code>
 	 * </pre>
 	 * 
-	 * and throw more specific exceptions directly, but wrap exceptions that should
-	 * not have been returned in an {@link IllegalCommunicationProtocolException}.
+	 * <p>
+	 * and should throw more specific exceptions directly, but wrap exceptions that
+	 * should not have been received from the server in an
+	 * {@link IllegalCommunicationProtocolException}.
 	 * </p>
+	 * 
+	 * @throws BlockException                         If reading from the provided
+	 *                                                {@link Connection} results in
+	 *                                                a {@link BlockException}.
+	 * @throws UnknownCommStateException              If reading from the provided
+	 *                                                {@link Connection} results in
+	 *                                                an
+	 *                                                {@link UnknownCommStateException}.
+	 * @throws CommunicationProtocolConstructionError
 	 */
 	@Override
-	public R receiveResponse(CommunicationConnection client) throws CommunicationProtocolError {
+	public R receiveResponse(Connection client) throws CommunicationProtocolError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		return parseResult(CommunicationProtocolErrorDiscerner.checkErrors(client.readJSON()), client);
 	}
 

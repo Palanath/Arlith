@@ -1,9 +1,9 @@
 package pala.apps.arlith.backend.client.requests.v2;
 
 /**
- * Thrown by a {@link SingleThreadRequestSubsystem} subclass to indicate to the
+ * Thrown by a {@link StandardRequestSubsystem} subclass to indicate to the
  * parent's API that starting a connection during a call to
- * {@link SingleThreadRequestSubsystem#prepareConnection()} failed
+ * {@link StandardRequestSubsystem#prepareConnection()} failed
  * <i>because</i> the actual network connection could not be made.
  * 
  * @author Palanath

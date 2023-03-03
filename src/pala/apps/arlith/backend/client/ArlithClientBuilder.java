@@ -2,7 +2,7 @@ package pala.apps.arlith.backend.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -13,8 +13,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import pala.apps.arlith.backend.client.requests.v2.ConnectionStartupException;
-import pala.apps.arlith.backend.client.requests.v2.SingleThreadRequestSubsystem;
+import pala.apps.arlith.application.logging.Logger;
+import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
+import pala.apps.arlith.backend.client.requests.v3.CancellableRequestQueueBase;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
 import pala.apps.arlith.backend.common.protocol.errors.CreateAccountError;
@@ -25,6 +26,10 @@ import pala.apps.arlith.backend.common.protocol.requests.LoginRequest;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.libraries.Utilities;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Communicator;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.encryption.MalformedResponseException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 
@@ -188,14 +193,13 @@ public class ArlithClientBuilder {
 		this(null, "0", (InetAddress) null);
 	}
 
-	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException {
-		CommunicationConnection conn = new CommunicationConnection();
-		conn.setAddress(host);
-		conn.setPort(port);
+	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException,
+			BlockException, UnknownCommStateException {
+		Communicator conn;
 
 		// Perform login handshake
 		try {
-			conn.start();
+			conn = new Communicator(new Socket(host, port));
 		} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
 				| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IOException
 				| MalformedResponseException e) {
@@ -223,7 +227,17 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			InetAddress host = this.host;
+			int port = this.port;
+
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken) {
+
+				@Override
+				protected Socket prepareSocket() throws InterruptedException, Exception {
+					return new Socket(host, port);
+				}
+
+			};
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
@@ -236,7 +250,8 @@ public class ArlithClientBuilder {
 		}
 	}
 
-	public ArlithClient createAccount() throws LoginFailureException, CreateAccountError {
+	public ArlithClient createAccount()
+			throws LoginFailureException, CreateAccountError, BlockException, UnknownCommStateException {
 		if (getEmail() == null)
 			throw new RuntimeException("The email is required when creating an account.");
 		CommunicationConnection conn = new CommunicationConnection();
@@ -270,7 +285,17 @@ public class ArlithClientBuilder {
 				throw new LoginFailureException(e);
 			}
 
-			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken);
+			InetAddress host = this.host;
+			int port = this.port;
+
+			StandardEventSubsystem es = new StandardEventSubsystem(conn, authToken) {
+
+				@Override
+				protected Socket prepareSocket() throws InterruptedException, Exception {
+					return new Socket(host, port);
+				}
+
+			};
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
@@ -284,62 +309,43 @@ public class ArlithClientBuilder {
 	}
 
 	/**
-	 * A default, fairly simple implementation of
-	 * {@link SingleThreadRequestSubsystem}. This implementation is not highly
-	 * configurable. Whenever the {@link SingleThreadRequestSubsystem} is restarted
-	 * (and a new connection is opened), this implementation uses the
-	 * {@link AuthToken} it was provided to create a new connection and log in to
-	 * it, then returns that {@link CommunicationConnection}.
+	 * A default, fairly simple implementation of {@link StandardRequestSubsystem}.
+	 * This implementation is not highly configurable. Whenever the
+	 * {@link StandardRequestSubsystem} is restarted (and a new connection is
+	 * opened), this implementation uses the {@link AuthToken} it was provided to
+	 * create a new connection and log in to it, then returns that
+	 * {@link CommunicationConnection}.
 	 * 
 	 * @author Palanath
 	 *
 	 */
-	private static class RequestSubsystemImpl extends SingleThreadRequestSubsystem {
+	private static class RequestSubsystemImpl extends CancellableRequestQueueBase {
 
 		private final InetAddress host;
 		private final int port;
 		private final AuthToken authToken;
+		private Logger logger = Logger.STD;
 
-		@Override
-		protected CommunicationConnection prepareConnection()
-				throws CommunicationProtocolError, RuntimeException, ConnectionStartupException {
-			CommunicationConnection requestConnection = new CommunicationConnection() {
-				// start() is called every time the connection is restarted, so we need to
-				// authorize the connection when this happens.
-				@Override
-				public void start()
-						throws IOException, InvalidKeyException, InvalidKeySpecException, IllegalBlockSizeException,
-						BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-						InvalidAlgorithmParameterException, MalformedResponseException, SocketTimeoutException {
-					super.start();// Start the connection.
-					AuthRequest req = new AuthRequest(authToken);
-					// Not yet documented, but this throws an exception when it fails. Otherwise, it
-					// returns a completion.
-					try {
-						req.inquire(this);// Authorize the connection.
-						// TODO Change from being "potentially recursive."
-					} catch (CommunicationProtocolError e) {
-						throw new RuntimeException(e);
-					}
-				}
-			};
-			requestConnection.setAddress(host);
-			requestConnection.setPort(port);
-			try {
-				requestConnection.start();
-			} catch (InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException | BadPaddingException
-					| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
-					| IOException | MalformedResponseException e) {
-				throw new ConnectionStartupException(e);
-			}
+		public Logger getLogger() {
+			return logger;
+		}
 
-			return requestConnection;
+		public void setLogger(Logger logger) {
+			this.logger = logger;
 		}
 
 		private RequestSubsystemImpl(InetAddress host, int port, AuthToken authToken) {
 			this.host = host;
 			this.port = port;
 			this.authToken = authToken;
+		}
+
+		@Override
+		protected Connection prepareConnection() throws InterruptedException, Exception {
+			Communicator c = new Communicator(new Socket(host, port));
+			AuthRequest ar = new AuthRequest(authToken);
+			ar.inquire(c);
+			return c;
 		}
 	}
 

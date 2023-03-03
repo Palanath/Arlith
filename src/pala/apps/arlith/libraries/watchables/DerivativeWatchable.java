@@ -1,5 +1,17 @@
 package pala.apps.arlith.libraries.watchables;
 
+/**
+ * A {@link Watchable} that is derived from another {@link Watchable}. The value
+ * of this {@link DerivativeWatchable} changes when the value of the
+ * {@link Watchable} it was derived from does. This {@link DerivativeWatchable}
+ * calculates its value from the value of the {@link Watchable} it is derived
+ * from.
+ * 
+ * @author Palanath
+ *
+ * @param <S>
+ * @param <R>
+ */
 public abstract class DerivativeWatchable<S, R> extends WatcherRegistry<R> implements Watcher<S> {
 
 	private final Watcher<S> tw;

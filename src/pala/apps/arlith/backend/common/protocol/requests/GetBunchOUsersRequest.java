@@ -8,10 +8,13 @@ import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
 import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.ListValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -51,8 +54,9 @@ public class GetBunchOUsersRequest extends SimpleCommunicationProtocolRequest<Li
 	}
 
 	@Override
-	public ListValue<UserValue> receiveResponse(CommunicationConnection client) throws SyntaxError, RateLimitError,
-			ServerError, RestrictedError, AccessDeniedError, ObjectNotFoundError {
+	public ListValue<UserValue> receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, AccessDeniedError, ObjectNotFoundError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | AccessDeniedError

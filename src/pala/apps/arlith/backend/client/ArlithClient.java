@@ -1,6 +1,7 @@
 package pala.apps.arlith.backend.client;
 
-import java.io.InputStream;
+import static pala.apps.arlith.libraries.CompletableFutureUtils.getValueWithDefaultExceptions;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,33 +12,37 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
-import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.application.logging.LoggingUtilities;
 import pala.apps.arlith.backend.client.api.ClientCommunity;
 import pala.apps.arlith.backend.client.api.ClientOwnUser;
 import pala.apps.arlith.backend.client.api.ClientThread;
 import pala.apps.arlith.backend.client.api.ClientUser;
-import pala.apps.arlith.backend.client.api.caching.Cache;
-import pala.apps.arlith.backend.client.api.caching.ClientCache;
+import pala.apps.arlith.backend.client.api.caching.v2.ListCache;
+import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.api.notifs.ClientDirectMessageNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientFriendRequestNotification;
 import pala.apps.arlith.backend.client.api.notifs.ClientNotification;
 import pala.apps.arlith.backend.client.events.EventSubsystem;
-import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
-import pala.apps.arlith.backend.client.requests.v2.RequestSubsystemInterface;
+import pala.apps.arlith.backend.client.requests.v3.RequestQueue;
 import pala.apps.arlith.backend.common.gids.GID;
+import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
+import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.ObjectNotFoundError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
+import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
+import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.events.CommunicationProtocolEvent;
 import pala.apps.arlith.backend.common.protocol.events.IncomingFriendEvent;
 import pala.apps.arlith.backend.common.protocol.events.LazyCommunityImageChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.LazyProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.MessageCreatedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
-import pala.apps.arlith.backend.common.protocol.requests.CommunicationProtocolRequest;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.requests.CreateCommunityRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByGIDRequest;
 import pala.apps.arlith.backend.common.protocol.requests.FriendByNameRequest;
@@ -47,7 +52,6 @@ import pala.apps.arlith.backend.common.protocol.requests.GetOutgoingFriendReques
 import pala.apps.arlith.backend.common.protocol.requests.GetOwnUserRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListFriendsRequest;
 import pala.apps.arlith.backend.common.protocol.requests.ListJoinedCommunitiesRequest;
-import pala.apps.arlith.backend.common.protocol.types.CommunicationProtocolType;
 import pala.apps.arlith.backend.common.protocol.types.CommunityValue;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.ListValue;
@@ -55,8 +59,6 @@ import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
 import pala.apps.arlith.backend.common.protocol.types.ThreadValue;
 import pala.apps.arlith.backend.common.protocol.types.UserValue;
-import pala.apps.arlith.backend.server.contracts.serversystems.EventConnection;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.JavaTools;
 import pala.libs.generic.events.EventHandler;
 import pala.libs.generic.events.EventManager;
@@ -124,192 +126,111 @@ public class ArlithClient {
 	}
 
 	private final Map<GID, ClientCommunity> communities = new HashMap<>();
-	private final Cache<List<ClientCommunity>> joinedCommunities = new ClientCache<List<ClientCommunity>>(
-			this::getRequestSubsystem) {
-		@Override
-		protected List<ClientCommunity> queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			// Upon the first request for the list of joined communities, make a query to
-			// the server, process the result (convert it to a list of ClientCommunities
-			// instead
-			// of CommunicationProtcolCommunities), and then return the processed result.
-			return JavaTools.addAll(new ListJoinedCommunitiesRequest().inquire(connection),
-					ArlithClient.this::getCommunity, new ArrayList<>());
-		}
-	};
-
-	private abstract class AbstractUserListCache<T extends CommunicationProtocolType>
-			extends ClientCache<List<ClientUser>> {
-
-		protected final CommunicationProtocolRequest<ListValue<T>> request;
-
-		public AbstractUserListCache(CommunicationProtocolRequest<ListValue<T>> request) {
-			super(new Supplier<RequestSubsystemInterface>() {
-
-				@Override
-				public RequestSubsystemInterface get() {
-					return ArlithClient.this.getRequestSubsystem();
-				}
-			});
-			this.request = request;
-		}
-
-		/**
-		 * <p>
-		 * Returns the list backing this cache. This can be used by event handlers
-		 * created by calling code to modify the list, for example, to include new users
-		 * in this user cache once updates from the server are received signifying that
-		 * they've been added to the list. This value is not volatile, and, when
-		 * determining whether to write to or read from this list (as obtained via a
-		 * call to this method), care should be taken to synchronize over this object
-		 * and to make sure that the cache is not unpopulated (via a call to
-		 * {@link #isPopulated()}).
-		 * </p>
-		 * 
-		 * @return The list of {@link ClientUser}s backing this cache.
-		 */
-		public List<ClientUser> getUsers() {
-			return value;
-		}
-
-		protected abstract ClientUser getUserFromResult(T res);
-
-		@Override
-		protected List<ClientUser> queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			return JavaTools.addAll(request.inquire(connection), this::getUserFromResult, new ArrayList<>());
-		}
-	}
-
-	private class UserListCache extends AbstractUserListCache<UserValue> {
-
-		public UserListCache(CommunicationProtocolRequest<ListValue<UserValue>> req) {
-			super(req);
-		}
-
-		@Override
-		protected ClientUser getUserFromResult(UserValue res) {
-			return getUser(res);
-		}
-
-	}
-
-	private class UserGIDListCache extends AbstractUserListCache<GIDValue> {
-
-		public UserGIDListCache(CommunicationProtocolRequest<ListValue<GIDValue>> req) {
-			super(req);
-		}
-
-		@Override
-		protected ClientUser getUserFromResult(GIDValue res) {
-			return getUser(res.getGid());
-		}
-
-	}
-
-	// This cache will need to be "updated" via an event handler.
-	private final AbstractUserListCache<?> friends = new UserListCache(new ListFriendsRequest()),
-			incomingFriends = new UserGIDListCache(new GetIncomingFriendRequestsRequest()),
-			outgoingFriends = new UserGIDListCache(new GetOutgoingFriendRequestsRequest());
-
-	{
-		eventManager.register(IncomingFriendEvent.INCOMING_FRIEND_EVENT, event -> {
-			ClientUser other = getUser(event.getUser().getGid());
-			REMOVE: {
-				List<ClientUser> toRemoveFrom;
-				switch (event.getPreviousState()) {
-				case FRIENDED:
-					toRemoveFrom = friends.getUsers();
-					break;
-				case INCOMING:
-					toRemoveFrom = incomingFriends.getUsers();
-					break;
-				default:
-					break REMOVE;
-				case OUTGOING:
-					toRemoveFrom = outgoingFriends.getUsers();
-					break;
-				}
-				if (toRemoveFrom != null)
-					toRemoveFrom.remove(other);
-			}
-
-			List<ClientUser> toAddTo;
-			switch (event.getNewState()) {
-			case FRIENDED:
-				toAddTo = friends.getUsers();
-				break;
-			case INCOMING:
-				toAddTo = incomingFriends.getUsers();
-				break;
-			case OUTGOING:
-				toAddTo = outgoingFriends.getUsers();
-				break;
-			default:
-				return;
-			}
-			if (toAddTo != null)
-				toAddTo.add(other);
-			notifications.put(event.getNotificationID().getGid(),
-					new ClientFriendRequestNotification(event.getNotificationID().getGid(), this,
-							event.getUser().getGid(), event.getPreviousState(), event.getNewState()));
-		});
-	}
-	private final Cache<ClientOwnUser> self = new ClientCache<ClientOwnUser>(this::getRequestSubsystem) {
-
-		@Override
-		protected ClientOwnUser queryFromServer(CommunicationConnection connection)
-				throws CommunicationProtocolError, RuntimeException {
-			UserValue t = new GetOwnUserRequest().inquire(connection);
-			// TODO Possibly synchronize and document.
-			ClientOwnUser u = new ClientOwnUser(t.id(), ArlithClient.this, t.username(), t.status(), t.messageCount(),
-					t.discriminant());
-			if (!users.containsKey(t.id()))
-				users.put(t.id(), u);
-			return u;
-		}
-	};
+	private final ListCache<ClientCommunity> joinedCommunities;
+	private final ListCache<ClientUser> friends, incomingFriends, outgoingFriends;
+	private final NewCache<ClientOwnUser> self;
 
 	private boolean running;
 
 	private final EventSubsystem eventSubsystem;
-	private final RequestSubsystemInterface requestSubsystem;
+	private final RequestQueue requestQueue;
 
 	/**
 	 * Creates an {@link ArlithClient} using the specified {@link EventSubsystem}
-	 * and {@link RequestSubsystemInterface}. The {@link EventSubsystem}'s
-	 * {@link EventManager} is set to {@link #eventManager}. Once setup and
-	 * construction is complete, the client needs to be started up with a call to
-	 * {@link #startup()} before it can be used.
+	 * and {@link RequestQueue}. The {@link EventSubsystem}'s {@link EventManager}
+	 * is set to {@link #eventManager}. Once setup and construction is complete, the
+	 * client needs to be started up with a call to {@link #startup()} before it can
+	 * be used.
 	 * 
-	 * @param eventSubsystem   The {@link EventSubsystem} to use.
-	 * @param requestSubsystem The {@link RequestSubsystemInterface} to use.
+	 * @param eventSubsystem   The {@link EventSubsystem} to use for listening for
+	 *                         events. The {@link EventSubsystem} is expected to be
+	 *                         in a non-started state. It is started up upon a call
+	 *                         to {@link #startup()}.
+	 * @param requestSubsystem The {@link RequestQueue} to use for making requests.
+	 *                         The request subsystem is expected to be in a
+	 *                         non-started state. It is started up upon a call to
+	 *                         {@link #startup()}.
 	 */
-	public ArlithClient(EventSubsystem eventSubsystem, RequestSubsystemInterface requestSubsystem) {
+	public ArlithClient(EventSubsystem eventSubsystem, RequestQueue requestQueue) {
 		this.eventSubsystem = eventSubsystem;
 		eventSubsystem.setEventManager(eventManager);
-		this.requestSubsystem = requestSubsystem;
-	}
+		this.requestQueue = requestQueue;
 
-	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
-			throws CommunicationProtocolError, RuntimeException {
-		return createCommunityRequest(name, icon, background).get();
+		// Initialize caches with requestQueue.
+		joinedCommunities = new ListCache<>(new ListJoinedCommunitiesRequest(), this::cache, requestQueue);
+		friends = new ListCache<>(new ListFriendsRequest(), a -> getUser(a.getId().getGid()), requestQueue);
+		incomingFriends = new ListCache<ClientUser>(new GetIncomingFriendRequestsRequest(), a -> getUser(a.getGid()),
+				requestQueue);
+		outgoingFriends = new ListCache<ClientUser>(new GetOutgoingFriendRequestsRequest(), a -> getUser(a.getGid()),
+				requestQueue);
+
+		// Setup for friend events.
+		eventManager.register(IncomingFriendEvent.INCOMING_FRIEND_EVENT, event -> {
+			ClientUser other = getUser(event.getUser().getGid());
+			REMOVE: {
+				ListCache<ClientUser> cache;
+				switch (event.getPreviousState()) {
+				case FRIENDED:
+					cache = friends;
+					break;
+				case INCOMING:
+					cache = incomingFriends;
+					break;
+				default:
+					break REMOVE;
+				case OUTGOING:
+					cache = outgoingFriends;
+					break;
+				}
+				if (cache.isPopulated())
+					try {
+						cache.get().remove(other);
+					} catch (CommunicationProtocolError e) {
+						assert false
+								: "A Cache threw a CommunicationProtocolError after it was populated. (Caches throw these errors when something goes wrong while attempting to populate. This should not happen.)";
+					}
+			}
+
+			ListCache<ClientUser> cache;
+			switch (event.getNewState()) {
+			case FRIENDED:
+				cache = friends;
+				break;
+			case INCOMING:
+				cache = incomingFriends;
+				break;
+			case OUTGOING:
+				cache = outgoingFriends;
+				break;
+			default:
+				return;
+			}
+			if (cache.isPopulated())
+				try {
+					cache.get().add(other);
+				} catch (CommunicationProtocolError e) {
+					assert false
+							: "A Cache threw a CommunicationProtocolError after it was populated. (Caches throw these errors when something goes wrong while attempting to populate. This should not happen.)";
+				}
+			notifications.put(event.getNotificationID().getGid(),
+					new ClientFriendRequestNotification(event.getNotificationID().getGid(), this,
+							event.getUser().getGid(), event.getPreviousState(), event.getNewState()));
+		});
+
+		self = new NewCache<>(new GetOwnUserRequest(), a -> {
+			ClientOwnUser u = new ClientOwnUser(a.id(), ArlithClient.this, a.username(), a.status(), a.messageCount(),
+					a.discriminant());
+			if (!users.containsKey(a.id()))
+				users.put(a.id(), u);
+			return u;
+		}, requestQueue);
 	}
 
 	/**
 	 * <p>
 	 * Creates a new Community using the provided name. The icon and background are
 	 * <i>both</i> optional. To not provide an icon or background, supply
-	 * <code>null</code> for either's {@link InputStream} argument. The sizes of the
-	 * icon and background size are required to populate the fields of the
-	 * respective {@link PieceOMediaValue} objects created, but the server
-	 * <b>currently does not use</b> the size field of the {@link PieceOMediaValue}.
-	 * It is recommended to just set the values to the actual size, if known, of the
-	 * media being uploaded. If either media is not being uploaded (i.e. the
-	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-	 * then it is recommended to supply <code>-1</code> for the media size.
-	 * {@link pala.apps.arlith.libraries.streams.InputStream} is <code>null</code>),
-	 * then
+	 * <code>null</code> for either's <code>byte[]</code> argument.
 	 * </p>
 	 * 
 	 * @param name       The name of the community.
@@ -324,24 +245,23 @@ public class ArlithClient {
 	 *                   network. The
 	 *                   {@link pala.apps.arlith.libraries.streams.InputStream}
 	 *                   should not be used by other code.
-	 * @return An {@link ActionInterface} wrapping the request.
+	 * @return A {@link CompletableFuture} representing the request.
 	 */
-	public ActionInterface<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
-		return getRequestSubsystem().executable(a -> {
-			CommunityValue t = new CreateCommunityRequest(new TextValue(name),
-					icon == null ? null : new PieceOMediaValue(icon),
-					background == null ? null : new PieceOMediaValue(background)).inquire(a);
-			List<ClientThread> threads = new ArrayList<>();
-			for (ThreadValue th : t.getThreads())
-				threads.add(getThread(th));
-			List<GID> members = new ArrayList<>();
-			JavaTools.addAll(t.getMembers(), GIDValue::getGid, members);
-			ClientCommunity community = new ClientCommunity(t.getId().getGid(), this, t.getName().getValue(), threads,
-					members);
-			if (joinedCommunities.isPopulated())
-				joinedCommunities.poll().add(community);
-			return community;
-		});
+	public CompletableFuture<ClientCommunity> createCommunityRequest(String name, byte[] icon, byte[] background) {
+		return getRequestQueue()
+				.queueFuture(new CreateCommunityRequest(name == null ? null : new TextValue(name),
+						icon == null ? null : new PieceOMediaValue(icon),
+						background == null ? null : new PieceOMediaValue(background)))
+				.thenApply(this::cache).thenApply(t -> {
+					joinedCommunities.doIfPopulated(a -> a.add(t));
+					return t;
+				});
+	}
+
+	public ClientCommunity createCommunity(String name, byte[] icon, byte[] background)
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(createCommunityRequest(name, icon, background));
 	}
 
 	<T extends CommunicationProtocolEvent> void fire(EventType<T> type, T event) {
@@ -354,52 +274,64 @@ public class ArlithClient {
 //				.then((Function<UserValue, ClientUser>) this::getUser);
 //	}
 
-	public void friend(GID userID) throws CommunicationProtocolError, RuntimeException {
-		friendRequest(userID).get();
+	public void friend(GID userID)
+			throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		getValueWithDefaultExceptions(friendRequest(userID), ObjectNotFoundError.class);
 	}
 
-	public GID friend(String user, String disc) throws CommunicationProtocolError, RuntimeException {
-		return friendRequest(user, disc).get();
+	public GID friend(String user, String disc)
+			throws ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(friendRequest(user, disc), ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Void> friendRequest(GID userID) {
-		return getRequestSubsystem().action(new FriendByGIDRequest(new GIDValue(userID))).then(t -> {
-			if (incomingFriends.isPopulated()) {
-				for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator.hasNext();) {
+	public CompletableFuture<Void> friendRequest(GID userID) {
+		return getRequestQueue().queueFuture(new FriendByGIDRequest(new GIDValue(userID))).thenApply(t -> {
+			/*
+			 * To maintain cache consistency, now that this user is friended, we remove from
+			 * list of incoming friend requests (if they were in the list) and add to list
+			 * of friends. If they were not, then we add them to the list of outgoing friend
+			 * requests.
+			 */
+			incomingFriends.doIfPopulated(a -> {
+				for (Iterator<ClientUser> iterator = a.iterator(); iterator.hasNext();) {
 					ClientUser u = iterator.next();
 					if (u.id().equals(userID)) {
+						// Promote from incoming friend req to added friend.
 						iterator.remove();
-						if (friends.isPopulated())
-							friends.getUsers().add(u);
+						friends.doIfPopulated(b -> b.add(u));
 						return;
 					}
 				}
-				// Add to outgoing list, if not already present.
-				if (outgoingFriends.isPopulated())
-					outgoingFriends.getUsers().add(getUser(userID));
-			}
+				/*
+				 * If they were not an incoming friend request, they are now an outgoing friend
+				 * request:
+				 */
+				outgoingFriends.doIfPopulated(b -> b.add(getUser(userID)));
+			});
+			return null;
 		});
 	}
 
-	public ActionInterface<GID> friendRequest(String user, String disc) {
-		return getRequestSubsystem().action(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
-				.then((Function<GIDValue, GID>) t -> {
-					if (incomingFriends.isPopulated()) {
-						for (Iterator<ClientUser> iterator = incomingFriends.getUsers().iterator(); iterator
-								.hasNext();) {
+	public CompletableFuture<GID> friendRequest(String user, String disc) {
+		return getRequestQueue().queueFuture(new FriendByNameRequest(new TextValue(user), new TextValue(disc)))
+				.thenApply(a -> {
+					// Same as friendByGID above
+					incomingFriends.doIfPopulated(b -> {
+						for (Iterator<ClientUser> iterator = b.iterator(); iterator.hasNext();) {
 							ClientUser u = iterator.next();
-							if (u.id().equals(t.getGid())) {
+							if (u.id().equals(a.getGid())) {
+								// Promote from incoming friend req to added friend.
 								iterator.remove();
-								if (friends.isPopulated())
-									friends.getUsers().add(u);
-								return u.id();
+								friends.doIfPopulated(c -> c.add(u));
+								return;
 							}
 						}
-						// Add to outgoing list, if not already present.
-						if (outgoingFriends.isPopulated())
-							outgoingFriends.getUsers().add(getUser(t.getGid()));
-					}
-					return t.getGid();
+						outgoingFriends.doIfPopulated(c -> c.add(getUser(a.getGid())));
+					});
+
+					return a.getGid();
 				});
 	}
 
@@ -412,65 +344,64 @@ public class ArlithClient {
 		return getBunchOUsers(JavaTools.iterable(gids));
 	}
 
-	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids) throws CommunicationProtocolError, RuntimeException {
-		return getBunchOUsersRequest(gids).get();
+	public Set<ClientUser> getBunchOUsers(Iterable<GID> gids)
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getBunchOUsersRequest(gids), AccessDeniedError.class,
+				ObjectNotFoundError.class);
 	}
 
-	public ActionInterface<Set<ClientUser>> getBunchOUsersRequest(GID... gids) {
+	public CompletableFuture<Set<ClientUser>> getBunchOUsersRequest(GID... gids) {
 		return getBunchOUsersRequest(JavaTools.iterable(gids));
 	}
 
 	/**
 	 * <p>
-	 * Returns a {@link List} of {@link ClientUser}s representing the users with IDs
-	 * returned by the provided {@link Iterable}. The order of elements in the
-	 * returned {@link Collection} (if iterated over) is not specified.
+	 * Returns a {@link Set} of {@link ClientUser}s representing the users with IDs
+	 * returned by the provided {@link Iterable}.
 	 * </p>
 	 * <p>
 	 * Upon being called, this method immediately collects all the users, whose IDs
 	 * are specified, that have already been loaded and are present in the cache.
 	 * Then, if all the users specified have been collected, the returned
-	 * {@link ActionInterface} will have already been completed successfully, in
-	 * which case the {@link ActionInterface#get()} method will immediately return
-	 * the {@link List} of {@link ClientUser}s. Otherwise, the returned
-	 * {@link ActionInterface} queries all the users that are not already cached and
-	 * then returns the list of all users requested.
+	 * {@link CompletableFuture} will have already been completed successfully.
+	 * Otherwise, the returned {@link CompletableFuture} queries all the users not
+	 * already in the cache (all the users this method failed to find), and then
+	 * adds those queried to those found in the cache, and returns the result. The
+	 * resulting {@link Set} contains exactly all users requested.
 	 * </p>
 	 * 
 	 * @param gids The {@link GID}s of the users to request.
-	 * @return An {@link ActionInterface} representing the request.
+	 * @return An {@link CompletableFuture} representing the request.
 	 */
-	public ActionInterface<Set<ClientUser>> getBunchOUsersRequest(Iterable<GID> gids) {
-		return getRequestSubsystem().executable(a -> {
-			// We'll keep track of all the users we already have and the users we don't.
-			Set<ClientUser> users = new HashSet<>();
-			Set<GID> unknownUsers = new HashSet<>();
+	public CompletableFuture<Set<ClientUser>> getBunchOUsersRequest(Iterable<? extends GID> gids) {
+		Set<ClientUser> users = new HashSet<>();
+		Set<GID> unqueriedUsers = new HashSet<>();
+		for (GID g : gids) {
+			ClientUser u;
 			synchronized (this.users) {
-				// Loop over all provided GIDs and find non-loaded users.
-				for (GID g : gids) {
-					ClientUser user = this.users.get(g);
-					if (user != null)
-						users.add(user);
-					else
-						unknownUsers.add(g);
-				}
-
-				// If all the users were loaded, return. Otherwise, create the action of
-				// requesting the missing users from the server. After we receive those missing
-				// user Communication Protocol objects, convert them all to ClientUser objects
-				// (by loading them, using the constructor, then storing them in the cache), and
-				// also add them to the set of users we've already loaded. Then return that set.
-				if (unknownUsers.isEmpty())
-					return users;
-				else {
-					ListValue<UserValue> t = new GetBunchOUsersRequest(
-							new ListValue<>(JavaTools.mask(unknownUsers.iterator(), GIDValue::new))).inquire(a);
-					for (UserValue g : t)
-						this.users.put(g.id(), getUser(g));
-				}
+				u = this.users.get(g);
 			}
-			return users;
-		});
+			if (u != null)
+				users.add(u);
+			else
+				unqueriedUsers.add(g);
+		}
+		if (unqueriedUsers.isEmpty())
+			return CompletableFuture.completedFuture(users);
+		else
+			return getRequestQueue()
+					.queueFuture(new GetBunchOUsersRequest(
+							new ListValue<>(JavaTools.mask(unqueriedUsers.iterator(), GIDValue::new))))
+					/*
+					 * Cache all newly queried users, add them to the `users` set, and then return
+					 * the set.
+					 * 
+					 * Note that this::cache handles "caching conflicts" where, say, two calls to
+					 * this method simultaneously query and try to cache two different UserValues
+					 * for the same actual user. (It also synchronizes over the cache.)
+					 */
+					.thenApply(a -> JavaTools.addAll(a, this::cache, users));
 	}
 
 	public Collection<ClientThread> getCachedThreads() {
@@ -497,18 +428,13 @@ public class ArlithClient {
 	 * @param c The {@link CommunityValue} to load or get the object of.
 	 * @return The (possibly new) {@link ClientCommunity}.
 	 */
-	public ClientCommunity getCommunity(CommunityValue c) {
+	public ClientCommunity cache(CommunityValue c) {
 		ClientCommunity community;
 		synchronized (communities) {
-			community = getLoadedCommunity(c.id());
-			if (community == null) {
-				List<ClientThread> threads = new ArrayList<>(c.getThreads().size());
-				for (ThreadValue t : c.getThreads())
-					threads.add(getThread(t));
-				community = new ClientCommunity(c.id(), this, c.getName().getValue(), threads,
-						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size())));
-				communities.put(c.id(), community);
-			}
+			if ((community = getLoadedCommunity(c.id())) == null)
+				communities.put(c.id(), community = new ClientCommunity(c.id(), this, c.getName().getValue(),
+						JavaTools.addAll(c.getThreads(), this::cache, new ArrayList<>(c.getThreads().size())),
+						JavaTools.addAll(c.getMembers(), GIDValue::getGid, new ArrayList<>(c.getMembers().size()))));
 		}
 		return community;
 	}
@@ -517,12 +443,14 @@ public class ArlithClient {
 		return eventSubsystem;
 	}
 
-	public List<ClientUser> getIncomingFriendRequests() throws CommunicationProtocolError, RuntimeException {
-		return getIncomingFriendRequestsRequest().get();
+	public List<ClientUser> getIncomingFriendRequests()
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(getIncomingFriendRequestsRequest());
 	}
 
-	public ActionInterface<List<ClientUser>> getIncomingFriendRequestsRequest() {
-		return incomingFriends.get().transform(Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> getIncomingFriendRequestsRequest() {
+		return incomingFriends.futureUnmodifiable();
 	}
 
 	public ClientCommunity getLoadedCommunity(GID id) {
@@ -554,34 +482,61 @@ public class ArlithClient {
 	}
 
 	public List<ClientUser> getOutgoingFriendRequests() throws CommunicationProtocolError, RuntimeException {
-		return getOutgoingFriendRequestsRequest().get();
+		return getValueWithDefaultExceptions(getOutgoingFriendRequestsRequest());
 	}
 
-	public ActionInterface<List<ClientUser>> getOutgoingFriendRequestsRequest() {
-		return outgoingFriends.get().then((Function<List<ClientUser>, List<ClientUser>>) Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> getOutgoingFriendRequestsRequest() {
+		return outgoingFriends.futureUnmodifiable();
 	}
 
 	public ClientOwnUser getOwnUser() throws CommunicationProtocolError, RuntimeException {
-		return getOwnUserRequest().get();
+		return getValueWithDefaultExceptions(getOwnUserRequest());
 	}
 
-	public ActionInterface<ClientOwnUser> getOwnUserRequest() {
-		return self.get();
+	public CompletableFuture<ClientOwnUser> getOwnUserRequest() {
+		return self.future();
 	}
 
-	public RequestSubsystemInterface getRequestSubsystem() {
-		return requestSubsystem;
+	public RequestQueue getRequestQueue() {
+		return requestQueue;
 	}
 
-	public ClientThread getThread(ThreadValue thread) {
+	/**
+	 * Convenience method to update the cached thread specified by the provided
+	 * {@link ThreadValue} (or to cache the thread, if it is not already in the
+	 * cache), and then return the cached {@link ClientThread}. If the
+	 * {@link ClientThread} is in the cache, its
+	 * {@link ClientThread#update(ThreadValue)} method is called. Otherwise, it is
+	 * created off the provided {@link ThreadValue}, put in the cache, then
+	 * returned.
+	 * 
+	 * @param thread The {@link ThreadValue} representing the update.
+	 * @return The (possibly newly) cached {@link ClientThread} instance.
+	 */
+	public ClientThread update(ThreadValue thread) {
+		ClientThread thrd = cache(thread);
+		thrd.update(thread);
+		return thrd;
+	}
+
+	/**
+	 * Used for safely caching the specified {@link ThreadValue}. This method only
+	 * updates the cache if the specified thread is not already present in it. This
+	 * method will <b>not</b> update the cached thread with the specified
+	 * {@link ThreadValue} to permit this method to be safe against race conditions
+	 * (i.e., so that two distinct {@link ClientThread} objects are never made for
+	 * the same actual thread).
+	 * 
+	 * @param thread The {@link ThreadValue} representing the thread to cache.
+	 * @return The (newly) cached {@link ClientThread} instance.
+	 */
+	public ClientThread cache(ThreadValue thread) {
 		ClientThread thd;
 		synchronized (threads) {
-			thd = getLoadedThread(thread.id());
-			if (thd == null) {
+			if ((thd = getLoadedThread(thread.id())) == null) {
 				thd = new ClientThread(thread, this);
 				threads.put(thread.id(), thd);
-			} else
-				thd.update(thread);
+			}
 		}
 		return thd;
 	}
@@ -600,31 +555,74 @@ public class ArlithClient {
 
 	/**
 	 * <p>
-	 * Gets a {@link ClientUser} off of a {@link UserValue}. This is the goto
-	 * conversion function from the Communication Protocol to the Application Client
-	 * API regarding users.
+	 * Gets a {@link ClientUser} off of a {@link UserValue}. This method
+	 * synchronizes over the {@link #users user cache} and checks if a user with the
+	 * specified GID already exists. If so, it simply returns that user. If not, the
+	 * {@link UserValue} provided is used to build a new {@link ClientUser}, which
+	 * is then added to the cache and returned.
 	 * </p>
 	 * <p>
-	 * This gets the specified user from the cache, if it is conatined in the cache,
-	 * otherwise, it creates it, adds it to the cache, and returns it. This method
-	 * should be used for creating and obtaining users for cache consistency.
+	 * This method works off of the principle that the value of a cache entry should
+	 * only be set once, and that any updates to that cache entry will be propagated
+	 * from the server to the client, then to the cache, via events. If two calls
+	 * to, e.g., {@link #getBunchOUsers(GID...)} take place, and both end up
+	 * querying the same user, the second of those two method calls that calls
+	 * <i>this</i> method, will receive the {@link ClientUser} already built by the
+	 * first. I.e., the second {@link #getBunchOUsers(GID...)} request's "updated"
+	 * {@link UserValue} information is ignored and actually discarded. This is to
+	 * ensure consistency between users of the cache; values in the cache that are
+	 * already present should not be replaced so that there is never a case where
+	 * two, distinct {@link ClientUser} objects are floating around. (Because if one
+	 * changes due to an API invocation, e.g. unfriending it, the other will not
+	 * know to update its state.)
+	 * </p>
+	 * <p>
+	 * This method is designed to be called internally, by {@link ArlithClient} API
+	 * classes and code. If called externally, it may break the state of the
+	 * {@link ArlithClient} and all child objects.
 	 * </p>
 	 * 
 	 * @param u The {@link UserValue} to get the user of.
 	 * @return The (possibly new) {@link ClientUser}.
 	 * @author Palanath
 	 */
-	public ClientUser getUser(UserValue u) {
+	// TODO Move second paragraph of method documentation to class documentation and
+	// rephrase.
+	public ClientUser cache(UserValue u) {
 		ClientUser user;
 		synchronized (users) {
-			user = getLoadedUser(u.id());
-			if (user == null)
+			if ((user = getLoadedUser(u.id())) == null)
 				users.put(u.id(), user = new ClientUser(u.id(), this, u.username(), u.status(), u.messageCount(),
 						u.discriminant()));
 		}
 		return user;
 	}
 
+	/**
+	 * <p>
+	 * Checks the cache for a user with the specified ID and, if found, returns it.
+	 * Otherwise, creates a new {@link ClientUser}, without properties, with the
+	 * specified {@link GID}, and returns it.
+	 * </p>
+	 * <p>
+	 * <b>This method is designed to be called by internal {@link ArlithClient} API
+	 * classes</b> that receive {@link GID}s from the server. It should <b>never</b>
+	 * be called with a {@link GID} that was not received from the server or does
+	 * not represent a user, as it will create a new {@link ClientUser} object for
+	 * the {@link GID} in such a case, whose server-querying methods will cause
+	 * errors. This method should only be called to get or create new
+	 * {@link ClientUser}s for {@link GID}s that are known to represent a user.
+	 * </p>
+	 * <p>
+	 * Note that the resulting {@link ClientUser} will not have many of its
+	 * properties assigned, including name, status, etc. Attempts to retrieve these
+	 * properties will query them from the server.
+	 * </p>
+	 * 
+	 * @param id The {@link GID} of the user to safely get an object of from the
+	 *           cache.
+	 * @return A (newly created), cached {@link ClientUser}.
+	 */
 	public ClientUser getUser(GID id) {
 		ClientUser user;
 		synchronized (users) {
@@ -635,15 +633,14 @@ public class ArlithClient {
 		return user;
 	}
 
-	public List<ClientCommunity> listJoinedCommunities() throws CommunicationProtocolError, RuntimeException {
-		return listJoinedCommunitiesRequest().get();
+	public List<ClientCommunity> listJoinedCommunities()
+			throws ServerError, RestrictedError, RateLimitError, SyntaxError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(listJoinedCommunitiesRequest());
 	}
 
-	public ActionInterface<List<ClientCommunity>> listJoinedCommunitiesRequest() {
-		return joinedCommunities.get()// This get call handles synchronization and querying the server.
-				.then((Function<List<ClientCommunity>, List<ClientCommunity>>) Collections::unmodifiableList);
-		// Making the list unmodifiable does not need to be done in a synchronized
-		// fashion.
+	public CompletableFuture<List<ClientCommunity>> listJoinedCommunitiesRequest() {
+		return joinedCommunities.futureUnmodifiable();
 	}
 
 	/**
@@ -652,21 +649,55 @@ public class ArlithClient {
 	 * 
 	 * @return An unmodifiable view of the list of users who are friended with the
 	 *         logged in user.
-	 * @throws CommunicationProtocolError If the list has not yet been requested
-	 *                                    from the server so it is requested, and
-	 *                                    that request fails with a
-	 *                                    {@link CommunicationProtocolError}.
-	 * @throws RuntimeException           If the list has not yet been requested
-	 *                                    from the server so it is requested, and
-	 *                                    that request fails with a
-	 *                                    {@link RuntimeException}.
+	 * @throws Error                                  If an {@link Error} occurs
+	 *                                                during the request.
+	 * @throws CommunicationProtocolConstructionError If reconstructing the server's
+	 *                                                response into Java objects
+	 *                                                fails.
+	 * @throws IllegalCommunicationProtocolException  If, specifically, the server
+	 *                                                responds with an exception
+	 *                                                that it should not have for
+	 *                                                this request.
+	 * @throws SyntaxError                            If the server thinks request
+	 *                                                being made is syntactically
+	 *                                                incorrect. (This can usually
+	 *                                                happen if the protocol changes
+	 *                                                between versions, and the
+	 *                                                server and client are running
+	 *                                                those different versions.)
+	 * @throws RateLimitError                         If the server is rate limiting
+	 *                                                the client.
+	 * @throws RestrictedError                        If the server denies
+	 *                                                permission to the client to
+	 *                                                run this request (this is
+	 *                                                invoked for this request if
+	 *                                                the user is not logged in, and
+	 *                                                should not happen for the
+	 *                                                client).
+	 * @throws ServerError                            If an internal error that the
+	 *                                                server does not expect occurs
+	 *                                                on the server's end. This
+	 *                                                means the server failed to run
+	 *                                                the request; not that it
+	 *                                                didn't want to.
+	 * @throws CommunicationProtocolError             If the list has not yet been
+	 *                                                requested from the server so
+	 *                                                it is requested, and that
+	 *                                                request fails with a
+	 *                                                {@link CommunicationProtocolError}.
+	 * @throws RuntimeException                       If the list has not yet been
+	 *                                                requested from the server so
+	 *                                                it is requested, and that
+	 *                                                request fails with a
+	 *                                                {@link RuntimeException}.
 	 */
-	public List<ClientUser> listFriends() throws CommunicationProtocolError, RuntimeException {
-		return listFriendsRequest().get();
+	public List<ClientUser> listFriends() throws ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getValueWithDefaultExceptions(listFriendsRequest());
 	}
 
-	public ActionInterface<List<ClientUser>> listFriendsRequest() {
-		return friends.get().then((Function<List<ClientUser>, List<ClientUser>>) Collections::unmodifiableList);
+	public CompletableFuture<List<ClientUser>> listFriendsRequest() {
+		return friends.futureUnmodifiable();
 	}
 
 	void reconnect() {
@@ -699,8 +730,8 @@ public class ArlithClient {
 		if (running)
 			throw new IllegalStateException("Application Client already running!");
 		running = true;
-		eventSubsystem.startup();
-		requestSubsystem.start();
+		eventSubsystem.start();
+		requestQueue.start();
 	}
 
 	public synchronized void stop() {
@@ -710,7 +741,7 @@ public class ArlithClient {
 		// While we've stolen processing, we notify other threads that a shutdown has
 		// caused their stop.
 		eventSubsystem.stop();
-		requestSubsystem.stop();
+		requestQueue.stop();
 	}
 
 	public <T extends CommunicationProtocolEvent> void unregister(EventType<T> type, EventHandler<? super T> handler) {

@@ -12,7 +12,9 @@ import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstr
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
 import pala.apps.arlith.backend.common.protocol.types.BooleanValue;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -67,8 +69,9 @@ public class AuthRequest extends SimpleCommunicationProtocolRequest<CompletionVa
 	}
 
 	@Override
-	public CompletionValue receiveResponse(CommunicationConnection client)
-			throws AuthError, SyntaxError, RateLimitError, ServerError, RestrictedError {
+	public CompletionValue receiveResponse(Connection client)
+			throws AuthError, SyntaxError, RateLimitError, ServerError, RestrictedError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (RateLimitError | ServerError | RestrictedError e) {

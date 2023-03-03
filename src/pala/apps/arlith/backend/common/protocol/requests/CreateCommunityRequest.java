@@ -2,13 +2,18 @@ package pala.apps.arlith.backend.common.protocol.requests;
 
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolError;
+import pala.apps.arlith.backend.common.protocol.errors.RateLimitError;
 import pala.apps.arlith.backend.common.protocol.errors.RestrictedError;
+import pala.apps.arlith.backend.common.protocol.errors.ServerError;
 import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
+import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.CommunityValue;
 import pala.apps.arlith.backend.common.protocol.types.CompletionValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -66,7 +71,8 @@ public class CreateCommunityRequest extends CommunicationProtocolRequest<Communi
 		this.background = background;
 	}
 
-	public CreateCommunityRequest(JSONObject properties, CommunicationConnection connection) {
+	public CreateCommunityRequest(JSONObject properties, Connection connection)
+			throws UnknownCommStateException, BlockException {
 		super(REQUEST_NAME, properties);
 		name = new TextValue(properties.get(NAME_KEY));
 		if (properties.containsKey(ICON_KEY))
@@ -146,7 +152,7 @@ public class CreateCommunityRequest extends CommunicationProtocolRequest<Communi
 	}
 
 	@Override
-	protected void sendAuxiliaryData(CommunicationConnection connection) {
+	protected void sendAuxiliaryData(Connection connection) throws UnknownCommStateException {
 		if (icon != null)
 			icon.sendAuxiliaryData(connection);
 		if (background != null)
@@ -154,11 +160,12 @@ public class CreateCommunityRequest extends CommunicationProtocolRequest<Communi
 	}
 
 	@Override
-	public CommunityValue receiveResponse(CommunicationConnection client)
-			throws IllegalCommunicationProtocolException, SyntaxError, RestrictedError {
+	public CommunityValue receiveResponse(Connection client)
+			throws IllegalCommunicationProtocolException, SyntaxError, RestrictedError, ServerError, RateLimitError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
-		} catch (SyntaxError | RestrictedError e) {
+		} catch (SyntaxError | RestrictedError | ServerError | RateLimitError e) {
 			throw e;
 		} catch (CommunicationProtocolError e) {
 			throw new IllegalCommunicationProtocolException(e);
@@ -166,7 +173,7 @@ public class CreateCommunityRequest extends CommunicationProtocolRequest<Communi
 	}
 
 	@Override
-	protected CommunityValue parseReturnValue(JSONValue json, CommunicationConnection connection) {
+	protected CommunityValue parseReturnValue(JSONValue json, Connection connection) {
 		return new CommunityValue(json);
 	}
 

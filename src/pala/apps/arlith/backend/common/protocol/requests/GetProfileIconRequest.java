@@ -10,7 +10,9 @@ import pala.apps.arlith.backend.common.protocol.errors.SyntaxError;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
 import pala.apps.arlith.backend.common.protocol.types.GIDValue;
 import pala.apps.arlith.backend.common.protocol.types.PieceOMediaValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -44,8 +46,9 @@ public class GetProfileIconRequest extends CommunicationProtocolRequest<PieceOMe
 	}
 
 	@Override
-	public PieceOMediaValue receiveResponse(CommunicationConnection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, MediaNotFoundError {
+	public PieceOMediaValue receiveResponse(Connection client) throws SyntaxError, RateLimitError, ServerError,
+			RestrictedError, MediaNotFoundError, IllegalCommunicationProtocolException,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | MediaNotFoundError e) {
@@ -56,7 +59,8 @@ public class GetProfileIconRequest extends CommunicationProtocolRequest<PieceOMe
 	}
 
 	@Override
-	protected PieceOMediaValue parseReturnValue(JSONValue json, CommunicationConnection connection) {
+	protected PieceOMediaValue parseReturnValue(JSONValue json, Connection connection)
+			throws UnknownCommStateException, BlockException {
 		return PieceOMediaValue.fromNullable(json, connection);
 	}
 

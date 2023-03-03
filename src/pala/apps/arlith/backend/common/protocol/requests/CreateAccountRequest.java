@@ -12,7 +12,9 @@ import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstr
 import pala.apps.arlith.backend.common.protocol.types.AuthTokenValue;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONValue;
 
@@ -246,8 +248,9 @@ public class CreateAccountRequest extends SimpleCommunicationProtocolRequest<Aut
 	}
 
 	@Override
-	public AuthTokenValue receiveResponse(CommunicationConnection client)
-			throws SyntaxError, RateLimitError, ServerError, RestrictedError, CreateAccountError {
+	public AuthTokenValue receiveResponse(Connection client)
+			throws SyntaxError, RateLimitError, ServerError, RestrictedError, CreateAccountError,
+			CommunicationProtocolConstructionError, UnknownCommStateException, BlockException {
 		try {
 			return super.receiveResponse(client);
 		} catch (SyntaxError | RateLimitError | ServerError | RestrictedError | CreateAccountError e) {

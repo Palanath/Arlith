@@ -10,6 +10,9 @@ import pala.apps.arlith.backend.common.protocol.events.ProfileIconChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.StatusChangedEvent;
 import pala.apps.arlith.backend.common.protocol.events.ThreadAccessGainedEvent;
 import pala.apps.arlith.backend.common.protocol.meta.CommunicationProtocolConstructionError;
+import pala.apps.arlith.libraries.networking.BlockException;
+import pala.apps.arlith.libraries.networking.Connection;
+import pala.apps.arlith.libraries.networking.UnknownCommStateException;
 import pala.apps.arlith.libraries.networking.scp.CommunicationConnection;
 import pala.libs.generic.json.JSONObject;
 import pala.libs.generic.json.JSONString;
@@ -18,11 +21,12 @@ import pala.libs.generic.json.JSONValue;
 public class StandardEventReader implements EventReader {
 
 	@Override
-	public EventInstance<?> apply(CommunicationConnection c)
-			throws IllegalCommunicationProtocolException, ClassCastException, IllegalArgumentException, CommunicationProtocolError {
+	public EventInstance<?> apply(Connection c) throws IllegalCommunicationProtocolException, ClassCastException,
+			IllegalArgumentException, CommunicationProtocolError, UnknownCommStateException, BlockException {
 		JSONValue o = c.readJSON();
 		if (!(o instanceof JSONObject))
-			throw new CommunicationProtocolConstructionError("Server provided an invalid type of JSONValue for an event.");
+			throw new CommunicationProtocolConstructionError(
+					"Server provided an invalid type of JSONValue for an event.");
 		JSONObject t = (JSONObject) o;
 
 		if (!(t.get("event") instanceof JSONString))
@@ -53,7 +57,8 @@ public class StandardEventReader implements EventReader {
 //					new CommunityCreatedEvent(t));
 
 		default:
-			throw new CommunicationProtocolConstructionError("Unknown event received from server: " + t.getString("event"), t);
+			throw new CommunicationProtocolConstructionError(
+					"Unknown event received from server: " + t.getString("event"), t);
 		}
 	}
 

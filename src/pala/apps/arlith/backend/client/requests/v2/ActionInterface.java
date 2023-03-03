@@ -11,11 +11,11 @@ import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolErro
 /**
  * <p>
  * Encapsulates an action that can be performed on a
- * {@link RequestSubsystemInterface}.
+ * {@link RequestSubsystem}.
  * </p>
  * <p>
  * {@link ActionInterface}s can be made from an {@link Inquiry} using a
- * {@link RequestSubsystemInterface} or they can be built (chained) from other
+ * {@link RequestSubsystem} or they can be built (chained) from other
  * {@link ActionInterface}s. Once an {@link ActionInterface} is built, it can be
  * executed by calling one of the appropriate methods.
  * </p>
@@ -29,7 +29,7 @@ import pala.apps.arlith.backend.common.protocol.errors.CommunicationProtocolErro
  * that execute the specified code on the same thread as that that executes the
  * code represented by the source {@link ActionInterface}. Chaining methods
  * don't implicitly return a new {@link ActionInterface} that queues code on the
- * underlying {@link RequestSubsystemInterface}, either.
+ * underlying {@link RequestSubsystem}, either.
  * 
  * @author Palanath
  *
@@ -47,7 +47,7 @@ public interface ActionInterface<R> {
 		}
 
 		@Override
-		public RequestSubsystemInterface getRequestSubsystem() {
+		public RequestSubsystem getRequestSubsystem() {
 			return null;
 		}
 
@@ -112,13 +112,13 @@ public interface ActionInterface<R> {
 	}
 
 	/**
-	 * Gets the {@link RequestSubsystemInterface} underlying this
+	 * Gets the {@link RequestSubsystem} underlying this
 	 * {@link ActionInterface}.
 	 * 
-	 * @return The {@link RequestSubsystemInterface} underlying this
+	 * @return The {@link RequestSubsystem} underlying this
 	 *         {@link ActionInterface}.
 	 */
-	RequestSubsystemInterface getRequestSubsystem();
+	RequestSubsystem getRequestSubsystem();
 
 	/**
 	 * <p>
@@ -127,7 +127,7 @@ public interface ActionInterface<R> {
 	 * either:
 	 * <ul>
 	 * <li>on this thread, or</li>
-	 * <li>on a thread managed by the {@link RequestSubsystemInterface}, in which
+	 * <li>on a thread managed by the {@link RequestSubsystem}, in which
 	 * case this method will block until the {@link ActionInterface} completes.</li>
 	 * </ul>
 	 * In either case, this method will return (with a value of the result of the
@@ -164,7 +164,7 @@ public interface ActionInterface<R> {
 	 * </p>
 	 * <p>
 	 * This method will submit this {@link ActionInterface} to the
-	 * {@link RequestSubsystemInterface} if it hasn't already been submitted, and
+	 * {@link RequestSubsystem} if it hasn't already been submitted, and
 	 * will block until the {@link ActionInterface} has been completed. Once it is
 	 * complete, this method returns the {@link Exception} that the
 	 * {@link ActionInterface} encountered, if any. Otherwise, it returns
@@ -215,7 +215,7 @@ public interface ActionInterface<R> {
 	/**
 	 * Queues this {@link ActionInterface} for execution on the
 	 * {@link #getRequestSubsystem() underlying RequestSubsystem} to be executed by
-	 * a thread managed by the {@link RequestSubsystemInterface}.
+	 * a thread managed by the {@link RequestSubsystem}.
 	 */
 	void queue();
 
@@ -480,7 +480,7 @@ public interface ActionInterface<R> {
 	 * If this {@link ActionInterface} fails exceptionally then the {@link Consumer}
 	 * provided is invoked with the {@link Exception}, rather than allowing the
 	 * {@link Exception} to be propagated up to the
-	 * {@link RequestSubsystemInterface}'s default exception handler. If the
+	 * {@link RequestSubsystem}'s default exception handler. If the
 	 * provided {@link Consumer} then completes normally, the returned
 	 * {@link ActionInterface} also completes normally with the success value of
 	 * <code>null</code>. If the provided {@link Consumer} fails exceptionally, then
@@ -512,7 +512,7 @@ public interface ActionInterface<R> {
 	 * If this {@link ActionInterface} fails exceptionally then the {@link Consumer}
 	 * provided is invoked with the {@link Exception}, rather than allowing the
 	 * {@link Exception} to be propagated up to the
-	 * {@link RequestSubsystemInterface}'s default exception handler. If the
+	 * {@link RequestSubsystem}'s default exception handler. If the
 	 * provided {@link Consumer} then completes normally, the returned
 	 * {@link ActionInterface} also completes normally with the specified success
 	 * value provided as the last argument to this method. If the provided
@@ -553,7 +553,7 @@ public interface ActionInterface<R> {
 	 * If this {@link ActionInterface} fails exceptionally then the {@link Function}
 	 * provided is invoked with the {@link Exception} as the argument, rather than
 	 * allowing the {@link Exception} to be propagated up to the
-	 * {@link RequestSubsystemInterface}'s default exception handler. If the
+	 * {@link RequestSubsystem}'s default exception handler. If the
 	 * provided {@link Function} then completes normally, the returned
 	 * {@link ActionInterface} also completes normally with a success value of
 	 * whatever the specified {@link Function} returns. If the provided
