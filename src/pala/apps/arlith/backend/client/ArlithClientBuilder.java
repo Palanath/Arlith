@@ -271,7 +271,8 @@ public class ArlithClientBuilder {
 
 		try {
 			CreateAccountRequest createAccountRequest = new CreateAccountRequest(new TextValue(username),
-					new TextValue(email), new TextValue(phoneNumber), HexHashValue.createAndHash(password));
+					new TextValue(email), phoneNumber == null ? null : new TextValue(phoneNumber),
+					HexHashValue.createAndHash(password));
 			AuthToken authToken;
 			try {
 				createAccountRequest.sendRequest(conn);
