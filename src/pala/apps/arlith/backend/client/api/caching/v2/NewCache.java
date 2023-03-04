@@ -299,7 +299,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 		// No thread was requesting and the cache was not populated; make the request.
 		V v;
 		try {
-			updateItem(v = query.run());
+			v = query.run();
 		} catch (Throwable e) {
 			// If an error occurs, the next object should be given the chance to make its
 			// query.
@@ -312,6 +312,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 		}
 		synchronized (this) {
 			List<Waiter> waiters = query.waiters;
+			updateItem(v);
 			for (Waiter w : waiters)
 				w.awaken();
 		}
@@ -389,9 +390,9 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 						return;
 					}
 					query.requestQueue.queue(i, t -> {
-
+						V v;
 						try {
-							updateItem(((Function<Object, V>) query.resultConverter).apply(t));
+							v = ((Function<Object, V>) query.resultConverter).apply(t);
 						} catch (Exception e) {
 							try {
 								if (errorHandler != null)
@@ -409,6 +410,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 						List<Waiter> waiters;
 						synchronized (NewCache.this) {
 							waiters = query.waiters;
+							updateItem(v);
 						}
 						try {
 							resultHandler.accept(value);
@@ -471,8 +473,9 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 					}
 
 					query.requestQueue.queue(inquiry, a -> {
+						V v;
 						try {
-							updateItem(((Function<Object, V>) query.resultConverter).apply(a));
+							v = ((Function<Object, V>) query.resultConverter).apply(a);
 						} catch (Exception e) {
 							f.completeExceptionally(e);
 							synchronized (NewCache.this) {
@@ -485,6 +488,7 @@ public class NewCache<V> {// Temporarily rename to NewCache until all references
 						List<Waiter> waiters;
 						synchronized (NewCache.this) {
 							waiters = query.waiters;
+							updateItem(v);
 						}
 
 						try {
