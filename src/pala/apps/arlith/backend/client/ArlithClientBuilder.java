@@ -13,6 +13,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import pala.apps.arlith.Arlith;
 import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
 import pala.apps.arlith.backend.client.requests.v3.CancellableRequestQueueBase;
@@ -25,7 +26,6 @@ import pala.apps.arlith.backend.common.protocol.requests.CreateAccountRequest;
 import pala.apps.arlith.backend.common.protocol.requests.LoginRequest;
 import pala.apps.arlith.backend.common.protocol.types.HexHashValue;
 import pala.apps.arlith.backend.common.protocol.types.TextValue;
-import pala.apps.arlith.libraries.Utilities;
 import pala.apps.arlith.libraries.networking.BlockException;
 import pala.apps.arlith.libraries.networking.Communicator;
 import pala.apps.arlith.libraries.networking.Connection;
@@ -97,15 +97,6 @@ public class ArlithClientBuilder {
 		return this;
 	}
 
-	public int getRequestConnections() {
-		return requestConnections;
-	}
-
-	public ArlithClientBuilder setRequestConnections(int requestConnections) {
-		this.requestConnections = requestConnections;
-		return this;
-	}
-
 	public int getTimeout() {
 		return timeout;
 	}
@@ -115,32 +106,28 @@ public class ArlithClientBuilder {
 		return this;
 	}
 
-	public static final int DEFAULT_REQUEST_SYSTEM_DISTRIBUTION_COUNT = 3,
-			DEFAULT_DESTINATION_PORT = Utilities.getPreferredPort(), DEFAULT_TIMEOUT = 2000;
-	public static final String DEFAULT_DESTINATION_ADDRESS = Utilities.getPreferredDestinationAddress();
+	public static final int DEFAULT_DESTINATION_PORT = Arlith.getLaunchFlags().getDefaultServerPort(),
+			DEFAULT_TIMEOUT = 2000;
+	public static final String DEFAULT_DESTINATION_ADDRESS = Arlith.getLaunchFlags().getDefaultServerAddress();
 
 	private String username, password, email, phoneNumber, discriminant;
 	private InetAddress host;
-	private int port, requestConnections, timeout;
+	private int port, timeout;
 
-	public ArlithClientBuilder(String username, String password, InetAddress host, int port, int requestConnections,
-			int timeout) {
+	public ArlithClientBuilder(String username, String password, InetAddress host, int port, int timeout) {
 		this.username = username;
 		this.password = password;
 		this.host = host;
 		this.port = port;
-		this.requestConnections = requestConnections;
 		this.timeout = timeout;
 	}
 
-	public ArlithClientBuilder(String username, String disc, String password, InetAddress host, int port,
-			int requestConnections, int timeout) {
+	public ArlithClientBuilder(String username, String disc, String password, InetAddress host, int port, int timeout) {
 		this.username = username;
 		discriminant = disc;
 		this.password = password;
 		this.host = host;
 		this.port = port;
-		this.requestConnections = requestConnections;
 		this.timeout = timeout;
 	}
 
@@ -158,14 +145,6 @@ public class ArlithClientBuilder {
 
 	public ArlithClientBuilder(String username, String password, InetAddress host, int port) {
 		this(username, password, host, port, DEFAULT_TIMEOUT);
-	}
-
-	public ArlithClientBuilder(String username, String password, InetAddress host, int port, int timeout) {
-		this(username, password, host, port, DEFAULT_REQUEST_SYSTEM_DISTRIBUTION_COUNT, timeout);
-	}
-
-	public ArlithClientBuilder(String username, String disc, String password, InetAddress host, int port, int timeout) {
-		this(username, disc, password, host, port, DEFAULT_REQUEST_SYSTEM_DISTRIBUTION_COUNT, timeout);
 	}
 
 	public ArlithClientBuilder(String username, String password, String host, int port) throws UnknownHostException {
@@ -241,7 +220,7 @@ public class ArlithClientBuilder {
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
-			rs.setLogger(client.getLogger());
+//			rs.setLogger(client.getLogger());
 			client.startup();
 			return client;
 		} catch (Exception e) {
@@ -300,7 +279,7 @@ public class ArlithClientBuilder {
 			RequestSubsystemImpl rs = new RequestSubsystemImpl(host, port, authToken);
 			ArlithClient client = new ArlithClient(es, rs);
 			es.setLogger(client.getLogger());
-			rs.setLogger(client.getLogger());
+//			rs.setLogger(client.getLogger());
 			client.startup();
 			return client;
 		} catch (Exception e) {
@@ -325,15 +304,6 @@ public class ArlithClientBuilder {
 		private final InetAddress host;
 		private final int port;
 		private final AuthToken authToken;
-		private Logger logger = Logger.STD;
-
-		public Logger getLogger() {
-			return logger;
-		}
-
-		public void setLogger(Logger logger) {
-			this.logger = logger;
-		}
 
 		private RequestSubsystemImpl(InetAddress host, int port, AuthToken authToken) {
 			this.host = host;
