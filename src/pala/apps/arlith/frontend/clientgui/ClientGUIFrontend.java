@@ -1,5 +1,6 @@
 package pala.apps.arlith.frontend.clientgui;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -397,6 +398,15 @@ public class ClientGUIFrontend implements Frontend {
 		} catch (WindowLoadFailureException e) {
 			ArlithFrontend.getGuiLogger().err("Failed to show the log in scene.");
 			ArlithFrontend.getGuiLogger().err(e);
+			stage.hide();
+			return;
+		} catch (UnknownHostException e) {
+			ArlithFrontend.getGuiLogger().err("The default destination address, "
+					+ ArlithClientBuilder.DEFAULT_DESTINATION_ADDRESS
+					+ ", could not be resolved to an actual host. (Error printed below.) It can be changed by invoking the program with the command line argument: \"-sa\". For example, \"java -jar Arlith.jar -sa=app.arlith.net\"");
+			ArlithFrontend.getGuiLogger().err(e);
+			stage.hide();
+			return;
 		}
 		stage.centerOnScreen();
 	}
