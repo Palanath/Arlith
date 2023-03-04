@@ -12,6 +12,18 @@ import pala.apps.arlith.frontend.clientgui.uispec.home.HomeLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.home.HomePresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
+/**
+ * Presentation implementation for the Home scene. The Home scene is quite lax
+ * with what information the presentation may choose to show the user. This
+ * presentation lays out direct threads with users on the left of the UI as a
+ * list of items in a column, and maintains a large interface on the remainder
+ * of the UI, to the right of the column. The interface displays loaded messages
+ * in the thread and contains a text box that the user can enter messages to
+ * send into.
+ * 
+ * @author Palanath
+ *
+ */
 public class HomePresentationImpl implements HomePresentation {
 
 	/**
