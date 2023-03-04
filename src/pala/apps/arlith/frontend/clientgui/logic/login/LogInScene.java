@@ -296,7 +296,14 @@ public class LogInScene extends ClientGUIFrontend.UserInterface implements LogIn
 					pw = presentation.getInputValue(Input.PASSWORD);
 			ArlithFrontend.getGuiLogger().dbg("(2) Using Identifier: " + un);
 
-			builder.setUsername(un);
+			// Distinguish identifier between one of tag, email, and phone#.
+			if (un.contains("@"))
+				builder.setEmail(un);
+			else if (un.contains("#"))
+				builder.setUsername(un);
+			else
+				builder.setPhoneNumber(un);
+
 			builder.setPassword(pw);
 			ArlithClient client;
 			try {
@@ -325,6 +332,9 @@ public class LogInScene extends ClientGUIFrontend.UserInterface implements LogIn
 			} catch (Throwable e) {
 				presentation.unlockUI();
 				throw e;
+			} finally {
+				// Reset builder.
+				builder.setEmail(null).setUsername(null).setPhoneNumber(null);
 			}
 
 			getFrontend().setClient(client);
