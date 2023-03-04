@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pala.apps.arlith.frontend.clientgui.uispec.home.HomeLogic;
 import pala.apps.arlith.frontend.clientgui.uispec.home.HomePresentation;
 import pala.libs.generic.guis.Window.WindowLoadFailureException;
 
@@ -27,6 +28,12 @@ public class HomePresentationImpl implements HomePresentation {
 	 */
 	private @FXML VBox messagePane;
 
+	public HomePresentationImpl(HomeLogic logic) {
+		this.logic = logic;
+	}
+
+	private final HomeLogic logic;
+
 	private @FXML void initialize() {
 
 	}
@@ -40,6 +47,7 @@ public class HomePresentationImpl implements HomePresentation {
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the Home GUI.", e);
 		}
+
 	}
 
 }

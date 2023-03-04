@@ -16,7 +16,7 @@ public class GrayTheme implements Theme {
 		if (userInterface instanceof LogInLogic)
 			return (P) new LogInPresentationImpl((LogInLogic) userInterface);
 		else if (userInterface instanceof HomeLogic)
-			return (P) new HomePresentationImpl();
+			return (P) new HomePresentationImpl((HomeLogic) userInterface);
 		return null;
 	}
 
