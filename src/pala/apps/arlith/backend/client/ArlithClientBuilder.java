@@ -168,8 +168,8 @@ public class ArlithClientBuilder {
 		this(username, disc, password, host, DEFAULT_DESTINATION_PORT);
 	}
 
-	public ArlithClientBuilder() {
-		this(null, "0", (InetAddress) null);
+	public ArlithClientBuilder() throws UnknownHostException {
+		this(null, null, DEFAULT_DESTINATION_ADDRESS);
 	}
 
 	public ArlithClient login() throws LoginFailureException, LoginError, MalformedServerResponseException,
