@@ -14,7 +14,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import pala.apps.arlith.Arlith;
-import pala.apps.arlith.application.logging.Logger;
 import pala.apps.arlith.backend.client.requests.v2.StandardRequestSubsystem;
 import pala.apps.arlith.backend.client.requests.v3.CancellableRequestQueueBase;
 import pala.apps.arlith.backend.common.authentication.AuthToken;
