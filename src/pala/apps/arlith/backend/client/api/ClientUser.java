@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 import pala.apps.arlith.backend.client.ArlithClient;
 import pala.apps.arlith.backend.client.api.caching.v2.NewCache;
 import pala.apps.arlith.backend.client.api.caching.v2.WatchableCache;
-import pala.apps.arlith.backend.client.requests.v2.ActionInterface;
 import pala.apps.arlith.backend.common.gids.GID;
 import pala.apps.arlith.backend.common.protocol.IllegalCommunicationProtocolException;
 import pala.apps.arlith.backend.common.protocol.errors.AccessDeniedError;
@@ -217,6 +216,16 @@ public class ClientUser extends SimpleClientObject implements Named {
 		if (getDiscriminant().length() < 3)
 			name += getDiscriminant().length() == 1 ? "00" : "0";
 		return name + getDiscriminant();
+	}
+
+	public String getUsername()
+			throws AccessDeniedError, ObjectNotFoundError, ServerError, RestrictedError, RateLimitError, SyntaxError,
+			IllegalCommunicationProtocolException, CommunicationProtocolConstructionError, RuntimeException, Error {
+		return getName();
+	}
+
+	public CompletableFuture<String> getUsernameRequest() {
+		return getNameRequest();
 	}
 
 	public String getName()
