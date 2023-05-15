@@ -50,20 +50,6 @@ public class LoginWindow extends Window {
 				new Stop(1, Color.TRANSPARENT)), new CornerRadii(5), new Insets(5));
 
 		// Lights
-//		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, 750, 50, 400, false, CycleMethod.NO_CYCLE,
-//				new Stop(0, Color.web("#c232ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
-//				new Insets(5));
-//		BackgroundFill layer7 = new BackgroundFill(new RadialGradient(0, 0, 0, 0, 250, false, CycleMethod.NO_CYCLE,
-//				new Stop(0, Color.web("#3235ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
-//				new Insets(5));
-//		BackgroundFill layer8 = new BackgroundFill(new RadialGradient(0, 0, 1920, 1080, 350, false, CycleMethod.NO_CYCLE,
-//				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
-//				new Insets(5));
-//		BackgroundFill layer9 = new BackgroundFill(new RadialGradient(0, 0, 120, 1080, 500, false, CycleMethod.NO_CYCLE,
-//				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
-//				new Insets(5));
-		
-		
 		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, .25, .85, .6, true, CycleMethod.NO_CYCLE,
 				new Stop(0, Color.web("#c232ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
 				new Insets(5));
@@ -71,9 +57,6 @@ public class LoginWindow extends Window {
 				new Stop(0, Color.web("#3235ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
 				new Insets(5));
 		BackgroundFill layer8 = new BackgroundFill(new RadialGradient(0, 0, 1.2, .4, .8, true, CycleMethod.NO_CYCLE,
-				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
-				new Insets(5));
-		BackgroundFill layer9 = new BackgroundFill(new RadialGradient(0, 0, .15, 1, .5, true, CycleMethod.NO_CYCLE,
 				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
 				new Insets(5));
 
