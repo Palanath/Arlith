@@ -1,10 +1,7 @@
 package pala.apps.arlith;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 
 import pala.apps.arlith.application.StandardLoggerImpl;
 import pala.apps.arlith.application.logging.Logger;
@@ -81,16 +78,26 @@ public class Arlith {
 		ApplicationLauncher launcher;
 		// Launch the app.
 		try {
-			if (LAUNCH_FLAGS.isTestClient())
-				launcher = (ApplicationLauncher) Class
-						.forName(LAUNCHER_PACKAGE + ".testguiclient.TestGUIClientLauncher").getConstructor()
-						.newInstance();
-			else if (LAUNCH_FLAGS.isLaunchServer())
+			if (LAUNCH_FLAGS.isLaunchServer())
 				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".terminalserver.ServerLauncher")
 						.getConstructor().newInstance();
 			else
-				launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".jfxclient.JFXLauncher")
-						.getConstructor().newInstance();
+				switch (LAUNCH_FLAGS.getFrontend()) {
+				case "test":
+					launcher = (ApplicationLauncher) Class
+							.forName(LAUNCHER_PACKAGE + ".testguiclient.TestGUIClientLauncher").getConstructor()
+							.newInstance();
+					break;
+				case "test-2":
+					launcher = (ApplicationLauncher) Class
+							.forName(LAUNCHER_PACKAGE + ".secondguitest.SecondTestGUIClientLauncher").getConstructor()
+							.newInstance();
+					break;
+				default:
+					launcher = (ApplicationLauncher) Class.forName(LAUNCHER_PACKAGE + ".jfxclient.JFXLauncher")
+							.getConstructor().newInstance();
+				}
+
 		} catch (InstantiationException e) {
 			System.err.println("An error occurred while trying to launch Arlith.");
 			e.printStackTrace();

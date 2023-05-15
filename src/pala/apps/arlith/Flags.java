@@ -4,12 +4,11 @@ import static pala.apps.arlith.libraries.Utilities.DEFAULT_DESTINATION_ADDRESS;
 import static pala.apps.arlith.libraries.Utilities.DEFAULT_PORT;
 
 import pala.apps.arlith.launchers.ApplicationLauncher;
-import pala.apps.arlith.launchers.testguiclient.TestGUIClientLauncher;
 import pala.libs.generic.parsers.cli.CLIParams;
 
 public class Flags {
-	private final boolean debugMode, launchServer, fileLogging, separateLogFiles, testClient, disableLaunching;
-	private final String defaultServerAddress, logFileLocation;
+	private final boolean debugMode, launchServer, fileLogging, separateLogFiles, disableLaunching;
+	private final String defaultServerAddress, logFileLocation, frontend;
 	private final int defaultServerPort;
 
 	public Flags(CLIParams params) {
@@ -21,7 +20,7 @@ public class Flags {
 		fileLogging = params.checkFlag(false, "--file-logging");
 		separateLogFiles = params.checkFlag(false, "--separate-log-files");
 		logFileLocation = params.readString("arlith-logs", "--log-file-location");
-		testClient = params.checkFlag(false, "--test-client");
+		frontend = params.readString("default", "--frontend");
 		disableLaunching = params.checkFlag(false, "--disable-launching");
 	}
 
@@ -43,15 +42,14 @@ public class Flags {
 
 	/**
 	 * <p>
-	 * Used for testing. If this flag is set, the {@link TestGUIClientLauncher} is
-	 * invoked.
+	 * The frontend selected by the user to be launched.
 	 * </p>
 	 * 
-	 * @return Whether the Client Test GUI launcher will be invoked upon startup or
-	 *         not.
+	 * @return The name of the frontend. This is used to instantiate the GUI (or
+	 *         other UI) during startup.
 	 */
-	public boolean isTestClient() {
-		return testClient;
+	public String getFrontend() {
+		return frontend;
 	}
 
 	/**
