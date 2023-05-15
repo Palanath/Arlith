@@ -3,11 +3,12 @@ package pala.apps.arlith;
 import static pala.apps.arlith.libraries.Utilities.DEFAULT_DESTINATION_ADDRESS;
 import static pala.apps.arlith.libraries.Utilities.DEFAULT_PORT;
 
+import pala.apps.arlith.launchers.ApplicationLauncher;
 import pala.apps.arlith.launchers.testguiclient.TestGUIClientLauncher;
 import pala.libs.generic.parsers.cli.CLIParams;
 
 public class Flags {
-	private final boolean debugMode, launchServer, fileLogging, separateLogFiles, testClient;
+	private final boolean debugMode, launchServer, fileLogging, separateLogFiles, testClient, disableLaunching;
 	private final String defaultServerAddress, logFileLocation;
 	private final int defaultServerPort;
 
@@ -21,6 +22,23 @@ public class Flags {
 		separateLogFiles = params.checkFlag(false, "--separate-log-files");
 		logFileLocation = params.readString("arlith-logs", "--log-file-location");
 		testClient = params.checkFlag(false, "--test-client");
+		disableLaunching = params.checkFlag(false, "--disable-launching");
+	}
+
+	/**
+	 * <p>
+	 * Used for testing. Prevents {@link Arlith} from running any
+	 * {@link ApplicationLauncher}s when booting up. Command line flags, logging,
+	 * and other utilities are still set up like normal. This is most enabled when
+	 * starting the application from a test class's main function, rather than
+	 * directly from {@link Arlith#main(String[])}.
+	 * </p>
+	 * 
+	 * @flag --disable-launching
+	 * @return whether launching is disabled.
+	 */
+	public boolean isDisableLaunching() {
+		return disableLaunching;
 	}
 
 	/**

@@ -76,6 +76,8 @@ public class Arlith {
 		Utilities.setPreferredDestinationAddress(LAUNCH_FLAGS.getDefaultServerAddress());
 		Utilities.setPreferredPort(LAUNCH_FLAGS.getDefaultServerPort());
 
+		if (LAUNCH_FLAGS.isDisableLaunching())
+			return;
 		ApplicationLauncher launcher;
 		// Launch the app.
 		try {
