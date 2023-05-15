@@ -31,3 +31,4 @@ hs_err_pid*
 
 # Data directory for testing
 /arlith-data/
+**/TEST.java
