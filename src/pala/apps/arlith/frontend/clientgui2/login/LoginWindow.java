@@ -53,17 +53,14 @@ public class LoginWindow extends Window {
 				new Stop(1, Color.TRANSPARENT)), innerSectionRadii, innerSectionInsets);
 
 		// Lights
-		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, .25, 1.05, .6, true, CycleMethod.NO_CYCLE,
-				new Stop(0, Color.web("#c232ff3f")), new Stop(1, Color.TRANSPARENT)), innerSectionRadii,
-				innerSectionInsets);
-		BackgroundFill layer7 = new BackgroundFill(new RadialGradient(0, 0, .25, 0, .45, true, CycleMethod.NO_CYCLE,
+		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, -.25, 0, 1.05, true, CycleMethod.NO_CYCLE,
 				new Stop(0, Color.web("#3235ff3f")), new Stop(1, Color.TRANSPARENT)), innerSectionRadii,
 				innerSectionInsets);
-		BackgroundFill layer8 = new BackgroundFill(new RadialGradient(0, 0, 1.2, .4, .8, true, CycleMethod.NO_CYCLE,
+		BackgroundFill layer7 = new BackgroundFill(new RadialGradient(0, 0, 1.2, .8, .8, true, CycleMethod.NO_CYCLE,
 				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), innerSectionRadii,
 				innerSectionInsets);
 
-		root.setBackground(new Background(layer3, layer4, layer5, layer6, layer7, layer8));
+		root.setBackground(new Background(layer3, layer4, layer5, layer6, layer7));
 	}
 
 	@Override
