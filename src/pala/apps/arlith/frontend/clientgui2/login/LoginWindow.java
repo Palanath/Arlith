@@ -30,14 +30,16 @@ public class LoginWindow extends Window {
 	}
 
 	private @FXML void initialize() {
+		// Border
 		BackgroundFill layer1 = new BackgroundFill(new RadialGradient(0, 0, 0, 0, 1.5, true, CycleMethod.NO_CYCLE,
 				new Stop(.6, Color.web("#3235ff")), new Stop(.7, Color.web("#ff8b32"))), null, null);
 		BackgroundFill layer2 = new BackgroundFill(new RadialGradient(0, 0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
 				new Stop(.8, Color.web("#c232ff")), new Stop(1, Color.TRANSPARENT)), null, null);
 
-		// Gray
+		// Solid Fill
 		BackgroundFill layer3 = new BackgroundFill(Color.gray(.12), new CornerRadii(5), new Insets(5));
 
+		// Stripes
 		Color stripeColor = Color.gray(.2);
 		double stripeWidth = .04;
 		BackgroundFill layer4 = new BackgroundFill(new LinearGradient(0, 0, 20, 20, false, CycleMethod.REPEAT,
@@ -46,7 +48,36 @@ public class LoginWindow extends Window {
 		BackgroundFill layer5 = new BackgroundFill(new LinearGradient(0, 20, 20, 0, false, CycleMethod.REPEAT,
 				new Stop(0, stripeColor), new Stop(stripeWidth, stripeColor), new Stop(stripeWidth, Color.TRANSPARENT),
 				new Stop(1, Color.TRANSPARENT)), new CornerRadii(5), new Insets(5));
-		root.setBackground(new Background(layer1, layer2, layer3, layer4, layer5));
+
+		// Lights
+//		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, 750, 50, 400, false, CycleMethod.NO_CYCLE,
+//				new Stop(0, Color.web("#c232ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+//				new Insets(5));
+//		BackgroundFill layer7 = new BackgroundFill(new RadialGradient(0, 0, 0, 0, 250, false, CycleMethod.NO_CYCLE,
+//				new Stop(0, Color.web("#3235ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+//				new Insets(5));
+//		BackgroundFill layer8 = new BackgroundFill(new RadialGradient(0, 0, 1920, 1080, 350, false, CycleMethod.NO_CYCLE,
+//				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+//				new Insets(5));
+//		BackgroundFill layer9 = new BackgroundFill(new RadialGradient(0, 0, 120, 1080, 500, false, CycleMethod.NO_CYCLE,
+//				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+//				new Insets(5));
+		
+		
+		BackgroundFill layer6 = new BackgroundFill(new RadialGradient(0, 0, .25, .85, .6, true, CycleMethod.NO_CYCLE,
+				new Stop(0, Color.web("#c232ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+				new Insets(5));
+		BackgroundFill layer7 = new BackgroundFill(new RadialGradient(0, 0, .25, 0, .45, true, CycleMethod.NO_CYCLE,
+				new Stop(0, Color.web("#3235ff3f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+				new Insets(5));
+		BackgroundFill layer8 = new BackgroundFill(new RadialGradient(0, 0, 1.2, .4, .8, true, CycleMethod.NO_CYCLE,
+				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+				new Insets(5));
+		BackgroundFill layer9 = new BackgroundFill(new RadialGradient(0, 0, .15, 1, .5, true, CycleMethod.NO_CYCLE,
+				new Stop(0, Color.web("#ff8b323f")), new Stop(1, Color.TRANSPARENT)), new CornerRadii(5),
+				new Insets(5));
+
+		root.setBackground(new Background(layer1, layer2, layer3, layer4, layer5, layer6, layer7, layer8));
 	}
 
 	@Override
