@@ -14,8 +14,7 @@ public class LoginWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
-		
+		stage.show();
 	}
 
 }

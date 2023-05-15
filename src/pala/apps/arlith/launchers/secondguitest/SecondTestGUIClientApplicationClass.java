@@ -11,7 +11,6 @@ public class SecondTestGUIClientApplicationClass extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ArlithFrontend.getGuiLogger().err(e));
 		ArlithFrontend.prepareStage(primaryStage);
-		primaryStage.show();
 		new LoginWindow().display(primaryStage);
 	}
 
